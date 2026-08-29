@@ -1,0 +1,43 @@
+{
+    "name": "Governance & Audit",
+    "version": "19.0.1.1.4",
+    "category": "Real Estate/Governance",
+    "summary": "Casos de governança, auditoria, SLA e canais institucionais de e-mail",
+    "author": "Franco Poleo / Manuela Silva",
+    "license": "LGPL-3",
+    "depends": ["mail", "common_base"],
+    "data": [
+        "security/governance_security.xml",
+        "security/ir.model.access.csv",
+        "data/governance_stage_data.xml",
+        "data/governance_case_type_data.xml",
+        "data/governance_sla_rule_data.xml",
+        "data/governance_email_channel_data.xml",
+        "data/governance_activity_data.xml",
+        "data/mail_templates.xml",
+        "data/governance_cron.xml",
+        "views/governance_case_participant_views.xml",
+        "views/governance_case_type_template_views.xml",
+        "views/governance_case_views.xml",
+        "views/governance_case_operational_views.xml",
+        "views/governance_agenda_views.xml",
+        "views/governance_dashboard_views.xml",
+        "views/governance_case_response_views.xml",
+        "views/governance_case_communication_email_ext_views.xml",
+        "views/governance_sla_rule_views.xml",
+        "views/governance_email_channel_views.xml",
+        "views/governance_case_type_email_ext_views.xml",
+        "views/governance_case_email_ext_views.xml",
+        "views/governance_email_test_views.xml",
+        "views/governance_menu_views.xml",
+        "views/governance_agenda_menu_views.xml",
+        "views/governance_menu_email_ext_views.xml",
+    ],
+    "assets": {
+        "web.assets_backend": [
+            "governance/static/src/css/governance.css"
+        ]
+    },
+    "installable": True,
+    "application": True,
+}

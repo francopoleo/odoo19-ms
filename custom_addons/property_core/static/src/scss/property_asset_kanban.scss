@@ -1,0 +1,235 @@
+.o_property_asset_kanban {
+  .o_kanban_record {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 4px !important;
+    max-width: 300px;
+  }
+
+  .o_property_asset_card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-top: 3px solid #6366f1;
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.07);
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .o_property_asset_card_header {
+    position: relative;
+  }
+
+  .o_property_asset_image_wrap {
+    height: 96px;
+    background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%);
+  }
+
+  .o_property_asset_image {
+    width: 100%;
+    height: 96px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .o_property_asset_image_placeholder {
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 28px;
+  }
+
+  .o_property_asset_header_badges {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .o_property_asset_header_badges .badge {
+    font-size: 0.65rem;
+    line-height: 1;
+    padding: 4px 6px;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
+  }
+
+  .o_property_asset_card_body {
+    padding: 9px 10px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .o_property_asset_title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.18;
+    color: #0f172a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .o_property_asset_reference,
+  .o_property_asset_location {
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+
+  .o_property_asset_location {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .o_property_asset_meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .o_meta_chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 0.68rem;
+    max-width: 100%;
+  }
+
+  .o_property_asset_specs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+  }
+
+  .o_spec_box {
+    padding: 5px 4px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+  }
+
+  .o_spec_value {
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #0f172a;
+  }
+
+  .o_spec_label {
+    margin-top: 1px;
+    font-size: 0.58rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .015em;
+  }
+
+  .o_property_asset_prices {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .o_price_box {
+    border-radius: 8px;
+    padding: 6px 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+
+  .o_price_box.success {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+  }
+
+  .o_price_label {
+    font-size: 0.58rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    margin-bottom: 1px;
+    line-height: 1.1;
+  }
+
+  .o_price_value {
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #0f172a;
+  }
+
+  .o_property_asset_alert_box {
+    display: flex;
+    align-items: flex-start;
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-size: 0.72rem;
+    line-height: 1.25;
+  }
+
+  .o_property_asset_alert_box.is-warning {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+  }
+
+  .o_property_asset_alert_box.is-danger {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+  }
+
+  .o_field_many2many_tags.mt-2,
+  .mt-2.o_field_many2many_tags {
+    margin-top: 2px !important;
+  }
+
+  .o_property_asset_card_footer {
+    margin-top: auto;
+    padding: 0 10px 9px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .o_footer_kpi {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 7px;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 0.66rem;
+    line-height: 1.1;
+  }
+
+  .o_footer_kpi.is-warning {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+  }
+
+  .o_footer_kpi.is-danger {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
+  }
+}

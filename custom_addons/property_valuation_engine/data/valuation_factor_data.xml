@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Padrão construtivo -->
+    <record id="factor_standard_low" model="property.valuation.factor">
+        <field name="name">Padrão simples</field>
+        <field name="code">low</field>
+        <field name="factor_type">standard</field>
+        <field name="multiplier">0.8500</field>
+        <field name="sequence">10</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="factor_standard_medium" model="property.valuation.factor">
+        <field name="name">Padrão médio</field>
+        <field name="code">medium</field>
+        <field name="factor_type">standard</field>
+        <field name="multiplier">1.0000</field>
+        <field name="sequence">20</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="factor_standard_high" model="property.valuation.factor">
+        <field name="name">Padrão alto</field>
+        <field name="code">high</field>
+        <field name="factor_type">standard</field>
+        <field name="multiplier">1.1500</field>
+        <field name="sequence">30</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="factor_standard_premium" model="property.valuation.factor">
+        <field name="name">Padrão premium</field>
+        <field name="code">premium</field>
+        <field name="factor_type">standard</field>
+        <field name="multiplier">1.3000</field>
+        <field name="sequence">40</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Conservação -->
+    <record id="factor_conservation_new" model="property.valuation.factor">
+        <field name="name">Novo / reformado</field>
+        <field name="code">new</field>
+        <field name="factor_type">conservation</field>
+        <field name="multiplier">1.0800</field>
+        <field name="sequence">10</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="factor_conservation_good" model="property.valuation.factor">
+        <field name="name">Bom</field>
+        <field name="code">good</field>
+        <field name="factor_type">conservation</field>
+        <field name="multiplier">1.0000</field>
+        <field name="sequence">20</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="factor_conservation_regular" model="property.valuation.factor">
+        <field name="name">Regular</field>
+        <field name="code">regular</field>
+        <field name="factor_type">conservation</field>
+        <field name="multiplier">0.9200</field>
+        <field name="sequence">30</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="factor_conservation_needs_renovation" model="property.valuation.factor">
+        <field name="name">Necessita reforma</field>
+        <field name="code">needs_renovation</field>
+        <field name="factor_type">conservation</field>
+        <field name="multiplier">0.8000</field>
+        <field name="sequence">40</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

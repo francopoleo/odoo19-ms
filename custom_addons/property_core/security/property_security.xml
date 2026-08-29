@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="privilege_property" model="res.groups.privilege">
+            <field name="name">Imóveis</field>
+            <field name="sequence" eval="30"/>
+            <field name="category_id" ref="common_base.module_category_realestate"/>
+        </record>
+
+        <record id="group_property_user" model="res.groups">
+            <field name="name">Usuário de Imóveis</field>
+            <field name="privilege_id" ref="property_core.privilege_property"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_property_manager" model="res.groups">
+            <field name="name">Gestor de Imóveis</field>
+            <field name="privilege_id" ref="property_core.privilege_property"/>
+            <field name="implied_ids" eval="[(4, ref('property_core.group_property_user'))]"/>
+        </record>
+
+        <record id="group_property_restricted" model="res.groups">
+            <field name="name">Usuário Restrito de Imóveis</field>
+            <field name="privilege_id" ref="property_core.privilege_property"/>
+            <field name="implied_ids" eval="[(4, ref('property_core.group_property_user'))]"/>
+        </record>
+
+        <!-- Record Rules: isolamento por empresa -->
+        <record id="rule_property_asset_company" model="ir.rule">
+            <field name="name">Imóveis: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_asset"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_contract_company" model="ir.rule">
+            <field name="name">Contratos: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_contract"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- ==================== Regras Multi-empresa adicionais ==================== -->
+
+        <record id="rule_property_complex_company" model="ir.rule">
+            <field name="name">Complexos: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_complex"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_broker_assignment_company" model="ir.rule">
+            <field name="name">Mandatos: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_broker_assignment"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_commission_company" model="ir.rule">
+            <field name="name">Comissões: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_commission"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_acquisition_company" model="ir.rule">
+            <field name="name">Aquisições: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_acquisition"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_inspection_company" model="ir.rule">
+            <field name="name">Vistorias: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_inspection"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_maintenance_company" model="ir.rule">
+            <field name="name">Manutenções: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_maintenance"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_lead_company" model="ir.rule">
+            <field name="name">Leads: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_lead"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_owner_repasse_company" model="ir.rule">
+            <field name="name">Repasses: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_owner_repasse"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_rent_company" model="ir.rule">
+            <field name="name">Parcelas: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_rent"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_rent_adjustment_company" model="ir.rule">
+            <field name="name">Reajustes: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_rent_adjustment"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_property_stakeholder_profile_company" model="ir.rule">
+            <field name="name">Perfis de Stakeholder: Isolamento por Empresa</field>
+            <field name="model_id" ref="model_property_stakeholder_profile"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+    </data>
+</odoo>

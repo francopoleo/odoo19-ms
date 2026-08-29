@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_commission_list" model="ir.ui.view">
+        <field name="name">property.commission.list</field>
+        <field name="model">property.commission</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'paid'"
+                  decoration-muted="status == 'cancelled'"
+                  decoration-warning="status == 'pending'">
+                <field name="reference"/>
+                <field name="commission_type" widget="badge"
+                       decoration-primary="commission_type == 'sale'"
+                       decoration-info="commission_type == 'rental'"/>
+                <field name="broker_id"/>
+                <field name="asset_id"/>
+                <field name="base_value"/>
+                <field name="commission_rate" string="Taxa (%)"/>
+                <field name="commission_value"/>
+                <field name="deal_date"/>
+                <field name="due_date"/>
+                <field name="payment_date"/>
+                <field name="status" widget="badge"
+                       decoration-warning="status == 'pending'"
+                       decoration-success="status == 'paid'"
+                       decoration-muted="status == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_commission_form" model="ir.ui.view">
+        <field name="name">property.commission.form</field>
+        <field name="model">property.commission</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_pay" type="object" string="Registrar Pagamento"
+                            invisible="status != 'pending'" class="btn-primary"/>
+                    <button name="action_cancel" type="object" string="Cancelar"
+                            invisible="status == 'cancelled'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="pending,paid,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="reference" readonly="1" class="text-muted"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Vínculos">
+                            <field name="commission_type"/>
+                            <field name="broker_id"/>
+                            <field name="acquisition_id"
+                                   invisible="commission_type == 'rental'"/>
+                            <field name="contract_id"
+                                   invisible="commission_type == 'sale'"/>
+                            <field name="asset_id" readonly="1"/>
+                        </group>
+                        <group string="Financeiro">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="base_value"/>
+                            <field name="commission_rate"/>
+                            <field name="commission_value"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Datas">
+                            <field name="deal_date"/>
+                            <field name="due_date"/>
+                            <field name="payment_date"
+                                   readonly="status != 'paid'"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="notes" placeholder="Observações..."/>
+                    </group>
+
+                    <notebook>
+                        <page string="Comunicações">
+                            <chatter/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_commission_search" model="ir.ui.view">
+        <field name="name">property.commission.search</field>
+        <field name="model">property.commission</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="broker_id"/>
+                <field name="reference"/>
+                <field name="asset_id"/>
+                <filter string="Venda" name="sale" domain="[('commission_type','=','sale')]"/>
+                <filter string="Locação" name="rental" domain="[('commission_type','=','rental')]"/>
+                <separator/>
+                <filter string="A Pagar" name="pending" domain="[('status','=','pending')]"/>
+                <filter string="Pagas" name="paid" domain="[('status','=','paid')]"/>
+                <filter string="Canceladas" name="cancelled" domain="[('status','=','cancelled')]"/>
+                <separator/>
+                <filter string="Por Tipo" name="group_type" context="{'group_by':'commission_type'}"/>
+                <filter string="Por Corretor" name="group_broker" context="{'group_by':'broker_id'}"/>
+                <filter string="Por Status" name="group_status" context="{'group_by':'status'}"/>
+                <filter string="Por Mês" name="group_month" context="{'group_by':'deal_date:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_commission" model="ir.actions.act_window">
+        <field name="name">Comissões</field>
+        <field name="res_model">property.commission</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nenhuma comissão registrada ainda.</p>
+        </field>
+    </record>
+
+</odoo>

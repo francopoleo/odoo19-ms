@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_contract_ocr_template_list" model="ir.ui.view">
+        <field name="name">property.contract.ocr.template.list</field>
+        <field name="model">property.contract.ocr.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="document_kind"/>
+                <field name="document_kind"/>
+                            <field name="contract_type"/>
+                <field name="extraction_mode"/>
+                <field name="page_limit"/>
+                            <field name="min_auto_detect_score"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_contract_ocr_template_form" model="ir.ui.view">
+        <field name="name">property.contract.ocr.template.form</field>
+        <field name="model">property.contract.ocr.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Template OCR:</strong>
+                        configure aqui o que o sistema deve procurar no texto extraído do PDF/imagem.
+                        O fluxo é: arquivo → OCR/texto → autodetectar template → aplicar regex → preencher campos do contrato.
+                    </div>
+                    <group>
+                        <group string="Identificação">
+                            <field name="active"/>
+                            <field name="sequence"/>
+                            <field name="name"/>
+                            <field name="contract_type"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="OCR e Autodetecção">
+                            <field name="extraction_mode"/>
+                            <field name="page_limit"/>
+                            <field name="auto_detect_pattern" placeholder="Ex.: LOCADORA|LOCATÁRIO|QUADRO RESUMO"/>
+                            <field name="auto_detect_keywords" placeholder="Uma palavra-chave por linha"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Campos a Procurar">
+                            <div class="alert alert-warning" role="alert">
+                                <strong>Importante:</strong> cada linha abaixo equivale a uma regra de extração.
+                                Use regex com grupo de captura para pegar apenas o valor desejado.
+                                Campos marcados como obrigatórios aparecerão no log se não forem encontrados.
+                            </div>
+                            <field name="line_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="field_id"/>
+                                    <field name="field_label" readonly="1"/>
+                                    <field name="value_mode"/>
+                                    <field name="value_type"/>
+                                    <field name="section_key" optional="show"/>
+                                    <field name="pattern" optional="show"/>
+                                    <field name="required" widget="boolean_toggle"/>
+                                    <field name="confidence"/>
+                                </list>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <group string="Destino">
+                                                <field name="sequence"/>
+                                                <field name="field_id"/>
+                                                <field name="field_label" readonly="1"/>
+                                                <field name="field_name" readonly="1"/>
+                                                <field name="value_mode"/>
+                                                <field name="value_type"/>
+                                                <field name="required"/>
+                                                <field name="confidence"/>
+                                                <field name="section_key"/>
+                                            </group>
+                                            <group string="Conversão">
+                                                <field name="decimal_separator"/>
+                                                <field name="thousand_separator"/>
+                                                <field name="dotall"/>
+                                            </group>
+                                        </group>
+                                        <group string="Regex / Padrão" invisible="value_mode != 'regex'">
+                                            <field name="pattern" nolabel="1" placeholder="Ex.: ALUGUEL[\s\S]{0,80}?R\$\s*([0-9.]+,[0-9]{2})"/>
+                                        </group>
+                                        <group string="Valor Fixo" invisible="value_mode != 'fixed'">
+                                            <field name="fixed_value_char" invisible="value_type not in ('char','text')"/>
+                                            <field name="fixed_value_float" invisible="value_type not in ('float','monetary')"/>
+                                            <field name="fixed_value_date" invisible="value_type != 'date'"/>
+                                            <field name="fixed_value_selection" invisible="value_type != 'selection'" placeholder="Ex.: rental"/>
+                                        </group>
+                                        <group string="Ajuda">
+                                            <field name="notes" nolabel="1" placeholder="Explique para o usuário o que esta regra procura."/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Orientação">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view intentionally kept minimal for Odoo 19 validation.
+         Advanced filters can be added after installation from Studio/XML once the model is loaded. -->
+    <record id="view_property_contract_ocr_template_search" model="ir.ui.view">
+        <field name="name">property.contract.ocr.template.search</field>
+        <field name="model">property.contract.ocr.template</field>
+        <field name="arch" type="xml">
+            <search string="Templates OCR de Contrato">
+                <field name="name" string="Template"/>
+                <field name="document_kind" string="Tipo de Documento"/>
+                <field name="contract_type" string="Tipo de Contrato"/>
+                <field name="auto_detect_keywords" string="Palavras-chave"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_contract_ocr_template" model="ir.actions.act_window">
+        <field name="name">Templates OCR de Contrato</field>
+        <field name="res_model">property.contract.ocr.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_property_contract_ocr_template_search"/>
+    </record>
+
+    <menuitem id="menu_property_contract_ocr_template"
+              name="Templates OCR"
+              parent="property_contract_history.menu_property_contract_history_root"
+              action="action_property_contract_ocr_template"
+              sequence="90"/>
+</odoo>

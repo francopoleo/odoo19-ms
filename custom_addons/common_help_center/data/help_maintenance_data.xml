@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Idempotent cleanup executed on module update. It does not delete documentation;
+         it only prevents complete manuals/global seed articles from polluting the drawer. -->
+    <function model="help.article" name="action_normalize_contextual_display"/>
+</odoo>

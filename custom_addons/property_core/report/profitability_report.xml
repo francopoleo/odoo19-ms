@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_property_profitability" model="ir.actions.report">
+        <field name="name">Rentabilidade por Imóvel</field>
+        <field name="model">property.asset</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">property_core.report_profitability_document</field>
+        <field name="report_file">property_core.report_profitability_document</field>
+        <field name="binding_model_id" ref="model_property_asset"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_profitability_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-family: Arial, sans-serif; font-size: 9pt; color: #1a1a1a;">
+
+                    <div style="border-bottom: 2px solid #198754; padding-bottom: 10px; margin-bottom: 16px;">
+                        <h2 style="color:#198754; margin:0; font-size:14pt;">RENTABILIDADE POR IMÓVEL</h2>
+                        <div style="color:#555; font-size:8pt; margin-top:4px;">
+                            Gerado em <t t-out="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y às %H:%M')"/>
+                            — Baseado em contratos ativos
+                        </div>
+                    </div>
+
+                    <table style="width:100%; border-collapse:collapse; font-size:8pt;">
+                        <thead>
+                            <tr style="background:#198754; color:white;">
+                                <th style="padding:5px; text-align:left;">Imóvel</th>
+                                <th style="padding:5px; text-align:left;">Proprietário</th>
+                                <th style="padding:5px; text-align:right;">Val. Mercado</th>
+                                <th style="padding:5px; text-align:right;">Aluguel/mês</th>
+                                <th style="padding:5px; text-align:right;">Custo/mês</th>
+                                <th style="padding:5px; text-align:right;">Líquido/mês</th>
+                                <th style="padding:5px; text-align:right;">Yield Anual</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total_rent" t-value="0"/>
+                            <t t-set="total_cost" t-value="0"/>
+                            <t t-set="total_net" t-value="0"/>
+                            <t t-foreach="docs" t-as="a">
+                                <t t-set="monthly_cost" t-value="a.total_annual_costs / 12"/>
+                                <t t-set="net" t-value="a.current_monthly_rent - monthly_cost"/>
+                                <t t-set="yield_pct" t-value="(a.current_monthly_rent * 12 / a.market_value * 100) if a.market_value else 0"/>
+                                <tr t-attf-style="background:{{ '#f0faf4' if a_index % 2 == 0 else 'white' }}">
+                                    <td style="padding:4px; border-bottom:1px solid #eee; font-weight:bold;">
+                                        <t t-out="a.name"/>
+                                        <div style="font-size:7pt; color:#888; font-weight:normal;">
+                                            <t t-out="a.city or ''"/>
+                                        </div>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee;">
+                                        <t t-out="a.owner_id.name if a.owner_id else '—'"/>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee; text-align:right;">
+                                        <t t-if="a.market_value">
+                                            R$ <t t-out="'{:,.0f}'.format(a.market_value).replace(',','X').replace('.',',').replace('X','.')"/>
+                                        </t>
+                                        <t t-else="">—</t>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee; text-align:right; color:#198754; font-weight:bold;">
+                                        <t t-if="a.current_monthly_rent">
+                                            R$ <t t-out="'{:,.2f}'.format(a.current_monthly_rent).replace(',','X').replace('.',',').replace('X','.')"/>
+                                        </t>
+                                        <t t-else="">—</t>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee; text-align:right; color:#dc3545;">
+                                        R$ <t t-out="'{:,.2f}'.format(monthly_cost).replace(',','X').replace('.',',').replace('X','.')"/>
+                                    </td>
+                                    <td t-attf-style="padding:4px; border-bottom:1px solid #eee; text-align:right; font-weight:bold;
+                                        color:{{ '#198754' if net >= 0 else '#dc3545' }};">
+                                        R$ <t t-out="'{:,.2f}'.format(net).replace(',','X').replace('.',',').replace('X','.')"/>
+                                    </td>
+                                    <td t-attf-style="padding:4px; border-bottom:1px solid #eee; text-align:right; font-weight:bold;
+                                        color:{{ '#198754' if yield_pct >= 6 else '#fd7e14' if yield_pct >= 4 else '#dc3545' }};">
+                                        <t t-if="yield_pct">
+                                            <t t-out="'{:.2f}'.format(yield_pct).replace('.',',')"/>%
+                                        </t>
+                                        <t t-else="">—</t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr style="background:#e8f5e9; font-weight:bold; font-size:9pt;">
+                                <td colspan="3" style="padding:5px; border-top:2px solid #198754;">
+                                    TOTAIS (<t t-out="len(docs)"/> imóveis)
+                                </td>
+                                <td style="padding:5px; border-top:2px solid #198754; text-align:right; color:#198754;">
+                                    R$ <t t-out="'{:,.2f}'.format(sum(docs.mapped('current_monthly_rent'))).replace(',','X').replace('.',',').replace('X','.')"/>
+                                </td>
+                                <td style="padding:5px; border-top:2px solid #198754; text-align:right; color:#dc3545;">
+                                    R$ <t t-out="'{:,.2f}'.format(sum(docs.mapped('total_annual_costs')) / 12).replace(',','X').replace('.',',').replace('X','.')"/>
+                                </td>
+                                <td style="padding:5px; border-top:2px solid #198754; text-align:right;">
+                                    <t t-set="total_net_val" t-value="sum(docs.mapped('current_monthly_rent')) - sum(docs.mapped('total_annual_costs')) / 12"/>
+                                    <span t-attf-style="color:{{ '#198754' if total_net_val >= 0 else '#dc3545' }};">
+                                        R$ <t t-out="'{:,.2f}'.format(total_net_val).replace(',','X').replace('.',',').replace('X','.')"/>
+                                    </span>
+                                </td>
+                                <td style="border-top:2px solid #198754;"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div style="margin-top:12px; font-size:7.5pt; color:#888;">
+                        * Yield Anual = (Aluguel Mensal × 12) / Valor de Mercado × 100 |
+                        Verde ≥ 6% | Laranja 4–6% | Vermelho &lt; 4%
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

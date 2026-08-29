@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="seq_document_document" model="common.sequence">
+        <field name="name">Documento</field>
+        <field name="code">document.document</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">DOC/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         Agenda Geral - calendário operacional separado do Calendar
+         nativo do Odoo, que representa reuniões.
+         ============================================================ -->
+
+    <record id="view_common_agenda_calendar_event_calendar" model="ir.ui.view">
+        <field name="name">common.agenda.event.calendar</field>
+        <field name="model">common.agenda.event</field>
+        <field name="arch" type="xml">
+            <calendar string="Agenda Geral" date_start="start" date_stop="stop" color="color" mode="month" quick_create="false" event_open_popup="true">
+                <field name="name"/>
+                <field name="agenda_module"/>
+                <field name="agenda_type"/>
+                <field name="user_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_common_agenda_calendar_event_list" model="ir.ui.view">
+        <field name="name">common.agenda.event.list</field>
+        <field name="model">common.agenda.event</field>
+        <field name="arch" type="xml">
+            <list string="Agenda Geral" decoration-muted="state == 'cancelled'" decoration-success="state == 'done'">
+                <field name="start"/>
+                <field name="stop" optional="hide"/>
+                <field name="name"/>
+                <field name="agenda_module"/>
+                <field name="agenda_type"/>
+                <field name="user_id"/>
+                <field name="responsible_user_ids" widget="many2many_tags" optional="show"/>
+                <field name="visibility" optional="hide"/>
+                <field name="state"/>
+                <field name="source_name" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_common_agenda_calendar_event_form" model="ir.ui.view">
+        <field name="name">common.agenda.event.form</field>
+        <field name="model">common.agenda.event</field>
+        <field name="arch" type="xml">
+            <form string="Agenda Geral">
+                <header>
+                    <button name="action_set_scheduled" type="object" string="Reabrir" class="btn-secondary" invisible="state == 'scheduled'"/>
+                    <button name="action_mark_done" type="object" string="Concluir" class="btn-primary" invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_cancel" type="object" string="Cancelar" class="btn-secondary" invisible="state == 'cancelled'"/>
+                    <button name="action_archive" type="object" string="Arquivar" class="btn-secondary" invisible="not active" confirm="Arquivar este item da Agenda Geral? Ele não será excluído definitivamente."/>
+                    <button name="action_open_source" type="object" string="Abrir Registro de Origem" class="btn-link" icon="fa-external-link" invisible="not source_model or not source_res_id"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,scheduled,done,cancelled"/>
+                    <field name="active" invisible="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Assunto da agenda"/></h1>
+                    </div>
+                    <group>
+                        <group string="Quando">
+                            <field name="start"/>
+                            <field name="stop"/>
+                            <field name="duration_hours" readonly="1"/>
+                            <field name="all_day"/>
+                            <field name="location"/>
+                        </group>
+                        <group string="Classificação">
+                            <field name="agenda_module"/>
+                            <field name="agenda_type"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="source_name" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Responsáveis">
+                            <field name="user_id"/>
+                            <field name="responsible_user_ids" widget="many2many_tags"/>
+                            <field name="partner_ids" widget="many2many_tags"/>
+                        </group>
+                        <group string="Visibilidade">
+                            <field name="visibility"/>
+                            <field name="visible_user_ids" widget="many2many_tags" invisible="visibility != 'custom'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descrição">
+                            <field name="description" placeholder="Observações, instruções, detalhes do compromisso operacional..."/>
+                        </page>
+                        <page string="Origem" invisible="not source_model">
+                            <group>
+                                <field name="source_model" readonly="1"/>
+                                <field name="source_res_id" readonly="1"/>
+                                <field name="source_name" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_common_agenda_calendar_event_search" model="ir.ui.view">
+        <field name="name">common.agenda.event.search</field>
+        <field name="model">common.agenda.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="source_name"/>
+                <field name="user_id"/>
+                <field name="responsible_user_ids"/>
+                <filter name="my_agenda" string="Minha Agenda" domain="['|', ('user_id', '=', uid), ('responsible_user_ids', 'in', [uid])]"/>
+                <filter name="period_start" string="Período" date="start"/>
+                <filter name="pending" string="Pendentes" domain="[('state', 'in', ('draft', 'scheduled'))]"/>
+                <filter name="done" string="Concluídos" domain="[('state', '=', 'done')]"/>
+                <filter name="archived" string="Arquivados" domain="[('active', '=', False)]"/>
+                <filter name="module_property" string="Módulo: Imóveis" domain="[('agenda_module', '=', 'property')]"/>
+                <filter name="module_governance" string="Módulo: Governança" domain="[('agenda_module', '=', 'governance')]"/>
+                <filter name="module_document" string="Módulo: Documentos" domain="[('agenda_module', '=', 'document')]"/>
+                <filter name="module_financial" string="Módulo: Financeiro" domain="[('agenda_module', '=', 'financial')]"/>
+                <filter name="type_inspection" string="Tipo: Vistoria" domain="[('agenda_type', '=', 'inspection')]"/>
+                <filter name="type_maintenance" string="Tipo: Manutenção" domain="[('agenda_type', '=', 'maintenance')]"/>
+                <filter name="type_governance_case" string="Tipo: Caso de Governança" domain="[('agenda_type', '=', 'governance_case')]"/>
+                <filter name="type_governance_response_deadline" string="Tipo: Prazo de Resposta" domain="[('agenda_type', '=', 'governance_response_deadline')]"/>
+                <filter name="type_governance_resolution_deadline" string="Tipo: Prazo de Resolução" domain="[('agenda_type', '=', 'governance_resolution_deadline')]"/>
+                <filter name="type_governance_followup" string="Tipo: Follow-up de Governança" domain="[('agenda_type', '=', 'governance_followup')]"/>
+                <filter name="type_governance_pending" string="Tipo: Pendência" domain="[('agenda_type', '=', 'governance_pending')]"/>
+                <filter name="type_document" string="Tipo: Documento" domain="[('agenda_type', '=', 'document')]"/>
+                <filter name="type_dossier" string="Tipo: Dossiê" domain="[('agenda_type', '=', 'dossier')]"/>
+                <filter name="type_rent" string="Tipo: Parcela / Aluguel" domain="[('agenda_type', '=', 'rent')]"/>
+                <filter name="group_module" string="Agrupar por Módulo" context="{'group_by': 'agenda_module'}"/>
+                <filter name="group_type" string="Agrupar por Tipo" context="{'group_by': 'agenda_type'}"/>
+                <filter name="group_user" string="Agrupar por Responsável" context="{'group_by': 'user_id'}"/>
+                <filter name="group_state" string="Agrupar por Situação" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions keep the previous XML IDs used by other modules. -->
+    <record id="action_common_agenda_calendar_my" model="ir.actions.act_window">
+        <field name="name">Minha Agenda</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">['|', ('user_id', '=', uid), ('responsible_user_ids', 'in', [uid])]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+        <field name="context">{'search_default_my_agenda': 1}</field>
+    </record>
+
+    <record id="action_common_agenda_calendar_all" model="ir.actions.act_window">
+        <field name="name">Agenda Geral</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+        <field name="context">{'search_default_pending': 1}</field>
+    </record>
+
+    <record id="action_common_agenda_calendar_property" model="ir.actions.act_window">
+        <field name="name">Agenda de Imóveis</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_module', '=', 'property')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_inspection" model="ir.actions.act_window">
+        <field name="name">Vistorias</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'inspection')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_maintenance" model="ir.actions.act_window">
+        <field name="name">Manutenções</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'maintenance')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_governance" model="ir.actions.act_window">
+        <field name="name">Agenda de Governança</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_module', '=', 'governance')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_governance_case" model="ir.actions.act_window">
+        <field name="name">Marcos dos Casos</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', 'in', ['governance_response_deadline', 'governance_resolution_deadline', 'governance_followup', 'governance_case'])]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_governance_response_deadline" model="ir.actions.act_window">
+        <field name="name">Prazos de Resposta</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'governance_response_deadline')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_governance_resolution_deadline" model="ir.actions.act_window">
+        <field name="name">Prazos de Resolução</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'governance_resolution_deadline')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_governance_followup" model="ir.actions.act_window">
+        <field name="name">Follow-ups de Governança</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'governance_followup')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+
+    <record id="action_common_agenda_calendar_pending" model="ir.actions.act_window">
+        <field name="name">Pendências de Governança</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'governance_pending')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_governance_meeting" model="ir.actions.act_window">
+        <field name="name">Compromissos de Governança</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'governance_meeting')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_document" model="ir.actions.act_window">
+        <field name="name">Agenda Documental</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_module', '=', 'document')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_document_item" model="ir.actions.act_window">
+        <field name="name">Documentos</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'document')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_dossier" model="ir.actions.act_window">
+        <field name="name">Dossiês</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'dossier')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_financial" model="ir.actions.act_window">
+        <field name="name">Agenda Financeira</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_module', '=', 'financial')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_contract" model="ir.actions.act_window">
+        <field name="name">Contratos</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'contract')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_rent" model="ir.actions.act_window">
+        <field name="name">Parcelas / Aluguéis</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'rent')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_rent_adjustment" model="ir.actions.act_window">
+        <field name="name">Reajustes</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'rent_adjustment')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_contract_amendment" model="ir.actions.act_window">
+        <field name="name">Aditivos</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'contract_amendment')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <record id="action_common_agenda_calendar_payment_proof" model="ir.actions.act_window">
+        <field name="name">Comprovantes</field>
+        <field name="res_model">common.agenda.event</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('agenda_type', '=', 'payment_proof')]</field>
+        <field name="search_view_id" ref="view_common_agenda_calendar_event_search"/>
+        <field name="view_id" ref="view_common_agenda_calendar_event_calendar"/>
+    </record>
+
+    <menuitem id="menu_common_agenda_root" name="Agenda Geral" sequence="35" web_icon="common_base,static/description/icon.png"/>
+    <menuitem id="menu_common_agenda_my" name="Minha Agenda" parent="menu_common_agenda_root" action="action_common_agenda_calendar_my" sequence="5"/>
+    <menuitem id="menu_common_agenda_all" name="Calendário Geral" parent="menu_common_agenda_root" action="action_common_agenda_calendar_all" sequence="10"/>
+
+    <menuitem id="menu_common_agenda_financial_root" name="Financeiro" parent="menu_common_agenda_root" sequence="50"/>
+    <menuitem id="menu_common_agenda_financial_all" name="Todos do Financeiro" parent="menu_common_agenda_financial_root" action="action_common_agenda_calendar_financial" sequence="10"/>
+    <menuitem id="menu_common_agenda_financial_payment_proof" name="Comprovantes" parent="menu_common_agenda_financial_root" action="action_common_agenda_calendar_payment_proof" sequence="50"/>
+
+</odoo>

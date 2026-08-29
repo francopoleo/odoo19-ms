@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_contract_list" model="ir.ui.view">
+        <field name="name">property.contract.list</field>
+        <field name="model">property.contract</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="status in ('late','defaulting')"
+                  decoration-warning="status in ('expiring','renewing')"
+                  decoration-muted="status == 'closed'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="contract_type"/>
+                <field name="asset_id"/>
+                <field name="partner_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="monthly_rent"/>
+                <field name="days_to_expiry"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'active'"
+                       decoration-warning="status in ('draft','expiring','renewing')"
+                       decoration-danger="status in ('late','defaulting')"
+                       decoration-muted="status == 'closed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_contract_form" model="ir.ui.view">
+        <field name="name">property.contract.form</field>
+        <field name="model">property.contract</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Ativar Contrato"
+                            invisible="status != 'draft'" class="btn-primary"/>
+                    <button name="action_set_renewing" type="object" string="Iniciar Renovação"
+                            invisible="status not in ['active','expiring']"/>
+                    <button name="action_set_defaulting" type="object" string="Marcar Inadimplente"
+                            invisible="status not in ['active','expiring','renewing']"/>
+                    <button name="action_set_late" type="object" string="Marcar Vencido"
+                            invisible="status not in ['active','expiring','renewing']"/>
+                    <button name="action_close" type="object" string="Encerrar Contrato"
+                            invisible="status not in ['active','expiring','renewing','late','defaulting']"/>
+                    <button name="action_generate_rents" type="object" string="Gerar Parcelas"
+                            invisible="status not in ['active','expiring','renewing']"/>
+                    <button name="action_print_contract" type="object" string="Imprimir Contrato"
+                            invisible="status == 'draft'" class="btn-secondary"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="draft,active,expiring,renewing,late,defaulting,closed"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_asset" type="object" class="oe_stat_button" icon="fa-building-o" invisible="asset_link_count == 0">
+                            <field name="asset_link_count" widget="statinfo" string="Imóvel"/>
+                        </button>
+                        <button name="action_open_broker" type="object" class="oe_stat_button" icon="fa-briefcase" invisible="broker_link_count == 0">
+                            <field name="broker_link_count" widget="statinfo" string="Corretor"/>
+                        </button>
+                        <button name="action_open_assignment" type="object" class="oe_stat_button" icon="fa-handshake-o" invisible="assignment_link_count == 0">
+                            <field name="assignment_link_count" widget="statinfo" string="Mandato"/>
+                        </button>
+                        <button name="action_view_rents" type="object"
+                                class="oe_stat_button" icon="fa-money"
+                                invisible="rent_count == 0">
+                            <div class="o_stat_info">
+                                <field name="rent_open_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Em Aberto</span>
+                            </div>
+                        </button>
+
+                        <button name="action_view_rents" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-circle"
+                                invisible="rent_late_count == 0">
+                            <div class="o_stat_info">
+                                <field name="rent_late_count" class="o_stat_value text-danger"/>
+                                <span class="o_stat_text">Atrasadas</span>
+                            </div>
+                        </button>
+
+                        <button name="action_view_rents" type="object"
+                                class="oe_stat_button" icon="fa-check-circle"
+                                invisible="rent_count == 0">
+                            <div class="o_stat_info">
+                                <field name="total_received" class="o_stat_value" widget="monetary"/>
+                                <span class="o_stat_text">Recebido</span>
+                            </div>
+                        </button>
+
+                        <button name="action_view_adjustments" type="object"
+                                class="oe_stat_button" icon="fa-line-chart">
+                            <div class="o_stat_info">
+                                <field name="adjustment_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Reajustes</span>
+                            </div>
+                        </button>
+
+                        <button name="action_view_inspections" type="object"
+                                class="oe_stat_button" icon="fa-search">
+                            <div class="o_stat_info">
+                                <field name="inspection_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Vistorias</span>
+                            </div>
+                        </button>
+
+                        <button name="action_view_maintenance" type="object"
+                                class="oe_stat_button" icon="fa-wrench">
+                            <div class="o_stat_info">
+                                <field name="maintenance_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Manutenção</span>
+                            </div>
+                        </button>
+
+                        <button type="object" name="action_view_commission"
+                                class="oe_stat_button" icon="fa-percent"
+                                invisible="not commission_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">Ver</span>
+                                <span class="o_stat_text">Comissão</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nome do contrato..."/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="reference" readonly="1" class="text-muted"/>
+                            <field name="original_filename" readonly="1" class="text-muted" invisible="not original_filename"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Partes">
+                            <field name="contract_type"/>
+                            <field name="asset_id"/>
+                            <field name="partner_id"/>
+                            <field name="guarantor_ids" widget="many2many_tags"/>
+                            <field name="broker_id"/>
+                            <field name="assignment_id"
+                                   domain="[('asset_id','=',asset_id),('status','=','active')]"/>
+                            <field name="commission_id" readonly="1"
+                                   invisible="not commission_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+
+                        <group string="Datas">
+                            <field name="sign_date"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="duration_months" readonly="1"/>
+                            <field name="months_active" readonly="1"
+                                   invisible="status == 'draft'"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Valores">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="monthly_rent"/>
+                            <field name="deposit_value"/>
+                            <field name="total_value" readonly="1"/>
+                        </group>
+
+                        <group string="Reajuste">
+                            <field name="adjustment_index"/>
+                            <field name="adjustment_rate"
+                                   invisible="adjustment_index != 'fixed'"/>
+                            <field name="adjustment_period_months"/>
+                            <field name="next_adjustment_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Contabilidade">
+                        <group>
+                            <field name="journal_id" placeholder="Padrão da empresa"/>
+                            <field name="income_account_id" placeholder="Padrão da empresa"/>
+                        </group>
+                    </group>
+
+                    <group string="Alertas">
+                        <group>
+                            <field name="alert_days"/>
+                            <field name="days_to_expiry" readonly="1"
+                                   invisible="status == 'draft'"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="tag_ids" widget="many2many_tags"/>
+                    </group>
+
+                    <group string="Formalização">
+                        <group>
+                            <field name="jurisdiction"/>
+                            <field name="witness_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+
+                    <group string="Cláusulas Adicionais">
+                        <field name="additional_clauses" nolabel="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Comunicações">
+                            <chatter/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== KANBAN ==================== -->
+    <record id="view_property_contract_kanban" model="ir.ui.view">
+        <field name="name">property.contract.kanban</field>
+        <field name="model">property.contract</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" class="o_kanban_small_column">
+                <field name="status"/>
+                <field name="currency_id"/>
+                <field name="days_to_expiry"/>
+                <field name="rent_open_count"/>
+                <field name="rent_late_count"/>
+                <field name="tag_ids"/>
+                <templates>
+                    <t t-name="card">
+                        <div>
+                            <div class="o_kanban_record_top mb-0">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <small class="o_kanban_record_subtitle text-muted">
+                                        <field name="reference"/>
+                                    </small>
+                                </div>
+                                <field name="status" widget="badge"
+                                       decoration-success="status == 'active'"
+                                       decoration-warning="status in ('draft','expiring','renewing')"
+                                       decoration-danger="status in ('late','defaulting')"
+                                       decoration-muted="status == 'closed'"/>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="d-flex align-items-center gap-1 mb-1">
+                                    <i class="fa fa-building-o text-muted" title="Imóvel"/>
+                                    <field name="asset_id"/>
+                                </div>
+                                <div class="d-flex align-items-center gap-1 mb-1">
+                                    <i class="fa fa-user text-muted" title="Locatário"/>
+                                    <field name="partner_id"/>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <span class="fw-bold">
+                                        <field name="monthly_rent" widget="monetary"/>
+                                        <small class="text-muted">/mês</small>
+                                    </span>
+                                    <span t-if="record.days_to_expiry.raw_value &gt; 0"
+                                          t-attf-class="badge #{record.days_to_expiry.raw_value &lt;= 30 ? 'text-bg-danger' : record.days_to_expiry.raw_value &lt;= 90 ? 'text-bg-warning' : 'text-bg-secondary'}">
+                                        <i class="fa fa-calendar" title="Dias para vencer"/> <t t-esc="record.days_to_expiry.raw_value"/>d
+                                    </span>
+                                </div>
+                                <div t-if="record.rent_late_count.raw_value &gt; 0 or record.rent_open_count.raw_value &gt; 0"
+                                     class="d-flex gap-2 mt-1">
+                                    <span t-if="record.rent_late_count.raw_value &gt; 0" class="badge text-bg-danger">
+                                        <i class="fa fa-exclamation-circle" title="Parcelas atrasadas"/>
+                                        <t t-esc="record.rent_late_count.raw_value"/> atrasada(s)
+                                    </span>
+                                    <span t-if="record.rent_open_count.raw_value &gt; 0" class="badge text-bg-info">
+                                        <i class="fa fa-clock-o" title="Parcelas em aberto"/>
+                                        <t t-esc="record.rent_open_count.raw_value"/> em aberto
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="tag_ids" widget="many2many_tags"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="end_date" widget="date" class="text-muted"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_contract_search" model="ir.ui.view">
+        <field name="name">property.contract.search</field>
+        <field name="model">property.contract</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Contrato" filter_domain="['|',('name','ilike',self),('reference','ilike',self)]"/>
+                <field name="asset_id"/>
+                <field name="partner_id"/>
+                <field name="broker_id"/>
+                <field name="tag_ids"/>
+
+                <!-- Status -->
+                <filter string="Rascunho" name="draft" domain="[('status','=','draft')]"/>
+                <filter string="Ativos" name="active_filter" domain="[('status','=','active')]"/>
+                <filter string="A Vencer" name="expiring" domain="[('status','=','expiring')]"/>
+                <filter string="Em Renovação" name="renewing" domain="[('status','=','renewing')]"/>
+                <filter string="Atrasados" name="late" domain="[('status','=','late')]"/>
+                <filter string="Inadimplentes" name="defaulting" domain="[('status','=','defaulting')]"/>
+                <filter string="Encerrados" name="closed" domain="[('status','=','closed')]"/>
+
+                <separator/>
+
+                <!-- Alertas rápidos -->
+                <filter string="Vence em 30 dias" name="expiring_30"
+                        domain="[('end_date','&gt;=',context_today().strftime('%Y-%m-%d')),('end_date','&lt;=', (context_today() + datetime.timedelta(days=30)).strftime('%Y-%m-%d')),('status','not in',['draft','closed'])]"/>
+                <filter string="Vence em 90 dias" name="expiring_90"
+                        domain="[('end_date','&gt;=',context_today().strftime('%Y-%m-%d')),('end_date','&lt;=', (context_today() + datetime.timedelta(days=90)).strftime('%Y-%m-%d')),('status','not in',['draft','closed'])]"/>
+                <filter string="Com parcelas atrasadas" name="has_late_rents"
+                        domain="[('rent_late_count','&gt;',0)]"/>
+                <filter string="Reajuste este mês" name="adjustment_this_month"
+                        domain="[('next_adjustment_date','&gt;=', (context_today()).strftime('%Y-%m-01')),
+                                 ('next_adjustment_date','&lt;=', (context_today() + relativedelta(months=1) - relativedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+
+                <separator/>
+
+                <!-- Agrupamentos -->
+                <filter string="Por Status" name="group_status" domain="[]" context="{'group_by':'status'}"/>
+                <filter string="Por Imóvel" name="group_asset" domain="[]" context="{'group_by':'asset_id'}"/>
+                <filter string="Por Tipo" name="group_type" domain="[]" context="{'group_by':'contract_type'}"/>
+                <filter string="Por Corretor" name="group_broker" domain="[]" context="{'group_by':'broker_id'}"/>
+                <filter string="Por Índice de Reajuste" name="group_index" domain="[]" context="{'group_by':'adjustment_index'}"/>
+                <filter string="Por Mês de Início" name="group_start" domain="[]" context="{'group_by':'start_date:month'}"/>
+                <filter string="Por Mês de Término" name="group_end" domain="[]" context="{'group_by':'end_date:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== PIVOT ==================== -->
+    <record id="view_property_contract_pivot" model="ir.ui.view">
+        <field name="name">property.contract.pivot</field>
+        <field name="model">property.contract</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="asset_id" type="row"/>
+                <field name="status" type="col"/>
+                <field name="monthly_rent" type="measure"/>
+                <field name="total_value" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ==================== GRAPH ==================== -->
+    <record id="view_property_contract_graph" model="ir.ui.view">
+        <field name="name">property.contract.graph</field>
+        <field name="model">property.contract</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="contract_type" type="row"/>
+                <field name="monthly_rent" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_contract" model="ir.actions.act_window">
+        <field name="name">Contratos de Locação</field>
+        <field name="res_model">property.contract</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="context">{'search_default_active_filter': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Cadastre seu primeiro contrato!</p>
+        </field>
+    </record>
+
+</odoo>

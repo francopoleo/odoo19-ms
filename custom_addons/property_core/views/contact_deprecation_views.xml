@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Deprecated models are kept for backward compatibility but their views are no longer extended with warnings to avoid validation errors on broken references -->
+</odoo>

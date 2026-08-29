@@ -1,0 +1,1024 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_property_dashboard_form" model="ir.ui.view">
+        <field name="name">property.dashboard.form</field>
+        <field name="model">property.dashboard</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false" class="o_form_nosheet">
+                <sheet>
+                    <field name="currency_id" invisible="1"/>
+
+                    <!-- ===== HERO KPIs ===== -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Taxa de Ocupação -->
+                        <div class="col-12 col-md-4">
+                            <div class="card border-0 shadow-sm h-100"
+                                 style="border-top: 4px solid #198754 !important;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="text-muted fw-semibold" style="font-size:11px;text-transform:uppercase;letter-spacing:1px;">
+                                            Taxa de Ocupação
+                                        </span>
+                                        <i class="fa fa-building" title="Imóvel" style="color:#198754;font-size:1.3rem;"/>
+                                    </div>
+                                    <div class="d-flex align-items-end gap-2">
+                                        <span class="fw-bold" style="font-size:2.2rem;color:#198754;line-height:1;">
+                                            <field name="occupancy_rate" digits="[4,1]"/>%
+                                        </span>
+                                    </div>
+                                    <div class="text-muted mt-1" style="font-size:12px;">
+                                        <field name="asset_rented"/> alugados de <field name="asset_total"/> imóveis
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Receita Mensal -->
+                        <div class="col-12 col-md-4">
+                            <div class="card border-0 shadow-sm h-100"
+                                 style="border-top: 4px solid #0d6efd !important;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="text-muted fw-semibold" style="font-size:11px;text-transform:uppercase;letter-spacing:1px;">
+                                            Receita Mensal Prevista
+                                        </span>
+                                        <i class="fa fa-money" title="Receita" style="color:#0d6efd;font-size:1.3rem;"/>
+                                    </div>
+                                    <div class="fw-bold" style="font-size:1.6rem;color:#0d6efd;line-height:1.2;">
+                                        <field name="monthly_revenue" widget="monetary"/>
+                                    </div>
+                                    <div class="mt-2">
+                                        <field name="growth_html" readonly="1" nolabel="1"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inadimplência -->
+                        <div class="col-12 col-md-4">
+                            <div class="card border-0 shadow-sm h-100"
+                                 style="border-top: 4px solid #dc3545 !important;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="text-muted fw-semibold" style="font-size:11px;text-transform:uppercase;letter-spacing:1px;">
+                                            Inadimplência
+                                        </span>
+                                        <i class="fa fa-exclamation-circle" title="Inadimplência" style="color:#dc3545;font-size:1.3rem;"/>
+                                    </div>
+                                    <div class="d-flex align-items-end gap-2">
+                                        <span class="fw-bold" style="font-size:2.2rem;color:#dc3545;line-height:1;">
+                                            <field name="default_rate" digits="[4,1]"/>%
+                                        </span>
+                                    </div>
+                                    <div class="text-muted mt-1" style="font-size:12px;">
+                                        <field name="late_rent_count"/> parcelas em atraso
+                                        · <field name="rent_late_total" widget="monetary"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ===== TABS ===== -->
+                    <notebook>
+
+                        <!-- ============================
+                             TAB 1 — VISÃO GERAL
+                             ============================ -->
+                        <page string="Visão Geral" name="overview">
+
+                            <!-- Alertas -->
+                            <div class="row mb-2 mt-1">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-bell me-1"/> Alertas
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-4">
+                                <div class="col-6 col-md">
+                                    <button type="action" name="%(action_property_contract)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #fd7e14 !important;background:#fff8f0;">
+                                            <div class="card-body d-flex align-items-center gap-2 py-2">
+                                                <i class="fa fa-clock-o" title="A Vencer" style="color:#fd7e14;font-size:1.2rem;"/>
+                                                <div>
+                                                    <div class="fw-bold lh-1" style="color:#fd7e14;font-size:1.3rem;">
+                                                        <field name="alert_contracts_expiring_30"/>
+                                                    </div>
+                                                    <div class="text-muted" style="font-size:10px;">Contratos a vencer (30d)</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md">
+                                    <button type="action" name="%(action_property_rent)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #dc3545 !important;background:#fff5f5;">
+                                            <div class="card-body d-flex align-items-center gap-2 py-2">
+                                                <i class="fa fa-exclamation-circle" title="Parcelas Atrasadas" style="color:#dc3545;font-size:1.2rem;"/>
+                                                <div>
+                                                    <div class="fw-bold lh-1" style="color:#dc3545;font-size:1.3rem;">
+                                                        <field name="alert_late_rents"/>
+                                                    </div>
+                                                    <div class="text-muted" style="font-size:10px;">Parcelas atrasadas</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md">
+                                    <button type="action" name="%(action_property_maintenance)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #dc3545 !important;background:#fff5f5;">
+                                            <div class="card-body d-flex align-items-center gap-2 py-2">
+                                                <i class="fa fa-bolt" title="Manutenções Urgentes" style="color:#dc3545;font-size:1.2rem;"/>
+                                                <div>
+                                                    <div class="fw-bold lh-1" style="color:#dc3545;font-size:1.3rem;">
+                                                        <field name="alert_maintenance_emergency"/>
+                                                    </div>
+                                                    <div class="text-muted" style="font-size:10px;">Emergências abertas</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md">
+                                    <button type="action" name="%(action_property_broker_assignment)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #0dcaf0 !important;background:#f0fcff;">
+                                            <div class="card-body d-flex align-items-center gap-2 py-2">
+                                                <i class="fa fa-id-badge" title="Corretores" style="color:#0dcaf0;font-size:1.2rem;"/>
+                                                <div>
+                                                    <div class="fw-bold lh-1" style="color:#0dcaf0;font-size:1.3rem;">
+                                                        <field name="alert_assignment_expiring_7"/>
+                                                    </div>
+                                                    <div class="text-muted" style="font-size:10px;">Mandatos a vencer (7d)</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Contratos -->
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-file-text me-1"/> Contratos
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-2">
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_contract)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #198754 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#19875422;flex-shrink:0">
+                                                    <i class="fa fa-file-text fa-lg" title="Contratos Ativos" style="color:#198754"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#198754">
+                                                        <field name="contract_active"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Ativos</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_contract)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #fd7e14 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#fd7e1422;flex-shrink:0">
+                                                    <i class="fa fa-clock-o fa-lg" title="Contratos a Vencer" style="color:#fd7e14"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#fd7e14">
+                                                        <field name="contract_expiring"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">A Vencer</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_contract)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #0dcaf0 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#0dcaf022;flex-shrink:0">
+                                                    <i class="fa fa-refresh fa-lg" title="Renovações" style="color:#0dcaf0"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#0dcaf0">
+                                                        <field name="contract_renewing"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Em Renovação</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_contract)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #dc3545 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#dc354522;flex-shrink:0">
+                                                    <i class="fa fa-exclamation-triangle fa-lg" title="Inadimplentes" style="color:#dc3545"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#dc3545">
+                                                        <field name="contract_defaulting"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Inadimplentes</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </page>
+
+                        <!-- ============================
+                             TAB 2 — FINANCEIRO
+                             ============================ -->
+                        <page string="Financeiro" name="financeiro">
+
+                            <!-- KPIs financeiros -->
+                            <div class="row mb-2 mt-1">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-money me-1"/> Desempenho Financeiro
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_rent)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #198754 !important;">
+                                            <div class="card-body">
+                                                <div class="text-muted small mb-1">Recebido no Mês</div>
+                                                <div class="fw-bold" style="color:#198754;font-size:1.15rem;">
+                                                    <field name="rent_received_month" widget="monetary"/>
+                                                </div>
+                                                <div class="text-muted" style="font-size:10px;">
+                                                    <field name="collection_rate" digits="[4,1]"/>% da receita prevista
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_rent)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #ffc107 !important;">
+                                            <div class="card-body">
+                                                <div class="text-muted small mb-1">Em Aberto</div>
+                                                <div class="fw-bold" style="color:#ffc107;font-size:1.15rem;">
+                                                    <field name="rent_open_total" widget="monetary"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_rent)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #dc3545 !important;">
+                                            <div class="card-body">
+                                                <div class="text-muted small mb-1">Atrasado</div>
+                                                <div class="fw-bold" style="color:#dc3545;font-size:1.15rem;">
+                                                    <field name="rent_late_total" widget="monetary"/>
+                                                </div>
+                                                <div class="text-muted" style="font-size:10px;">
+                                                    <field name="late_rent_count"/> parcelas
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_owner_repasse)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #6f42c1 !important;">
+                                            <div class="card-body">
+                                                <div class="text-muted small mb-1">Repasses Pendentes</div>
+                                                <div class="fw-bold" style="color:#6f42c1;font-size:1.15rem;">
+                                                    <field name="repasse_pending_total" widget="monetary"/>
+                                                </div>
+                                                <div class="text-muted" style="font-size:10px;">
+                                                    <field name="repasse_pending_count"/> repasses
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Comissões pendentes -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_commission)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #fd7e14 !important;">
+                                            <div class="card-body">
+                                                <div class="text-muted small mb-1">Comissões A Pagar</div>
+                                                <div class="fw-bold" style="color:#fd7e14;font-size:1.15rem;">
+                                                    <field name="commission_pending_total" widget="monetary"/>
+                                                </div>
+                                                <div class="text-muted" style="font-size:10px;">
+                                                    <field name="commission_pending_count"/> comissões pendentes
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Gráfico 6 meses -->
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-bar-chart me-1"/> Evolução de Recebimentos
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-12 col-md-8">
+                                    <div class="card border-0 shadow-sm p-3">
+                                        <field name="chart_received_html" readonly="1" nolabel="1"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </page>
+
+                        <!-- ============================
+                             TAB 3 — CARTEIRA
+                             ============================ -->
+                        <page string="Carteira" name="carteira">
+
+                            <!-- Portfolio cards -->
+                            <div class="row mb-2 mt-1">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-building me-1"/> Portfólio de Imóveis
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-6 col-md-4 col-lg">
+                                    <button type="action" name="%(action_property_asset)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #0d6efd !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#0d6efd22;flex-shrink:0">
+                                                    <i class="fa fa-building fa-lg" title="Total de Imóveis" style="color:#0d6efd"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#0d6efd">
+                                                        <field name="asset_total"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Total</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg">
+                                    <button type="action" name="%(action_property_asset)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #198754 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#19875422;flex-shrink:0">
+                                                    <i class="fa fa-check-circle fa-lg" title="Alugados" style="color:#198754"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#198754">
+                                                        <field name="asset_rented"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Alugados</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg">
+                                    <button type="action" name="%(action_property_asset)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #0dcaf0 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#0dcaf022;flex-shrink:0">
+                                                    <i class="fa fa-circle-o fa-lg" title="Disponíveis" style="color:#0dcaf0"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#0dcaf0">
+                                                        <field name="asset_available"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Disponíveis</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg">
+                                    <button type="action" name="%(action_property_asset)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #ffc107 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#ffc10722;flex-shrink:0">
+                                                    <i class="fa fa-wrench fa-lg" title="Em Manutenção" style="color:#ffc107"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#ffc107">
+                                                        <field name="asset_maintenance"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Manutenção</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg">
+                                    <button type="action" name="%(action_property_asset)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #6f42c1 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#6f42c122;flex-shrink:0">
+                                                    <i class="fa fa-tag fa-lg" title="À Venda" style="color:#6f42c1"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#6f42c1">
+                                                        <field name="asset_for_sale"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">À Venda</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Stacked portfolio bar -->
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-pie-chart me-1"/> Distribuição da Carteira
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-12 col-md-8">
+                                    <div class="card border-0 shadow-sm p-3">
+                                        <div class="text-muted small mb-2">
+                                            Taxa de Ocupação:
+                                            <strong><field name="occupancy_rate" digits="[4,1]"/>%</strong>
+                                        </div>
+                                        <field name="chart_portfolio_html" readonly="1" nolabel="1"/>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="card border-0 shadow-sm p-3 h-100">
+                                        <div class="text-muted fw-bold mb-3"
+                                             style="font-size:11px;text-transform:uppercase;letter-spacing:1px;">
+                                            Receita Potencial
+                                        </div>
+                                        <div class="mb-2">
+                                            <div class="text-muted" style="font-size:11px;">Receita Contratada</div>
+                                            <div class="fw-bold" style="color:#0d6efd;">
+                                                <field name="monthly_revenue" widget="monetary"/>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-muted" style="font-size:11px;">Proprietários Ativos</div>
+                                            <div class="fw-bold" style="color:#1a3a5c;">
+                                                <field name="owner_count"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </page>
+
+                        <!-- ============================
+                             TAB 4 — OPERAÇÕES
+                             ============================ -->
+                        <page string="Operações" name="operacoes">
+
+                            <div class="row mb-2 mt-1">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-wrench me-1"/> Manutenções
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_maintenance)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #ffc107 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#ffc10722;flex-shrink:0">
+                                                    <i class="fa fa-wrench fa-lg" title="Em Manutenção" style="color:#ffc107"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#ffc107">
+                                                        <field name="maintenance_open"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Manutenções Abertas</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_maintenance)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #dc3545 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#dc354522;flex-shrink:0">
+                                                    <i class="fa fa-bolt fa-lg" title="Emergências" style="color:#dc3545"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#dc3545">
+                                                        <field name="maintenance_emergency"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Emergências</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-search me-1"/> Vistorias &amp; Documentos
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-2">
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_inspection)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #0d6efd !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#0d6efd22;flex-shrink:0">
+                                                    <i class="fa fa-search fa-lg" title="Vistorias" style="color:#0d6efd"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#0d6efd">
+                                                        <field name="inspection_scheduled"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Vistorias Agend.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </page>
+
+                        <!-- ============================
+                             TAB 5 — OCIOSIDADE
+                             ============================ -->
+                        <page string="Ociosidade" name="ociosidade">
+
+                            <!-- KPIs Financeiros de Ociosidade -->
+                            <div class="row mb-2 mt-1">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-exclamation-triangle me-1"/> Impacto Financeiro da Ociosidade
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-top:4px solid #dc3545 !important;">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                <span class="text-muted" style="font-size:10px;text-transform:uppercase;">Imóveis Ociosos</span>
+                                                <i class="fa fa-building" title="Imóveis Ociosos" style="color:#dc3545;"/>
+                                            </div>
+                                            <div class="fw-bold" style="font-size:2rem;color:#dc3545;line-height:1.1;">
+                                                <field name="idle_count"/>
+                                            </div>
+                                            <div class="text-muted" style="font-size:10px;">
+                                                <field name="idle_yield_loss_pct" digits="[4,1]"/>% do yield do portfólio
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-top:4px solid #fd7e14 !important;">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                <span class="text-muted" style="font-size:10px;text-transform:uppercase;">Receita Perdida/Mês</span>
+                                                <i class="fa fa-money" title="Potencial Perdido" style="color:#fd7e14;"/>
+                                            </div>
+                                            <div class="fw-bold" style="font-size:1.2rem;color:#fd7e14;line-height:1.2;">
+                                                <field name="idle_potential_monthly" widget="monetary"/>
+                                            </div>
+                                            <div class="text-muted" style="font-size:10px;">
+                                                <field name="idle_potential_annual" widget="monetary"/> / ano
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-top:4px solid #6f42c1 !important;">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                <span class="text-muted" style="font-size:10px;text-transform:uppercase;">Custo Direto/Mês</span>
+                                                <i class="fa fa-minus-circle" title="Custos Mensais" style="color:#6f42c1;"/>
+                                            </div>
+                                            <div class="fw-bold" style="font-size:1.2rem;color:#6f42c1;line-height:1.2;">
+                                                <field name="idle_costs_monthly" widget="monetary"/>
+                                            </div>
+                                            <div class="text-muted" style="font-size:10px;">IPTU + condomínio</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-top:4px solid #1a3a5c !important;">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                <span class="text-muted" style="font-size:10px;text-transform:uppercase;">Deterioração Estim./Mês</span>
+                                                <i class="fa fa-warning" title="Carga Total" style="color:#1a3a5c;"/>
+                                            </div>
+                                            <div class="fw-bold" style="font-size:1.2rem;color:#1a3a5c;line-height:1.2;">
+                                                <field name="idle_deterioration_monthly" widget="monetary"/>
+                                            </div>
+                                            <div class="text-muted" style="font-size:10px;">
+                                                Custo total: <field name="idle_total_burden_monthly" widget="monetary"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Urgência Comercial -->
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-clock-o me-1"/> Urgência Comercial
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-left:4px solid #198754 !important;background:#f8fff8;">
+                                        <div class="card-body py-2">
+                                            <div class="text-muted" style="font-size:10px;">Média de dias ociosos</div>
+                                            <div class="fw-bold fs-3" style="color:#198754;">
+                                                <field name="idle_days_avg"/>
+                                            </div>
+                                            <div class="text-muted" style="font-size:10px;">dias em média</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-left:4px solid #fd7e14 !important;background:#fff8f0;">
+                                        <div class="card-body py-2">
+                                            <div class="text-muted" style="font-size:10px;">Ociosos &gt; 90 dias</div>
+                                            <div class="fw-bold fs-3" style="color:#fd7e14;">
+                                                <field name="idle_over_90_days"/>
+                                            </div>
+                                            <div class="text-muted" style="font-size:10px;">ação comercial urgente</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-left:4px solid #dc3545 !important;background:#fff5f5;">
+                                        <div class="card-body py-2">
+                                            <div class="text-muted" style="font-size:10px;">Ociosos &gt; 180 dias</div>
+                                            <div class="fw-bold fs-3" style="color:#dc3545;">
+                                                <field name="idle_over_180_days"/>
+                                            </div>
+                                            <div class="text-muted" style="font-size:10px;">reavaliação completa</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-left:4px solid #6f42c1 !important;background:#f8f5ff;">
+                                        <div class="card-body py-2">
+                                            <div class="text-muted" style="font-size:10px;">Nunca foram alugados</div>
+                                            <div class="fw-bold fs-3" style="color:#6f42c1;">
+                                                <field name="idle_never_rented"/>
+                                            </div>
+                                            <div class="text-muted" style="font-size:10px;">avaliar posicionamento</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Riscos estruturais -->
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-history me-1"/> Riscos de Envelhecimento e Conformidade
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-left:4px solid #ffc107 !important;background:#fffdf0;">
+                                        <div class="card-body py-2">
+                                            <div class="text-muted" style="font-size:10px;">Arquitetura &gt; 20 anos</div>
+                                            <div class="fw-bold fs-3" style="color:#856404;">
+                                                <field name="idle_aging_risk"/>
+                                            </div>
+                                            <div class="text-muted" style="font-size:10px;">
+                                                Risco: ABNT, acessibilidade, PPCI, estética corporativa
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100"
+                                         style="border-left:4px solid #dc3545 !important;background:#fff5f5;">
+                                        <div class="card-body py-2">
+                                            <div class="text-muted" style="font-size:10px;">Padrão inadequado p/ empresas</div>
+                                            <div class="fw-bold fs-3" style="color:#dc3545;">
+                                                <field name="idle_standard_risk"/>
+                                            </div>
+                                            <div class="text-muted" style="font-size:10px;">
+                                                Padrão simples em imóvel comercial/industrial
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chart de ociosidade -->
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-bar-chart me-1"/> Análise Detalhada
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="card border-0 shadow-sm p-3">
+                                        <field name="chart_vacancy_html" readonly="1" nolabel="1"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Orientações estratégicas -->
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-lightbulb-o me-1"/> Orientações Estratégicas
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-2">
+                                <div class="col-12 col-md-6">
+                                    <div class="card border-0 bg-light p-3">
+                                        <div class="fw-bold mb-2" style="font-size:12px;color:#0d6efd;">
+                                            <i class="fa fa-bullseye me-1"/> Ações Comerciais Recomendadas
+                                        </div>
+                                        <ul class="mb-0" style="font-size:12px;padding-left:16px;">
+                                            <li>Revisar preço de imóveis ociosos há mais de 90 dias</li>
+                                            <li>Acionar corretores parceiros com mandato ativo para imóveis críticos</li>
+                                            <li>Publicar imóveis disponíveis no portal com fotos atualizadas</li>
+                                            <li>Criar campanha de incentivo (carência de aluguel, desconto inicial)</li>
+                                            <li>Analisar conversão de uso para imóveis com padrão inadequado</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="card border-0 bg-light p-3">
+                                        <div class="fw-bold mb-2" style="font-size:12px;color:#856404;">
+                                            <i class="fa fa-wrench me-1"/> Adequação e Valorização
+                                        </div>
+                                        <ul class="mb-0" style="font-size:12px;padding-left:16px;">
+                                            <li>Avaliar retrofit de imóveis com arquitetura antiga (&gt;20 anos)</li>
+                                            <li>Verificar conformidade com ABNT e PPCI para imóveis comerciais</li>
+                                            <li>Regularizar acessibilidade (NBR 9050) para ampliar público-alvo</li>
+                                            <li>Atualizar instalações elétricas e hidráulicas para padrão mínimo</li>
+                                            <li>Calcular ROI de reforma vs incremento de aluguel potencial</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </page>
+
+                        <!-- ============================
+                             TAB 6 — PIPELINE & PARCERIAS
+                             ============================ -->
+                        <page string="Pipeline e Parcerias" name="pipeline">
+
+
+                            <div class="row mb-2 mt-1">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-filter me-1"/> Pipeline de Aquisição
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_acquisition)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #6f42c1 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#6f42c122;flex-shrink:0">
+                                                    <i class="fa fa-filter fa-lg" title="Em Prospecção" style="color:#6f42c1"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#6f42c1">
+                                                        <field name="acquisition_pipeline"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Em Pipeline</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_acquisition)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #198754 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#19875422;flex-shrink:0">
+                                                    <i class="fa fa-handshake-o fa-lg" title="Negociações" style="color:#198754"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#198754">
+                                                        <field name="acquisition_closing"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Em Fechamento</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <span class="fw-bold text-uppercase text-muted"
+                                          style="letter-spacing:1px;font-size:11px;">
+                                        <i class="fa fa-users me-1"/> Corretores &amp; Proprietários
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-2">
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_res_partner_property_owner)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #1a3a5c !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#1a3a5c22;flex-shrink:0">
+                                                    <i class="fa fa-user fa-lg" title="Corretores Ativos" style="color:#1a3a5c"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#1a3a5c">
+                                                        <field name="owner_count"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Proprietários</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_res_partner_property_broker)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #0d6efd !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#0d6efd22;flex-shrink:0">
+                                                    <i class="fa fa-id-card-o fa-lg" title="Proprietários" style="color:#0d6efd"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#0d6efd">
+                                                        <field name="broker_active"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Corretores Ativos</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button type="action" name="%(action_property_broker_assignment)d"
+                                            class="btn p-0 border-0 w-100 text-start">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-left:4px solid #198754 !important;">
+                                            <div class="card-body d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:48px;height:48px;background:#19875422;flex-shrink:0">
+                                                    <i class="fa fa-handshake-o fa-lg" title="Negociações" style="color:#198754"/>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-3 fw-bold lh-1" style="color:#198754">
+                                                        <field name="assignment_active"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">Mandatos Ativos</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_property_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard</field>
+        <field name="res_model">property.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
+</odoo>

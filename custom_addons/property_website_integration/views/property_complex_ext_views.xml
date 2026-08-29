@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== FORM EXTENSION ==================== -->
+    <record id="view_property_complex_form_website_ext" model="ir.ui.view">
+        <field name="name">property.complex.form.website.ext</field>
+        <field name="model">property.complex</field>
+        <field name="inherit_id">property_core.view_property_complex_form</field>
+        <field name="arch" type="xml">
+            <div class="oe_title" position="before">
+                <field name="image_1920" widget="image" class="oe_avatar"
+                       options="{'preview_image': 'image_512'}"/>
+            </div>
+        </field>
+    </record>
+
+</odoo>

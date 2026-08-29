@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_governance_case_type_list_email_ext" model="ir.ui.view">
+        <field name="name">governance.case.type.list.email.ext</field>
+        <field name="model">governance.case.type</field>
+        <field name="inherit_id" ref="governance.view_governance_case_type_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="default_responsible_id" optional="hide"/>
+                <field name="email_channel_count" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_governance_case_type_form_email_ext" model="ir.ui.view">
+        <field name="name">governance.case.type.form.email.ext</field>
+        <field name="model">governance.case.type</field>
+        <field name="inherit_id" ref="governance.view_governance_case_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_email_channels" type="object" class="oe_stat_button" icon="fa-envelope">
+                    <field name="email_channel_count" widget="statinfo" string="Canais"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="default_responsible_id" options="{'no_create_edit': True}"/>
+            </xpath>
+            <xpath expr="//notebook/page[.//field[@name='initial_stage_id']]" position="after">
+                <page name="email_channels" string="Canais de E-mail">
+                    <div class="alert alert-info" role="alert">
+                        O tipo de caso concentra fluxo, SLA, etapas e checklist. Os canais abaixo são apenas portas de entrada.
+                    </div>
+                    <field name="email_channel_ids" context="{'default_case_type_id': id}">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="alias_name"/>
+                            <field name="alias_email" readonly="1"/>
+                            <field name="requires_triage"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="active"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

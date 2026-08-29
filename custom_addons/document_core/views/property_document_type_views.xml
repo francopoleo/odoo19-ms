@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_property_document_category_list" model="ir.ui.view">
+        <field name="name">document.category.list</field>
+        <field name="model">document.category</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="default_access_level"/>
+                <field name="allow_website_publish"/>
+                <field name="type_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_document_category_form" model="ir.ui.view">
+        <field name="name">document.category.form</field>
+        <field name="model">document.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="default_access_level"/>
+                            <field name="allow_website_publish"/>
+                            <field name="type_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Descrição">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                    <group string="Tipos">
+                        <field name="type_ids">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="scope"/>
+                                <field name="default_access_level"/>
+                                <field name="allow_website_publish"/>
+                                <field name="active"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_document_category_search" model="ir.ui.view">
+        <field name="name">document.category.search</field>
+        <field name="model">document.category</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_document_category" model="ir.actions.act_window">
+        <field name="name">Categorias Documentais</field>
+        <field name="res_model">document.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_property_document_type_list" model="ir.ui.view">
+        <field name="name">document.type.list</field>
+        <field name="model">document.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category_id"/>
+                <field name="scope"/>
+                <field name="default_access_level"/>
+                <field name="allow_website_publish"/>
+                <field name="requires_expiry"/>
+                <field name="is_sensitive"/>
+                <field name="document_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_document_type_form" model="ir.ui.view">
+        <field name="name">document.type.form</field>
+        <field name="model">document.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="category_id"/>
+                            <field name="scope"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="default_access_level"/>
+                            <field name="allow_website_publish"/>
+                            <field name="website_default_visibility" invisible="not allow_website_publish"/>
+                            <field name="requires_issue_date"/>
+                            <field name="requires_expiry"/>
+                            <field name="requires_review"/>
+                            <field name="requires_physical_original"/>
+                            <field name="is_sensitive"/>
+                            <field name="review_cycle_days"/>
+                        </group>
+                    </group>
+                    <group string="Arquivos e Descrição">
+                        <field name="allowed_file_types"/>
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_document_type_search" model="ir.ui.view">
+        <field name="name">document.type.search</field>
+        <field name="model">document.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category_id"/>
+                <filter string="No Site" name="website" domain="[('allow_website_publish','=',True)]"/>
+                <filter string="Sensíveis" name="sensitive" domain="[('is_sensitive','=',True)]"/>
+                <filter string="Por Categoria" name="group_category" context="{'group_by':'category_id'}"/>
+                <filter string="Por Escopo" name="group_scope" context="{'group_by':'scope'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_document_type" model="ir.actions.act_window">
+        <field name="name">Tipos de Documento</field>
+        <field name="res_model">document.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_property_document_location_list" model="ir.ui.view">
+        <field name="name">document.location.list</field>
+        <field name="model">document.location</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="site_name"/>
+                <field name="room"/>
+                <field name="cabinet"/>
+                <field name="shelf"/>
+                <field name="box"/>
+                <field name="folder"/>
+                <field name="responsible_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_document_location_form" model="ir.ui.view">
+        <field name="name">document.location.form</field>
+        <field name="model">document.location</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="site_name"/>
+                            <field name="room"/>
+                            <field name="cabinet"/>
+                            <field name="shelf"/>
+                            <field name="drawer"/>
+                            <field name="box"/>
+                            <field name="folder"/>
+                            <field name="responsible_id"/>
+                        </group>
+                    </group>
+                    <group string="Observações">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_document_location_search" model="ir.ui.view">
+        <field name="name">document.location.search</field>
+        <field name="model">document.location</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="site_name"/>
+                <field name="room"/>
+                <field name="cabinet"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_document_location" model="ir.actions.act_window">
+        <field name="name">Localizações Físicas</field>
+        <field name="res_model">document.location</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

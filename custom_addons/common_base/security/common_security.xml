@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== MODULE CATEGORIES (Odoo 19) ==================== -->
+    <record id="module_category_realestate" model="ir.module.category">
+        <field name="name">ERP Imóveis</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="module_category_realestate_docs" model="ir.module.category">
+        <field name="name">Documentos</field>
+        <field name="sequence">31</field>
+    </record>
+
+    <record id="module_category_realestate_governance" model="ir.module.category">
+        <field name="name">Governança</field>
+        <field name="sequence">32</field>
+    </record>
+
+    <!-- ==================== PRIVILEGE (Nova forma no Odoo 19) ==================== -->
+    <record id="privilege_common" model="res.groups.privilege">
+        <field name="name">Configuração</field>
+        <field name="sequence" eval="10"/>
+        <field name="category_id" ref="common_base.module_category_realestate"/>
+    </record>
+
+    <!-- ==================== Grupos de Usuários ==================== -->
+
+    <!-- Usuário Comum -->
+    <record id="group_common_user" model="res.groups">
+        <field name="name">Usuário Comum</field>
+        <field name="privilege_id" ref="common_base.privilege_common"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Gestor de Configurações -->
+    <record id="group_common_manager" model="res.groups">
+        <field name="name">Gestor de Configurações</field>
+        <field name="privilege_id" ref="common_base.privilege_common"/>
+        <field name="implied_ids" eval="[(4, ref('common_base.group_common_user'))]"/>
+    </record>
+
+    <!-- Administrador da Agenda Geral: pode auditar todos os eventos e atividades ERP. -->
+    <record id="group_common_agenda_manager" model="res.groups">
+        <field name="name">Administrador da Agenda Geral</field>
+        <field name="privilege_id" ref="common_base.privilege_common"/>
+        <field name="implied_ids" eval="[(4, ref('common_base.group_common_user'))]"/>
+    </record>
+
+    <!-- ==================== Regras Multi-empresa ==================== -->
+
+    <!-- common.config: cada usuário vê apenas a configuração da sua empresa -->
+    <record id="rule_common_config_company" model="ir.rule">
+        <field name="name">Common Config: Multi-empresa</field>
+        <field name="model_id" ref="model_common_config"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- common.sequence: cada usuário vê apenas sequências da sua empresa -->
+    <record id="rule_common_sequence_company" model="ir.rule">
+        <field name="name">Common Sequence: Multi-empresa</field>
+        <field name="model_id" ref="model_common_sequence"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- common.tag: tags globais (sem empresa) ou da empresa do usuário -->
+    <record id="rule_common_tag_company" model="ir.rule">
+        <field name="name">Common Tag: Multi-empresa</field>
+        <field name="model_id" ref="model_common_tag"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+
+    <!-- ==================== Limpeza de regras legadas da versão anterior ====================
+         Versões anteriores tentaram controlar mail.activity/calendar.event com campos
+         agenda_is_erp / agenda_type. A Agenda Geral agora usa common.agenda.event,
+         então essas regras precisam ficar inativas para não quebrar o webclient.
+    -->
+    <record id="rule_mail_activity_agenda_manager_all" model="ir.rule">
+        <field name="name">Agenda Geral: regra legada de atividades desativada</field>
+        <field name="model_id" ref="mail.model_mail_activity"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="rule_calendar_event_agenda_manager_all" model="ir.rule">
+        <field name="name">Agenda Geral: regra legada do calendário Odoo desativada</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="active" eval="False"/>
+    </record>
+
+
+
+    <!-- ==================== Agenda Geral: visibilidade por usuário ==================== -->
+
+    <record id="rule_common_agenda_event_user_visibility" model="ir.rule">
+        <field name="name">Agenda Geral: usuário vê agendas permitidas</field>
+        <field name="model_id" ref="model_common_agenda_event"/>
+        <field name="domain_force">['|', ('visibility', '=', 'internal'), '|', ('user_id', '=', user.id), '|', ('create_uid', '=', user.id), '|', ('responsible_user_ids', 'in', [user.id]), ('visible_user_ids', 'in', [user.id])]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_common_agenda_event_manager_all" model="ir.rule">
+        <field name="name">Agenda Geral: administradores veem tudo</field>
+        <field name="model_id" ref="model_common_agenda_event"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('common_base.group_common_agenda_manager')), (4, ref('base.group_system'))]"/>
+    </record>
+
+</odoo>

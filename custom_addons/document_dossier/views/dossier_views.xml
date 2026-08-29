@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══════════════════════════════════════════════════════════════════
+         VISUALIZAÇÕES DE TIPO DE PROCESSO
+         ══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Visualização em árvore para dossier.process -->
+    <record id="view_dossier_process_tree" model="ir.ui.view">
+        <field name="name">dossier.process.tree</field>
+        <field name="model">dossier.process</field>
+        <field name="arch" type="xml">
+            <list string="Tipos de Processo">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="domain"/>
+                <field name="template_count"/>
+                <field name="dossier_count"/>
+                <field name="active" widget="boolean_button"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Visualização de formulário para dossier.process -->
+    <record id="view_dossier_process_form" model="ir.ui.view">
+        <field name="name">dossier.process.form</field>
+        <field name="model">dossier.process</field>
+        <field name="arch" type="xml">
+            <form string="Tipo de Processo">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_dossiérs" type="object" class="oe_stat_button" icon="fa-folder-open">
+                            <field string="Dossiês" name="dossier_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nome do Processo"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="domain"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Descreva este processo..."/>
+                    <separator string="Templates"/>
+                    <field name="template_ids" widget="many2many_tags"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Visualização de pesquisa para dossier.process -->
+    <record id="view_dossier_process_search" model="ir.ui.view">
+        <field name="name">dossier.process.search</field>
+        <field name="model">dossier.process</field>
+        <field name="arch" type="xml">
+            <search string="Tipos de Processo">
+                <field name="name" string="Processo"/>
+                <field name="domain"/>
+                <filter name="filter_active" string="Ativo" domain="[('active', '=', True)]"/>
+                <filter name="filter_inactive" string="Inativo" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="filter_governance" string="Governança" domain="[('domain', '=', 'governance')]"/>
+                <filter name="filter_property" string="Imóvel" domain="[('domain', '=', 'property')]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Ação para dossier.process -->
+    <record id="action_dossier_process" model="ir.actions.act_window">
+        <field name="name">Tipos de Processo</field>
+        <field name="res_model">dossier.process</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'create': True}</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         VISUALIZAÇÕES DE DOSSIÊ
+         ══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Visualização Kanban para dossier.dossier -->
+    <record id="view_dossier_dossier_kanban" model="ir.ui.view">
+        <field name="name">dossier.dossier.kanban</field>
+        <field name="model">dossier.dossier</field>
+        <field name="arch" type="xml">
+            <kanban string="Dossiês" default_group_by="state" records_per_row="4">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="responsible_id"/>
+                <field name="document_count"/>
+                <field name="complete_documents"/>
+                <field name="incomplete_documents"/>
+                <field name="completion_percent"/>
+                <field name="process_id"/>
+                <field name="target_date"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card o_has_shadow">
+                            <div class="oe_kanban_card_header">
+                                <span class="oe_kanban_record_title">
+                                    <strong><t t-out="record.name.value"/></strong>
+                                </span>
+                                <span class="badge float-end" t-attf-class="bg-{{ record.state.value == 'active' and 'success' or record.state.value == 'closed' and 'secondary' or 'warning' }}">
+                                    <t t-out="record.state.raw_value"/>
+                                </span>
+                            </div>
+                            <div class="oe_kanban_card_content p-2">
+                                <div class="row mb-2">
+                                    <div class="col-6"><small class="text-muted">Processo:</small></div>
+                                    <div class="col-6"><small><t t-out="record.process_id.value"/></small></div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-6"><small class="text-muted">Responsável:</small></div>
+                                    <div class="col-6"><small><t t-out="record.responsible_id.value or 'Não atribuído'"/></small></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6"><small class="text-muted">Documentos:</small></div>
+                                    <div class="col-6">
+                                        <small>
+                                            <t t-out="record.complete_documents.value"/> / <t t-out="record.document_count.value"/>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="progress mb-2" style="height:20px;">
+                                    <t t-set="pct" t-value="record.completion_percent.raw_value or 0.0"/>
+                                    <div class="progress-bar" t-attf-style="width:{{ Math.max(0, Math.min(100, pct)) }}%;">
+                                        <small><t t-out="Math.round(pct)"/>%</small>
+                                    </div>
+                                </div>
+                                <div class="text-end mt-2">
+                                    <a type="edit" class="btn btn-sm btn-primary" role="button">
+                                        <i class="fa fa-pencil"/> Editar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Visualização em árvore para dossier.dossier -->
+    <record id="view_dossier_dossier_tree" model="ir.ui.view">
+        <field name="name">dossier.dossier.tree</field>
+        <field name="model">dossier.dossier</field>
+        <field name="arch" type="xml">
+            <list string="Dossiês">
+                <field name="name"/>
+                <field name="process_id"/>
+                <field name="target_display" optional="show"/>
+                <field name="responsible_id"/>
+                <field name="state"/>
+                <field name="document_count"/>
+                <field name="complete_documents"/>
+                <field name="completion_percent" widget="percentpie"/>
+                <field name="target_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Visualização de formulário para dossier.dossier -->
+    <record id="view_dossier_dossier_form" model="ir.ui.view">
+        <field name="name">dossier.dossier.form</field>
+        <field name="model">dossier.dossier</field>
+        <field name="arch" type="xml">
+            <form string="Dossiê">
+                <header>
+                    <button name="action_activate" string="Ativar" type="object" class="oe_highlight" invisible="state != 'draft'" groups="document_dossier.group_dossier_operator"/>
+                    <button name="action_close" string="Fechar" type="object" invisible="state != 'active'" groups="document_dossier.group_dossier_operator"/>
+                    <button name="action_reopen" string="Reabrir" type="object" invisible="state != 'closed'" groups="document_dossier.group_dossier_manager"/>
+                    <button name="action_apply_template" string="Aplicar Templates" type="object" class="oe_highlight" invisible="state != 'draft'" groups="document_dossier.group_dossier_operator"/>
+                    <field name="state" widget="statusbar" options="{'clickable': False}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_documents" type="object" class="oe_stat_button" icon="fa-file">
+                            <field string="Documentos" name="document_count" widget="statinfo"/>
+                        </button>
+                        <button name="action_view_incomplete" type="object" class="oe_stat_button" icon="fa-exclamation-circle" invisible="state not in ('draft', 'active')">
+                            <field string="Incompletos" name="incomplete_documents" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nome do Dossiê"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="process_id" required="True"/>
+                            <field name="domain" readonly="True"/>
+                            <field name="target_display" readonly="True"/>
+                            <field name="target_model" invisible="1"/>
+                            <field name="target_res_id" invisible="1"/>
+                            <field name="target_name" invisible="1"/>
+                            <field name="responsible_id"/>
+                        </group>
+                        <group>
+                            <field name="created_date"/>
+                            <field name="target_date"/>
+                            <field name="closed_date" readonly="True"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Descrição do dossiê..."/>
+                    <separator string="Status"/>
+                    <group>
+                        <group>
+                            <field name="document_count" readonly="True"/>
+                            <field name="complete_documents" readonly="True"/>
+                            <field name="incomplete_documents" readonly="True"/>
+                        </group>
+                        <group>
+                            <field name="completion_percent" readonly="True" widget="percentpie"/>
+                            <field name="dossier_complete" readonly="True"/>
+                            <field name="missing_requirements" readonly="True"/>
+                        </group>
+                    </group>
+                    <separator string="Documentos"/>
+                    <field name="document_ids" mode="list,kanban">
+                        <list string="Documentos">
+                            <field name="name"/>
+                            <field name="document_type_id"/>
+                            <field name="responsible_id"/>
+                            <field name="status"/>
+                            <field name="document_complete"/>
+                        </list>
+                        <kanban>
+                            <field name="name"/>
+                            <field name="document_type_id"/>
+                            <field name="status"/>
+                            <field name="document_complete"/>
+                            <templates>
+                                <t t-name="card">
+                                    <div class="oe_kanban_card">
+                                        <div class="oe_kanban_record_title"><strong><t t-out="record.name.value"/></strong></div>
+                                        <div class="oe_kanban_card_content p-2">
+                                            <small class="text-muted"><t t-out="record.document_type_id.value"/></small><br/>
+                                            <span t-attf-class="badge {{ record.document_complete.value and 'bg-success' or 'bg-warning' }}">
+                                                <i t-attf-class="fa {{ record.document_complete.value and 'fa-check' or 'fa-times' }}"/><t t-out="record.status.value"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Visualização de pesquisa para dossier.dossier -->
+    <record id="view_dossier_dossier_search" model="ir.ui.view">
+        <field name="name">dossier.dossier.search</field>
+        <field name="model">dossier.dossier</field>
+        <field name="arch" type="xml">
+            <search string="Dossiês">
+                <field name="name" string="Dossiê"/>
+                <field name="process_id"/>
+                <field name="target_display" optional="show"/>
+                <field name="responsible_id"/>
+                <filter name="filter_draft" string="Rascunho" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_active" string="Ativo" domain="[('state', '=', 'active')]"/>
+                <filter name="filter_closed" string="Fechado" domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <filter name="filter_governance" string="Governança" domain="[('domain', '=', 'governance')]"/>
+                <filter name="filter_property" string="Imóvel" domain="[('domain', '=', 'property')]"/>
+                <separator/>
+                <filter name="group_by_state" string="Estado" context="{'group_by': 'state'}"/>
+                <filter name="group_by_process" string="Processo" context="{'group_by': 'process_id'}"/>
+                <filter name="group_by_responsible" string="Responsável" context="{'group_by': 'responsible_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Ação para dossier.dossier -->
+    <record id="action_dossier_dossier" model="ir.actions.act_window">
+        <field name="name">Dossiês</field>
+        <field name="res_model">dossier.dossier</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'create': True}</field>
+    </record>
+
+    <!-- Ação para documentos do dossiê -->
+    <record id="action_dossier_documents" model="ir.actions.act_window">
+        <field name="name">Documentos do Dossiê</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('dossier_ids', '!=', False)]</field>
+        <field name="context">{'create': False}</field>
+        <field name="help">Documentos que pertencem a dossiês agregados</field>
+    </record>
+
+    <!-- Ação para documentos avulsos -->
+    <record id="action_dossier_standalone_documents" model="ir.actions.act_window">
+        <field name="name">Documentos Avulsos</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('dossier_ids', '=', False)]</field>
+        <field name="context">{'create': True}</field>
+        <field name="help">Documentos que não pertencem a nenhum dossiê</field>
+    </record>
+
+    <!-- Ação para documentos faltantes -->
+    <record id="action_dossier_missing_documents" model="ir.actions.act_window">
+        <field name="name">Documentos Faltantes</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('dossier_ids', '!=', False), ('document_complete', '=', False)]</field>
+        <field name="context">{'create': False}</field>
+        <field name="help">Documentos incompletos em dossiês</field>
+    </record>
+
+    <!-- Ação para templates de dossiê -->
+    <record id="action_dossier_template" model="ir.actions.act_window">
+        <field name="name">Templates de Dossiê</field>
+        <field name="res_model">document.dossier.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'create': True}</field>
+    </record>
+</odoo>

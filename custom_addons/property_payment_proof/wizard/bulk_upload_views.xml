@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_payment_proof_bulk_upload_form" model="ir.ui.view">
+        <field name="name">property.payment.proof.bulk.upload.form</field>
+        <field name="model">property.payment.proof.bulk.upload</field>
+        <field name="arch" type="xml">
+            <form string="Upload em Lote de Comprovantes">
+                <sheet>
+                    <group>
+                        <group string="Filtro Opcional">
+                            <field name="contract_id" placeholder="Deixe em branco para qualquer contrato"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Arquivos">
+                        <field name="attachment_ids" widget="many2many_binary" nolabel="1"
+                               string="Comprovantes (PDF, PNG, JPG)"
+                               help="Selecione múltiplos arquivos de uma vez. Cada arquivo gera um comprovante separado e passa pela extração OCR e conciliação automática."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_process" type="object" string="Processar Comprovantes" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_property_payment_proof_bulk_upload" model="ir.actions.act_window">
+        <field name="name">Upload em Lote</field>
+        <field name="res_model">property.payment.proof.bulk.upload</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

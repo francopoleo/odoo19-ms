@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Sequências para a empresa principal.
+         Novas empresas receberão suas sequências via duplicação ou criação manual. -->
+
+    <!-- Sequência para casos de governança -->
+    <record id="seq_governance_case" model="common.sequence">
+        <field name="name">Caso de Governança</field>
+        <field name="code">governance.case</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">GOV/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para complexos -->
+    <record id="seq_property_complex" model="common.sequence">
+        <field name="name">Complexo / Edifício</field>
+        <field name="code">property.complex</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">CX/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para imóveis -->
+    <record id="seq_property_asset" model="common.sequence">
+        <field name="name">Imóvel</field>
+        <field name="code">property.asset</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">PROP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para contratos -->
+    <record id="seq_property_contract" model="common.sequence">
+        <field name="name">Contrato</field>
+        <field name="code">property.contract</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">CONT/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para parcelas de aluguel -->
+    <record id="seq_property_rent" model="common.sequence">
+        <field name="name">Parcela de Aluguel</field>
+        <field name="code">property.rent</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">PAR/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para documentos -->
+    <record id="seq_property_document" model="common.sequence">
+        <field name="name">Documento de Imóvel</field>
+        <field name="code">property.document</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">DOC/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para vistorias -->
+    <record id="seq_property_inspection" model="common.sequence">
+        <field name="name">Vistoria de Imóvel</field>
+        <field name="code">property.inspection</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">VIST/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para manutenções -->
+    <record id="seq_property_maintenance" model="common.sequence">
+        <field name="name">Manutenção de Imóvel</field>
+        <field name="code">property.maintenance</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">MAN/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para reajustes -->
+    <record id="seq_property_rent_adjustment" model="common.sequence">
+        <field name="name">Reajuste de Aluguel</field>
+        <field name="code">property.rent.adjustment</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">RAJ/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para aquisições -->
+    <record id="seq_property_acquisition" model="common.sequence">
+        <field name="name">Aquisição de Imóvel</field>
+        <field name="code">property.acquisition</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">ACQ/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para proprietários -->
+    <record id="seq_property_owner" model="common.sequence">
+        <field name="name">Proprietário de Imóvel</field>
+        <field name="code">property.owner</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">PROP-OWN/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para mandatos de corretor -->
+    <record id="seq_property_broker_assignment" model="common.sequence">
+        <field name="name">Mandato de Corretor</field>
+        <field name="code">property.broker.assignment</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">ASN/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+    <!-- Sequência para comissões -->
+    <record id="seq_property_commission" model="common.sequence">
+        <field name="name">Comissão de Corretor</field>
+        <field name="code">property.commission</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="prefix">COM/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="start_number">1</field>
+    </record>
+
+
+</odoo>

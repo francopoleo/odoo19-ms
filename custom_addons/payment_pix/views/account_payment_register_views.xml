@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Estende o wizard "Registrar Pagamento" apenas para expor o campo is_pix
+        (computed, não armazenado) que pode ser usado por outras customizações.
+
+        Os campos pix_e2e_id e pix_partner_key ficam disponíveis diretamente
+        no account.payment criado — editáveis após confirmar o pagamento em
+        Accounting → PIX → Saídas (ou Entradas).
+    -->
+
+    <record id="view_account_payment_register_form_pix" model="ir.ui.view">
+        <field name="name">account.payment.register.form.pix</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <!-- Campo auxiliar invisível para uso em condições futuras -->
+            <field name="payment_method_line_id" position="after">
+                <field name="is_pix" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <!-- Contextos enterprise padronizados: contexto aponta para micro-artigos práticos; documentos completos ficam na biblioteca. -->
+
+    <record id="article_help_taxonomy_enterprise" model="help.article">
+        <field name="name">Como a Central de Ajuda organiza conteúdos</field>
+        <field name="code">common_help_center.taxonomy_enterprise</field>
+        <field name="category_id" ref="help_category_system_help"/>
+        <field name="article_type">user_manual</field>
+        <field name="content_scope">context</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">common_help_center</field>
+        <field name="model_name">help.article</field>
+        <field name="view_type">form</field>
+        <field name="summary">Explica a diferença entre categoria, tipo de artigo, escopo e contexto para evitar duplicidade de conteúdo.</field>
+        <field name="markdown_source"><![CDATA[# Como a Central de Ajuda organiza conteúdos
+
+A Central de Ajuda usa uma classificação simples:
+
+| Campo | Finalidade |
+|---|---|
+| Categoria/Área | Módulo ou área funcional, como Documentos, Imóveis, Governança ou Agenda Geral. |
+| Tipo | Natureza do conteúdo: Manual, Técnico, Configuração, Testes, Implementação, Troubleshooting, Fluxo ou FAQ. |
+| Escopo | Define se o artigo é um documento completo da biblioteca ou uma ajuda curta para o drawer contextual. |
+| Contexto | Liga artigos, dicas e checklists a uma tela/model/view específica. |
+
+## Regra enterprise
+
+Documentos completos importados de `docs/*.md`, como **Manual do Usuário - Document Core**, ficam na biblioteca.
+
+O painel lateral deve mostrar artigos curtos e práticos, por exemplo:
+
+- Como criar um novo documento;
+- Como usar a lista de documentos;
+- Como validar um documento;
+- Como sincronizar Agenda Geral.
+
+Isso evita duplicidade e impede que o usuário receba um manual inteiro quando precisa apenas de orientação para a tela atual.]]></field>
+    </record>
+
+    <record id="article_document_validation_expiration" model="help.article">
+        <field name="name">Validação, revisão e vencimento de documentos</field>
+        <field name="code">document_core.document_document.validation_expiration_flow</field>
+        <field name="category_id" ref="help_category_document_core"/>
+        <field name="article_type">flow</field>
+        <field name="content_scope">flow</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">document_core</field>
+        <field name="model_name">document.document</field>
+        <field name="view_type">form</field>
+        <field name="summary">Explica quando usar atividade, Pendência Operacional e Agenda Geral em documentos com vencimento, revisão ou validação.</field>
+        <field name="markdown_source"><![CDATA[# Validação, revisão e vencimento de documentos
+
+Use este fluxo quando o documento tiver validade, necessidade de revisão ou validação formal.
+
+## Exemplo prático
+
+Documento: Certidão Negativa  
+Vencimento: 30/06  
+Responsável: Juliana
+
+## O que o sistema deve controlar
+
+- Atividade para o responsável revisar/renovar o documento.
+- Marco na Agenda Geral somente se o vencimento for crítico para o processo.
+- Histórico no documento para auditoria.
+
+## Regra prática
+
+| Situação | Use |
+|---|---|
+| Lembrar alguém de validar | Atividade |
+| Cobrar uma pendência simples | Pendência Operacional |
+| Controlar vencimento crítico | Agenda Geral |
+| Registrar reunião pessoal | Calendário nativo do Odoo |
+
+## Boas práticas
+
+- Não crie vários documentos para a mesma versão sem necessidade.
+- Atualize o documento existente quando for revisão do mesmo item.
+- Use categoria e tipo padronizados para evitar documentos perdidos.]]></field>
+    </record>
+
+    <record id="article_document_no_orphan" model="help.article">
+        <field name="name">Como evitar documentos soltos</field>
+        <field name="code">document_core.document_document.no_orphan</field>
+        <field name="category_id" ref="help_category_document_core"/>
+        <field name="article_type">user_manual</field>
+        <field name="content_scope">context</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">document_core</field>
+        <field name="model_name">document.document</field>
+        <field name="view_type">form</field>
+        <field name="summary">Mostra como vincular documentos ao imóvel, contrato, dossiê, caso ou parceiro correto.</field>
+        <field name="markdown_source"><![CDATA[# Como evitar documentos soltos
+
+Um documento solto é um documento cadastrado sem vínculo claro com o processo ou registro operacional.
+
+## Antes de salvar, confira
+
+- O documento pertence a um imóvel?
+- Está ligado a um contrato?
+- Faz parte de um dossiê?
+- Apoia um caso de governança?
+- Está relacionado a um parceiro/contato?
+
+## Exemplo
+
+Documento: Matrícula do imóvel Sala 301  
+Vínculo correto: Imóvel Sala 301  
+Categoria: Jurídico / Imobiliário  
+Tipo: Matrícula
+
+## Resultado esperado
+
+O documento aparece tanto no módulo Documentos quanto no contexto do registro relacionado, sem precisar anexar arquivos soltos no chatter.]]></field>
+    </record>
+
+    <record id="article_property_asset_list" model="help.article">
+        <field name="name">Como usar a lista de imóveis</field>
+        <field name="code">property_core.property_asset.list_user_manual</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="article_type">user_manual</field>
+        <field name="content_scope">context</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.asset</field>
+        <field name="view_type">list</field>
+        <field name="summary">Explica como localizar imóveis, filtrar por situação e abrir cadastros para operação.</field>
+        <field name="markdown_source"><![CDATA[# Como usar a lista de imóveis
+
+A lista de imóveis serve para localizar rapidamente ativos administrados, revisar situação operacional e acessar o cadastro completo.
+
+## O que fazer nesta tela
+
+- Buscar imóvel por nome, endereço, cidade ou referência interna.
+- Filtrar por situação: disponível, locado, em manutenção, em regularização ou arquivado.
+- Abrir o imóvel para ver documentos, galeria, vistorias, manutenções e outras mídias.
+
+## Boas práticas
+
+- Use nomes padronizados para imóveis.
+- Evite cadastrar o mesmo imóvel duas vezes.
+- Revise filtros antes de concluir que um imóvel não existe.]]></field>
+    </record>
+
+    <record id="article_property_asset_gallery_media" model="help.article">
+        <field name="name">Abas do imóvel e extensões</field>
+        <field name="code">property_core.property_asset.tabs_and_extensions</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="article_type">flow</field>
+        <field name="content_scope">flow</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.asset</field>
+        <field name="view_type">form</field>
+        <field name="summary">Explica as abas principais do imóvel e quais são adicionadas por módulos opcionais.</field>
+        <field name="markdown_source"><![CDATA[# Abas do imóvel e extensões
+
+O formulário do imóvel tem abas que podem ser estendidas por outros módulos.
+
+## Abas principais (sempre presentes)
+
+| Aba | Uso |
+|---|---|
+| Localização | Endereço, geolocalização, CEP, país. |
+| Características | Dimensões, área, dormitórios, banheiros, padrão construtivo. |
+| Valores | Avaliação do imóvel, custos operacionais, KPIs. |
+| Operações | Contratos, vistorias, manutenções (tabs aninhadas). |
+| Observações &amp; Comunicações | Notas internas e histórico de comunicação. |
+
+## Abas de extensão (módulos opcionais)
+
+| Aba | Módulo | Uso |
+|---|---|---|
+| Galeria | property_website_integration | Fotos comerciais/publicáveis para site. |
+| Outras Mídias | document_core | Imagens técnicas, croquis, scans, referências. |
+| Documentos | document_core | Matrícula, contrato, certidão, IPTU, laudos. |
+| Casos de Governança | governance | Registros de auditoria, compliance, riscos. |
+
+## Regra prática
+
+- **Vistorias**: Fotos e evidências de inspeção ficam DENTRO da vistoria.
+- **Manutenções**: Evidências, orçamentos, antes/depois ficam DENTRO da manutenção.
+- **Galeria**: Fotos comerciais para publicação no site (requer website_integration).
+- **Outras Mídias**: Documentos técnicos internos (requer document_core).
+- **Chatter**: Arquivos anexados em mensagens são comunicação, não dados do imóvel.]]></field>
+    </record>
+
+    <record id="article_property_inspection_flow" model="help.article">
+        <field name="name">Como registrar uma vistoria</field>
+        <field name="code">property_core.property_inspection.flow</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="article_type">flow</field>
+        <field name="content_scope">flow</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.inspection</field>
+        <field name="view_type">form</field>
+        <field name="summary">Passo a passo para registrar vistoria, mídias, responsáveis e Agenda Geral.</field>
+        <field name="markdown_source"><![CDATA[# Como registrar uma vistoria
+
+Use vistoria para registrar uma inspeção operacional do imóvel.
+
+## Exemplo
+
+Imóvel: Sala Comercial 301  
+Tipo: Vistoria de entrada  
+Responsável: Ana  
+Data: 24/05 às 09:00
+
+## Passo a passo
+
+1. Abra o imóvel ou o menu de Vistorias.
+2. Crie a vistoria.
+3. Preencha responsável, data, tipo e observações.
+4. Anexe mídias da vistoria: fotos, relatório, evidências e arquivos.
+5. Sincronize a Agenda Geral quando houver compromisso com data/hora.
+
+## Resultado esperado
+
+- A vistoria fica vinculada ao imóvel.
+- As mídias ficam dentro da vistoria.
+- A Agenda Geral mostra o compromisso operacional.
+- Atividades ficam para cobranças e lembretes individuais.]]></field>
+    </record>
+
+    <record id="article_property_maintenance_flow" model="help.article">
+        <field name="name">Como registrar uma manutenção</field>
+        <field name="code">property_core.property_maintenance.flow</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="article_type">flow</field>
+        <field name="content_scope">flow</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.maintenance</field>
+        <field name="view_type">form</field>
+        <field name="summary">Passo a passo para manutenção, evidências, orçamento, fornecedor e Agenda Geral.</field>
+        <field name="markdown_source"><![CDATA[# Como registrar uma manutenção
+
+Use manutenção para acompanhar reparos, chamados técnicos e histórico de intervenção no imóvel.
+
+## Exemplo
+
+Imóvel: Sala 301  
+Problema: Infiltração no teto  
+Fornecedor: HidroTec  
+Responsável interno: João
+
+## Passo a passo
+
+1. Crie a manutenção a partir do imóvel ou menu de Manutenções.
+2. Descreva o problema e defina responsável.
+3. Anexe mídias: evidências, orçamento, nota, laudo, antes e depois.
+4. Defina data/hora quando houver visita técnica.
+5. Sincronize com a Agenda Geral.
+
+## Resultado esperado
+
+- Histórico técnico preservado no imóvel.
+- Evidências e documentos ficam no mesmo fluxo de mídia.
+- Agenda Geral mostra visitas e prazos críticos.]]></field>
+    </record>
+
+    <record id="article_property_media_flow" model="help.article">
+        <field name="name">Como classificar mídias do imóvel</field>
+        <field name="code">property_core.property_media.flow</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="article_type">flow</field>
+        <field name="content_scope">flow</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.media</field>
+        <field name="view_type">form</field>
+        <field name="summary">Explica em que contexto cada mídia deve ser usada: vistorias, manutenções, galeria ou documentação técnica.</field>
+        <field name="markdown_source"><![CDATA[# Como classificar mídias do imóvel
+
+Cada mídia deve estar no contexto correto.
+
+## Onde colocar cada tipo
+
+| Contexto | Tipo | Exemplo |
+|---|---|---|
+| **Vistoria** | Evidência visual | foto do estado, lista de itens, relatório |
+| **Manutenção** | Antes/Depois + Orçamento | foto problema, reparo feito, nota fiscal |
+| **Galeria** (site) | Foto comercial | fachada, sala, área comum, destaque |
+| **Outras Mídias** | Técnica/Interna | croqui, planta, scan, referência, especificação |
+
+## Dúvidas comuns
+
+**P: Onde coloco foto do imóvel para apresentação?**
+A: Se for publicar no site, use Galeria (requer website_integration). Se for apenas interna, use Outras Mídias (requer document_core).
+
+**P: Posso colocar laudo de manutenção em Outras Mídias?**
+A: Sim, para referência interna. Se for documento formal (contrato, IPTU), use Documentos (requer document_core).
+
+**P: Foto de vistoria pode ir para Galeria?**
+A: Não. Fotos de vistoria são evidências (ficam na vistoria). Galeria é apenas para fotos comerciais/apresentáveis.]]></field>
+    </record>
+
+    <record id="article_governance_case_list" model="help.article">
+        <field name="name">Como usar a lista de casos de governança</field>
+        <field name="code">governance.governance_case.list_user_manual</field>
+        <field name="category_id" ref="help_category_governance"/>
+        <field name="article_type">user_manual</field>
+        <field name="content_scope">context</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">governance</field>
+        <field name="model_name">governance.case</field>
+        <field name="view_type">list</field>
+        <field name="summary">Explica como acompanhar casos por situação, prioridade, responsável e prazos.</field>
+        <field name="markdown_source"><![CDATA[# Como usar a lista de casos de governança
+
+A lista de casos serve para acompanhar processos em aberto, atrasados, pendentes e concluídos.
+
+## O que observar
+
+- Situação do caso.
+- Prioridade.
+- Responsável principal.
+- Prazo de resposta.
+- Prazo de resolução.
+- Pendências formais.
+
+## Boas práticas
+
+Use filtros por situação e responsável. Casos resolvidos devem ser concluídos ou arquivados para não poluir a operação ativa.]]></field>
+    </record>
+
+    <record id="article_governance_pending_flow" model="help.article">
+        <field name="name">Como tratar pendências de governança</field>
+        <field name="code">governance.pending.flow</field>
+        <field name="category_id" ref="help_category_governance"/>
+        <field name="article_type">flow</field>
+        <field name="content_scope">flow</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">governance</field>
+        <field name="model_name">governance.case.pending</field>
+        <field name="view_type">form</field>
+        <field name="summary">Explica quando uma pendência formal vai para Agenda Geral e quando fica como atividade.</field>
+        <field name="markdown_source"><![CDATA[# Como tratar pendências de governança
+
+Pendência formal é uma obrigação clara dentro do caso.
+
+## Exemplo
+
+Caso: Reclamação de infiltração  
+Pendência: Solicitar laudo técnico  
+Prazo: 24/05  
+Responsável: João
+
+## Resultado esperado
+
+- Atividade para o responsável acompanhar a pendência.
+- Agenda Geral quando o prazo for marco crítico.
+- Histórico preservado no caso.
+
+## Regra prática
+
+Não transforme cada pequena tarefa em Agenda Geral. Use Agenda Geral apenas para marcos relevantes.]]></field>
+    </record>
+
+    <record id="article_agenda_general_flow" model="help.article">
+        <field name="name">Como usar a Agenda Geral</field>
+        <field name="code">common_base.agenda_general.flow</field>
+        <field name="category_id" ref="help_category_agenda"/>
+        <field name="article_type">user_manual</field>
+        <field name="content_scope">context</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">common_base</field>
+        <field name="model_name">common.agenda.event</field>
+        <field name="view_type">form</field>
+        <field name="summary">Explica como a Agenda Geral se diferencia de atividades e do calendário nativo do Odoo.</field>
+        <field name="markdown_source"><![CDATA[# Como usar a Agenda Geral
+
+A Agenda Geral é a agenda operacional do sistema. Ela é separada do calendário nativo do Odoo.
+
+## Quando usar
+
+- Vistorias;
+- Manutenções;
+- Prazos críticos de governança;
+- Pendências formais;
+- Reuniões operacionais de processo;
+- Vencimentos importantes de documentos.
+
+## Quando não usar
+
+- Lembretes simples;
+- Pequenas cobranças;
+- Tarefas individuais do dia a dia;
+- Reuniões pessoais comuns.
+
+Para tarefas simples, use **Atividades**. Para reuniões pessoais, use o **Calendário do Odoo**.]]></field>
+    </record>
+
+
+
+    <record id="context_help_article_form" model="help.context">
+        <field name="name">Edição de Artigo de Ajuda</field>
+        <field name="category_id" ref="help_category_system_help"/>
+        <field name="context_kind">screen</field>
+        <field name="module_name">common_help_center</field>
+        <field name="model_name">help.article</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="description">Use este contexto para explicar a diferença entre artigo completo, micro-artigo contextual, categoria e tipo.</field>
+        <field name="article_ids" eval="[(4, ref('article_help_taxonomy_enterprise'))]"/>
+    </record>
+
+    <record id="context_document_document_list" model="help.context">
+        <field name="name">Lista de Documentos</field>
+        <field name="category_id" ref="help_category_document_core"/>
+        <field name="context_kind">screen</field>
+        <field name="module_name">document_core</field>
+        <field name="model_name">document.document</field>
+        <field name="view_type">list</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto da lista de documentos: localizar, filtrar e iniciar cadastro.</field>
+        <field name="article_ids" eval="[(4, ref('article_document_document_list')), (4, ref('article_document_document_create')), (4, ref('article_document_no_orphan'))]"/>
+    </record>
+
+    <record id="context_document_document_form" model="help.context">
+        <field name="name">Formulário de Documento</field>
+        <field name="category_id" ref="help_category_document_core"/>
+        <field name="context_kind">screen</field>
+        <field name="module_name">document_core</field>
+        <field name="model_name">document.document</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto do formulário de documento: criação, validação, vencimento e vínculos.</field>
+        <field name="article_ids" eval="[(4, ref('article_document_document_create')), (4, ref('article_document_validation_expiration')), (4, ref('article_document_no_orphan'))]"/>
+    </record>
+
+    <record id="context_property_asset_list" model="help.context">
+        <field name="name">Lista de Imóveis</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="context_kind">screen</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.asset</field>
+        <field name="view_type">list</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto da lista de imóveis.</field>
+        <field name="article_ids" eval="[(4, ref('article_property_asset_list')), (4, ref('article_property_asset_form'))]"/>
+    </record>
+
+    <record id="context_property_asset_form" model="help.context">
+        <field name="name">Formulário do Imóvel</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="context_kind">screen</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.asset</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto do cadastro principal do imóvel.</field>
+        <field name="article_ids" eval="[(4, ref('article_property_asset_form')), (4, ref('article_property_asset_gallery_media')), (4, ref('article_property_inspection_flow')), (4, ref('article_property_maintenance_flow'))]"/>
+    </record>
+
+    <record id="context_property_inspection_form" model="help.context">
+        <field name="name">Formulário de Vistoria</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="context_kind">flow</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.inspection</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto de vistoria, mídias e Agenda Geral.</field>
+        <field name="article_ids" eval="[(4, ref('article_property_inspection_flow')), (4, ref('article_agenda_general_flow'))]"/>
+    </record>
+
+    <record id="context_property_maintenance_form" model="help.context">
+        <field name="name">Formulário de Manutenção</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="context_kind">flow</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.maintenance</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto de manutenção, evidências e Agenda Geral.</field>
+        <field name="article_ids" eval="[(4, ref('article_property_maintenance_flow')), (4, ref('article_agenda_general_flow'))]"/>
+    </record>
+
+    <record id="context_property_media_form" model="help.context">
+        <field name="name">Formulário de Mídia</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="context_kind">screen</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.media</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto de classificação de mídias.</field>
+        <field name="article_ids" eval="[(4, ref('article_property_media_flow'))]"/>
+    </record>
+
+    <record id="context_governance_case_list" model="help.context">
+        <field name="name">Lista de Casos de Governança</field>
+        <field name="category_id" ref="help_category_governance"/>
+        <field name="context_kind">screen</field>
+        <field name="module_name">governance</field>
+        <field name="model_name">governance.case</field>
+        <field name="view_type">list</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto da lista de casos de governança.</field>
+        <field name="article_ids" eval="[(4, ref('article_governance_case_list')), (4, ref('article_governance_case_form'))]"/>
+    </record>
+
+    <record id="context_governance_case_form" model="help.context">
+        <field name="name">Formulário do Caso de Governança</field>
+        <field name="category_id" ref="help_category_governance"/>
+        <field name="context_kind">flow</field>
+        <field name="module_name">governance</field>
+        <field name="model_name">governance.case</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto de caso, SLA, prazos, pendências e agenda.</field>
+        <field name="article_ids" eval="[(4, ref('article_governance_case_form')), (4, ref('article_governance_pending_flow')), (4, ref('article_agenda_general_flow'))]"/>
+    </record>
+
+    <record id="context_governance_pending_form" model="help.context">
+        <field name="name">Formulário de Pendência de Governança</field>
+        <field name="category_id" ref="help_category_governance"/>
+        <field name="context_kind">flow</field>
+        <field name="module_name">governance</field>
+        <field name="model_name">governance.case.pending</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto de pendência formal de governança.</field>
+        <field name="article_ids" eval="[(4, ref('article_governance_pending_flow'))]"/>
+    </record>
+
+    <record id="context_common_agenda_event_list" model="help.context">
+        <field name="name">Lista da Agenda Geral</field>
+        <field name="category_id" ref="help_category_agenda"/>
+        <field name="context_kind">screen</field>
+        <field name="module_name">common_base</field>
+        <field name="model_name">common.agenda.event</field>
+        <field name="view_type">list</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto da lista/calendário operacional da Agenda Geral.</field>
+        <field name="article_ids" eval="[(4, ref('article_agenda_general_flow'))]"/>
+    </record>
+
+    <record id="context_common_agenda_event_form" model="help.context">
+        <field name="name">Formulário da Agenda Geral</field>
+        <field name="category_id" ref="help_category_agenda"/>
+        <field name="context_kind">screen</field>
+        <field name="module_name">common_base</field>
+        <field name="model_name">common.agenda.event</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="description">Contexto do compromisso operacional.</field>
+        <field name="article_ids" eval="[(4, ref('article_agenda_general_flow'))]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================
+         Contextos padrão para os módulos principais.
+         Estes artigos garantem que o painel contextual mostre conteúdo útil
+         antes mesmo da importação completa dos docs/*.md.
+    ============================================================= -->
+
+    <!-- ==================== Documentos ==================== -->
+    <record id="article_document_document_create" model="help.article">
+        <field name="name">Como criar um novo documento</field>
+        <field name="code">document_core.document_document.create_user_manual</field>
+        <field name="category_id" ref="help_category_document_core"/>
+        <field name="article_type">flow</field>
+        <field name="content_scope">flow</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">document_core</field>
+        <field name="model_name">document.document</field>
+        <field name="summary">Passo a passo para criar um documento, escolher categoria/tipo, anexar arquivo e definir responsável.</field>
+        <field name="markdown_source"><![CDATA[
+# Como criar um novo documento
+
+Use este fluxo quando precisar cadastrar um documento formal ou operacional no sistema.
+
+## Passo a passo
+
+1. Abra **Documentos > Documentos**.
+2. Clique em **Novo**.
+3. Informe um **Nome** claro para o documento.
+4. Selecione a **Categoria** e o **Tipo de Documento**.
+5. Vincule o documento ao contexto correto, quando existir:
+   - imóvel;
+   - contrato;
+   - dossiê;
+   - governança;
+   - parceiro/contato.
+6. Anexe o arquivo principal.
+7. Preencha responsável, validade, revisão ou observações, quando aplicável.
+8. Salve.
+
+## Exemplo
+
+Documento: Matrícula atualizada do imóvel 301  
+Categoria: Jurídico / Imobiliário  
+Tipo: Matrícula  
+Responsável: Ana  
+Validade/Revisão: 30 dias
+
+## Resultado esperado
+
+- O documento fica registrado no módulo **Documentos**.
+- Se tiver vencimento, revisão ou validação, pode gerar atividade para o responsável.
+- Se for um marco crítico, pode aparecer na **Agenda Geral** conforme regra do módulo.
+
+## Diferença importante
+
+Documento não é galeria de fotos. Imagens escaneadas, PDFs, comprovantes e arquivos formais devem ser tratados como documento/anexo, não como foto comercial.
+        ]]></field>
+    </record>
+
+    <record id="article_document_document_list" model="help.article">
+        <field name="name">Como usar a lista de documentos</field>
+        <field name="code">document_core.document_document.list_user_manual</field>
+        <field name="category_id" ref="help_category_document_core"/>
+        <field name="article_type">user_manual</field>
+        <field name="content_scope">context</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">document_core</field>
+        <field name="model_name">document.document</field>
+        <field name="view_type">list</field>
+        <field name="summary">Explica filtros, agrupamentos e uso da lista de documentos.</field>
+        <field name="markdown_source"><![CDATA[
+# Como usar a lista de documentos
+
+A lista de documentos serve para localizar, revisar e acompanhar documentos cadastrados.
+
+## O que fazer nesta tela
+
+- Buscar por nome do documento.
+- Filtrar por categoria, tipo, responsável, status, vencimento ou revisão.
+- Agrupar por categoria ou tipo para encontrar documentos rapidamente.
+- Abrir um documento para revisar arquivo, validade, responsáveis e histórico.
+
+## Boas práticas
+
+- Use nomes claros e padronizados.
+- Evite criar tipos/categorias duplicadas.
+- Prefira filtros por categoria e tipo em vez de nomes livres.
+- Documentos vencidos ou pendentes devem ser tratados por atividade ou Agenda Geral, conforme criticidade.
+        ]]></field>
+    </record>
+
+    <record id="context_document_document_list" model="help.context">
+        <field name="name">Lista de Documentos</field>
+        <field name="module_name">document_core</field>
+        <field name="model_name">document.document</field>
+        <field name="view_type">list</field>
+        <field name="priority">5</field>
+        <field name="article_ids" eval="[(4, ref('article_document_document_list')), (4, ref('article_document_document_create'))]"/>
+    </record>
+
+    <record id="context_document_document_form" model="help.context">
+        <field name="name">Formulário de Documento</field>
+        <field name="module_name">document_core</field>
+        <field name="model_name">document.document</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="article_ids" eval="[(4, ref('article_document_document_create'))]"/>
+    </record>
+
+    <record id="tip_document_document_form" model="help.tip">
+        <field name="name">Documento precisa de contexto</field>
+        <field name="code">document.document.form.context_tip</field>
+        <field name="module_name">document_core</field>
+        <field name="model_name">document.document</field>
+        <field name="view_type">form</field>
+        <field name="audience">user</field>
+        <field name="content">Antes de salvar, verifique se o documento está ligado ao imóvel, contrato, dossiê ou caso correto. Isso evita documentos soltos.</field>
+    </record>
+
+    <record id="checklist_document_document_form" model="help.checklist.template">
+        <field name="name">Checklist do Documento</field>
+        <field name="code">document.document.form.checklist</field>
+        <field name="module_name">document_core</field>
+        <field name="model_name">document.document</field>
+        <field name="view_type">form</field>
+        <field name="description">Checklist básico para cadastrar um documento com qualidade.</field>
+        <field name="audience">user</field>
+        <field name="sequence">10</field>
+        <field name="item_ids" eval="[(0,0,{'name':'Nome do documento preenchido','sequence':1,'required':True}), (0,0,{'name':'Categoria e tipo conferidos','sequence':2,'required':True}), (0,0,{'name':'Arquivo principal anexado','sequence':3,'required':True}), (0,0,{'name':'Contexto/vínculo revisado','sequence':4}), (0,0,{'name':'Responsável, validade ou revisão preenchidos quando necessário','sequence':5})]"/>
+    </record>
+
+    <!-- ==================== Imóveis ==================== -->
+    <record id="article_property_asset_form" model="help.article">
+        <field name="name">Como usar o cadastro do imóvel</field>
+        <field name="code">property_core.property_asset.form_user_manual</field>
+        <field name="category_id" ref="help_category_property_core"/>
+        <field name="article_type">user_manual</field>
+        <field name="content_scope">context</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.asset</field>
+        <field name="view_type">form</field>
+        <field name="summary">Explica as abas principais do imóvel: documentos, galeria, vistorias, manutenções e outras mídias.</field>
+        <field name="markdown_source"><![CDATA[
+# Como usar o cadastro do imóvel
+
+O imóvel é o centro operacional do módulo imobiliário.
+
+## Abas principais do imóvel
+
+- **Localização**: endereço, geolocalização, informações de localização.
+- **Características**: dimensões, dormitórios, banheiros, estacionamentos, padrão construtivo.
+- **Valores**: avaliação do imóvel, custos operacionais, KPIs de ocupação.
+- **Operações**: contratos, vistorias, manutenções (tabs aninhadas).
+- **Galeria** (se website_integration ativo): fotos comerciais e publicáveis para site.
+- **Outras Mídias** (se document_core ativo): imagens técnicas, scans, croquis e arquivos.
+- **Observações & Comunicações**: notas internas e histórico de comunicação.
+
+## Extensibilidade
+
+- **Documentos**: vinculados via document_core quando instalado.
+- **Casos de Governança**: vinculados via governance quando instalado.
+- Outras extensões adicionam abas antes de "Observações & Comunicações" usando xpath.
+
+## Agenda Geral
+
+Use Agenda Geral para compromissos operacionais, como vistoria agendada, manutenção ou prazos críticos.
+Use atividades para cobranças e lembretes internos.
+        ]]></field>
+    </record>
+
+    <record id="context_property_asset_form" model="help.context">
+        <field name="name">Formulário do Imóvel</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.asset</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="article_ids" eval="[(4, ref('article_property_asset_form'))]"/>
+    </record>
+
+    <!-- ==================== Governança ==================== -->
+    <record id="article_governance_case_form" model="help.article">
+        <field name="name">Como abrir e acompanhar um caso de governança</field>
+        <field name="code">governance.governance_case.form_user_manual</field>
+        <field name="category_id" ref="help_category_governance"/>
+        <field name="article_type">flow</field>
+        <field name="content_scope">flow</field>
+        <field name="show_in_context" eval="True"/>
+        <field name="audience">all</field>
+        <field name="module_name">governance</field>
+        <field name="model_name">governance.case</field>
+        <field name="view_type">form</field>
+        <field name="summary">Explica caso, prazos, pendências, atividades e Agenda Geral na governança.</field>
+        <field name="markdown_source"><![CDATA[
+# Como abrir e acompanhar um caso de governança
+
+O caso de governança representa um processo operacional ou administrativo que precisa de acompanhamento.
+
+## Exemplo
+
+Caso: Reclamação de infiltração  
+Prazo de resposta: 22/05  
+Prazo de resolução: 04/06  
+Responsável: João
+
+## Resultado esperado
+
+O sistema cria na Agenda Geral:
+
+- Prazo de Resposta - Reclamação de infiltração
+- Prazo de Resolução - Reclamação de infiltração
+
+Atividades simples continuam no chatter e não devem lotar a Agenda Geral.
+
+## Regra prática
+
+- **Atividade**: tarefa, cobrança, lembrete.
+- **Agenda Geral**: prazo crítico, pendência formal ou compromisso operacional.
+        ]]></field>
+    </record>
+
+    <record id="context_governance_case_form" model="help.context">
+        <field name="name">Formulário do Caso de Governança</field>
+        <field name="module_name">governance</field>
+        <field name="model_name">governance.case</field>
+        <field name="view_type">form</field>
+        <field name="priority">5</field>
+        <field name="article_ids" eval="[(4, ref('article_governance_case_form'))]"/>
+    </record>
+</odoo>

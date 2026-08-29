@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Segurança de Dossiês para o ERP imobiliário:
+        - Todo usuário interno pode operar dossiês e usar os wizards.
+        - Gestores documentais e administradores técnicos podem configurar processos e templates.
+    -->
+
+    <!-- ==================== PRIVILEGE ==================== -->
+    <record id="privilege_dossier" model="res.groups.privilege">
+        <field name="name">Dossiês</field>
+        <field name="sequence" eval="20"/>
+        <field name="category_id" ref="common_base.module_category_realestate_docs"/>
+    </record>
+
+    <!-- ==================== GROUPS ==================== -->
+    <record id="group_dossier_operator" model="res.groups">
+        <field name="name">Dossiês - Operacional</field>
+        <field name="privilege_id" ref="document_dossier.privilege_dossier"/>
+        <field name="comment">Pode criar, vincular e acompanhar dossiês, aplicar templates e visualizar status de documentos.</field>
+    </record>
+
+    <record id="group_dossier_manager" model="res.groups">
+        <field name="name">Dossiês - Gestor</field>
+        <field name="privilege_id" ref="document_dossier.privilege_dossier"/>
+        <field name="comment">Pode configurar tipos de processo, templates e administrar os dossiês.</field>
+        <field name="implied_ids" eval="[(4, ref('document_dossier.group_dossier_operator'))]"/>
+    </record>
+
+    <record id="base.group_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('document_dossier.group_dossier_operator'))]"/>
+    </record>
+
+    <record id="base.group_system" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('document_dossier.group_dossier_manager'))]"/>
+    </record>
+
+    <record id="document_core.group_document_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('document_dossier.group_dossier_manager'))]"/>
+    </record>
+</odoo>

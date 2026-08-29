@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_maintenance_bill_list" model="ir.ui.view">
+        <field name="name">property.maintenance.bill.list</field>
+        <field name="model">property.maintenance.bill</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancel'" decoration-info="state == 'draft'" decoration-warning="state == 'posted' and payment_state in ('not_paid','partial')" decoration-success="payment_state == 'paid'">
+                <field name="invoice_date"/>
+                <field name="name" string="Nº Fatura"/>
+                <field name="maintenance_id"/>
+                <field name="partner_id"/>
+                <field name="amount_total"/>
+                <field name="amount_residual"/>
+                <field name="payment_state" widget="badge"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_maintenance_bill_form" model="ir.ui.view">
+        <field name="name">property.maintenance.bill.form</field>
+        <field name="model">property.maintenance.bill</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_post_invoice" type="object" string="Postar" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_register_payment" type="object" string="Registrar Pagamento" invisible="state != 'posted' or payment_state == 'paid'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,posted,cancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-arrow-right" string="Ver Fatura"/>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="maintenance_id"/>
+                            <field name="asset_id"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <group string="Fatura de Compra">
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="invoice_date" readonly="1"/>
+                            <field name="ref" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="currency_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Valores">
+                        <group>
+                            <field name="amount_total" readonly="1"/>
+                            <field name="amount_residual" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="payment_state" readonly="1" widget="badge"/>
+                            <field name="state" readonly="1" widget="badge"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_maintenance_bill_search" model="ir.ui.view">
+        <field name="name">property.maintenance.bill.search</field>
+        <field name="model">property.maintenance.bill</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="maintenance_id"/>
+                <field name="partner_id"/>
+                <field name="asset_id"/>
+                <separator/>
+                <filter string="Rascunho" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Postada" name="posted" domain="[('state','=','posted')]"/>
+                <filter string="A Pagar" name="not_paid" domain="[('state','=','posted'),('payment_state','in',['not_paid','partial'])]"/>
+                <filter string="Paga" name="paid" domain="[('payment_state','=','paid')]"/>
+                <separator/>
+                <filter string="Por Manutenção" name="group_maint" context="{'group_by':'maintenance_id'}"/>
+                <filter string="Por Fornecedor" name="group_partner" context="{'group_by':'partner_id'}"/>
+                <filter string="Por Status de Pagamento" name="group_payment" context="{'group_by':'payment_state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_maintenance_bill" model="ir.actions.act_window">
+        <field name="name">Compras de Manutenção</field>
+        <field name="res_model">property.maintenance.bill</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_open": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nenhuma compra cadastrada.</p>
+        </field>
+    </record>
+
+</odoo>

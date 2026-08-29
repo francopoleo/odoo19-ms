@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="article_help_center_overview" model="help.article">
+        <field name="name">Como usar a Central de Ajuda</field>
+        <field name="code">common_help_center.overview</field>
+        <field name="category_id" ref="help_category_overview"/>
+        <field name="article_type">user_manual</field>
+        <field name="content_scope">context</field>
+        <field name="show_in_context" eval="False"/>
+        <field name="audience">all</field>
+        <field name="module_name">common_help_center</field>
+        <field name="summary">Use o botão Ajuda para abrir o painel contextual da tela atual ou acesse a biblioteca completa pelo menu Central de Ajuda.</field>
+        <field name="markdown_source"><![CDATA[
+# Como usar a Central de Ajuda
+
+A Central de Ajuda organiza a documentação do sistema dentro do Odoo.
+
+Use o botão **Ajuda** no topo da tela para abrir um painel lateral com:
+
+- artigos recomendados para a tela atual;
+- dicas rápidas;
+- checklists;
+- sugestões conforme contexto;
+- feedback dos usuários.
+
+A biblioteca completa fica no menu **Central de Ajuda**.
+        ]]></field>
+    </record>
+
+    <record id="article_help_contextual_drawer" model="help.article">
+        <field name="name">Ajuda contextual por tela</field>
+        <field name="code">common_help_center.contextual_drawer</field>
+        <field name="category_id" ref="help_category_system_help"/>
+        <field name="article_type">user_manual</field>
+        <field name="content_scope">context</field>
+        <field name="show_in_context" eval="False"/>
+        <field name="audience">all</field>
+        <field name="module_name">common_help_center</field>
+        <field name="summary">O painel lateral detecta o model e a view atual para sugerir artigos, dicas, checklists e fluxos relacionados.</field>
+        <field name="markdown_source"><![CDATA[
+# Ajuda contextual por tela
+
+A ajuda contextual utiliza o contexto da tela atual para encontrar conteúdo útil.
+
+A prioridade de busca é:
+
+1. artigos vinculados ao contexto exato;
+2. artigos do model atual;
+3. artigos do módulo;
+4. artigos gerais.
+
+Administradores podem configurar contextos em:
+
+**Central de Ajuda > Ajuda Contextual > Contextos de Ajuda**.
+        ]]></field>
+    </record>
+
+    <record id="article_help_agenda_activities" model="help.article">
+        <field name="name">Atividades, Agenda Geral e Calendário do Odoo</field>
+        <field name="code">common_help_center.agenda_activities</field>
+        <field name="category_id" ref="help_category_agenda"/>
+        <field name="article_type">flow</field>
+        <field name="content_scope">flow</field>
+        <field name="show_in_context" eval="False"/>
+        <field name="audience">all</field>
+        <field name="summary">Atividades são tarefas e cobranças; Agenda Geral é para compromissos operacionais; Calendário nativo do Odoo fica para reuniões pessoais.</field>
+        <field name="markdown_source"><![CDATA[
+# Atividades, Agenda Geral e Calendário do Odoo
+
+Use cada recurso com uma finalidade diferente.
+
+| Recurso | Uso |
+|---|---|
+| Atividades | tarefas, cobranças, lembretes e pendências simples |
+| Agenda Geral | vistorias, manutenções, marcos de governança e compromissos operacionais |
+| Calendário do Odoo | reuniões pessoais ou comerciais do calendário nativo |
+
+Não use Agenda Geral como lista de tarefas. Use-a para prazos e compromissos críticos.
+        ]]></field>
+    </record>
+
+    <record id="article_help_error_troubleshooting" model="help.article">
+        <field name="name">Como procurar ajuda para erros</field>
+        <field name="code">common_help_center.error_help</field>
+        <field name="category_id" ref="help_category_troubleshooting"/>
+        <field name="article_type">troubleshooting</field>
+        <field name="content_scope">troubleshooting</field>
+        <field name="show_in_context" eval="False"/>
+        <field name="audience">admin</field>
+        <field name="summary">Ao ocorrer um erro, copie a mensagem principal e procure na Central de Ajuda. Regras inteligentes podem sugerir artigos automaticamente.</field>
+        <field name="markdown_source"><![CDATA[
+# Como procurar ajuda para erros
+
+Quando ocorrer um erro:
+
+1. copie a mensagem principal;
+2. procure pelo nome do model, campo ou XML citado;
+3. verifique artigos de troubleshooting;
+4. consulte métricas de erros sugeridos em **Central de Ajuda > Inteligência Operacional > Métricas de Uso**.
+        ]]></field>
+    </record>
+
+    <record id="tip_global_activities_agenda" model="help.tip">
+        <field name="name">Atividade não é agenda</field>
+        <field name="code">global.activities_vs_agenda</field>
+        <field name="content">Use Atividades para cobrança/lembrete. Use Agenda Geral para compromissos operacionais com data, hora, responsáveis e histórico.</field>
+        <field name="audience">all</field>
+        <field name="article_id" ref="article_help_agenda_activities"/>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="tip_property_asset_docs" model="help.tip">
+        <field name="name">Imóvel completo</field>
+        <field name="code">property.asset.complete_tip</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.asset</field>
+        <field name="view_type">form</field>
+        <field name="content">Mantenha todas as abas do imóvel consistentes: Localização, Características, Valores, Operações (contratos/vistorias/manutenção), Observações &amp; Comunicações. Abas adicionais aparecem quando document_core, website ou governance estão instalados.</field>
+        <field name="audience">user</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record id="tip_governance_case_agenda" model="help.tip">
+        <field name="name">Governança e Agenda Geral</field>
+        <field name="code">governance.case.agenda_tip</field>
+        <field name="module_name">governance</field>
+        <field name="model_name">governance.case</field>
+        <field name="view_type">form</field>
+        <field name="content">A Agenda Geral deve receber apenas marcos críticos: prazo de resposta, prazo de resolução, follow-ups, pendências formais e compromissos.</field>
+        <field name="audience">user</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record id="checklist_property_asset" model="help.checklist.template">
+        <field name="name">Checklist do Imóvel</field>
+        <field name="code">property.asset.checklist</field>
+        <field name="module_name">property_core</field>
+        <field name="model_name">property.asset</field>
+        <field name="view_type">form</field>
+        <field name="description">Use este checklist para validar se o cadastro do imóvel está pronto para operação.</field>
+        <field name="audience">user</field>
+        <field name="sequence">10</field>
+        <field name="item_ids" eval="[(0,0,{'name':'Dados principais preenchidos','sequence':1,'required':True}), (0,0,{'name':'Localização e endereço revisado','sequence':2,'required':True}), (0,0,{'name':'Características (área, dormitórios, padrão) preenchidas','sequence':3}), (0,0,{'name':'Valores e KPIs configurados','sequence':4}), (0,0,{'name':'Responsável operacional definido','sequence':5})]"/>
+    </record>
+
+    <record id="checklist_governance_case" model="help.checklist.template">
+        <field name="name">Checklist do Caso de Governança</field>
+        <field name="code">governance.case.checklist</field>
+        <field name="module_name">governance</field>
+        <field name="model_name">governance.case</field>
+        <field name="view_type">form</field>
+        <field name="description">Checklist para abertura e acompanhamento de um caso de governança.</field>
+        <field name="audience">user</field>
+        <field name="sequence">10</field>
+        <field name="item_ids" eval="[(0,0,{'name':'Responsável principal definido','sequence':1,'required':True}), (0,0,{'name':'Prazo de resposta preenchido','sequence':2}), (0,0,{'name':'Prazo de resolução preenchido','sequence':3}), (0,0,{'name':'Pendências formais registradas','sequence':4}), (0,0,{'name':'Agenda Geral sincronizada','sequence':5})]"/>
+    </record>
+
+    <record id="suggestion_missing_required" model="help.suggestion.rule">
+        <field name="name">Campo obrigatório não preenchido</field>
+        <field name="code">global.error.required</field>
+        <field name="rule_type">error</field>
+        <field name="pattern">required|obrigatório|mandatory|missing required|not-null|null value</field>
+        <field name="tip_text">O erro indica que um campo obrigatório ficou vazio. Verifique o manual da tela e o checklist do cadastro.</field>
+        <field name="article_ids" eval="[(4, ref('article_help_error_troubleshooting'))]"/>
+    </record>
+
+    <record id="suggestion_xml_view_error" model="help.suggestion.rule">
+        <field name="name">Erro de view XML</field>
+        <field name="code">global.error.xml_view</field>
+        <field name="rule_type">error</field>
+        <field name="pattern">ParseError|Invalid view|View error|xpath|XML</field>
+        <field name="tip_text">O erro parece estar em uma view XML. Verifique se os campos existem, se o xpath é compatível com Odoo 19 e se não há seletor por string.</field>
+        <field name="article_ids" eval="[(4, ref('article_help_error_troubleshooting'))]"/>
+    </record>
+</odoo>

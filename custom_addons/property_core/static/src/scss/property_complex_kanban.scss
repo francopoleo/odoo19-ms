@@ -1,0 +1,198 @@
+.o_property_complex_kanban {
+  .o_kanban_record {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 4px !important;
+    max-width: 340px;
+  }
+
+  .o_property_complex_card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-top: 3px solid #06b6d4;
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.07);
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .o_property_complex_card_header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .o_property_complex_image_placeholder {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f9ff;
+    border-radius: 8px;
+    color: #0284c7;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .o_property_complex_header_info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .o_property_complex_title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.18;
+    color: #0f172a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .o_property_complex_reference,
+  .o_property_complex_location {
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+
+  .o_property_complex_reference {
+    color: #64748b;
+  }
+
+  .o_property_complex_location {
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .o_property_complex_card_body {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .o_property_complex_meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .o_meta_chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 0.68rem;
+    max-width: 100%;
+  }
+
+  .o_property_complex_units {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+  }
+
+  .o_unit_box {
+    padding: 6px 4px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+  }
+
+  .o_unit_box.success {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+  }
+
+  .o_unit_box.info {
+    background: #cffafe;
+    border-color: #a5f3fc;
+  }
+
+  .o_unit_value {
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #0f172a;
+  }
+
+  .o_unit_label {
+    margin-top: 2px;
+    font-size: 0.58rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .015em;
+  }
+
+  .o_property_complex_occupancy {
+    border-radius: 8px;
+    padding: 6px 8px;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    text-align: center;
+  }
+
+  .o_occupancy_label {
+    font-size: 0.58rem;
+    color: #0c4a6e;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    margin-bottom: 1px;
+    line-height: 1.1;
+  }
+
+  .o_occupancy_value {
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #0284c7;
+  }
+
+  .o_property_complex_financials {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .o_financial_box {
+    border-radius: 8px;
+    padding: 6px 8px;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+  }
+
+  .o_financial_label {
+    font-size: 0.58rem;
+    color: #78350f;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    margin-bottom: 1px;
+    line-height: 1.1;
+  }
+
+  .o_financial_value {
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #b45309;
+  }
+
+  .o_field_many2many_tags.mt-2,
+  .mt-2.o_field_many2many_tags {
+    margin-top: 2px !important;
+  }
+}

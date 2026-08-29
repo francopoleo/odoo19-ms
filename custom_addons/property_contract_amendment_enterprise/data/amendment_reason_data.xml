@@ -1,0 +1,1464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+<record id="amendment_reason_rectification" model="property.contract.amendment.reason">
+  <field name="name">Retificação</field>
+  <field name="code">rectification</field>
+  <field name="category">general</field>
+  <field name="description">Correção formal de informações do contrato.</field>
+</record>
+<record id="amendment_reason_ratification" model="property.contract.amendment.reason">
+  <field name="name">Ratificação</field>
+  <field name="code">ratification</field>
+  <field name="category">general</field>
+  <field name="description">Confirmação de condições já pactuadas.</field>
+</record>
+<record id="amendment_reason_clarification" model="property.contract.amendment.reason">
+  <field name="name">Esclarecimento</field>
+  <field name="code">clarification</field>
+  <field name="category">general</field>
+  <field name="description">Esclarecimento ou interpretação de cláusula.</field>
+</record>
+<record id="amendment_reason_consolidation" model="property.contract.amendment.reason">
+  <field name="name">Consolidação</field>
+  <field name="code">consolidation</field>
+  <field name="category">general</field>
+  <field name="description">Consolidação de termos vigentes.</field>
+</record>
+<record id="amendment_reason_full_restatement" model="property.contract.amendment.reason">
+  <field name="name">Rerratificação integral</field>
+  <field name="code">full_restatement</field>
+  <field name="category">general</field>
+  <field name="description">Reformulação integral do instrumento.</field>
+</record>
+<record id="amendment_reason_partial_restatement" model="property.contract.amendment.reason">
+  <field name="name">Rerratificação parcial</field>
+  <field name="code">partial_restatement</field>
+  <field name="category">general</field>
+  <field name="description">Reformulação parcial de cláusulas.</field>
+</record>
+<record id="amendment_reason_novation" model="property.contract.amendment.reason">
+  <field name="name">Novação</field>
+  <field name="code">novation</field>
+  <field name="category">general</field>
+  <field name="description">Substituição jurídica de obrigação anterior.</field>
+</record>
+<record id="amendment_reason_assignment" model="property.contract.amendment.reason">
+  <field name="name">Cessão</field>
+  <field name="code">assignment</field>
+  <field name="category">general</field>
+  <field name="description">Cessão de posição contratual ou direitos.</field>
+</record>
+<record id="amendment_reason_other" model="property.contract.amendment.reason">
+  <field name="name">Outros</field>
+  <field name="code">other</field>
+  <field name="category">general</field>
+  <field name="description">Motivo não classificado.</field>
+</record>
+<record id="amendment_reason_tenant_change" model="property.contract.amendment.reason">
+  <field name="name">Troca de locatário</field>
+  <field name="code">tenant_change</field>
+  <field name="category">party</field>
+  <field name="description">Substituição do locatário.</field>
+</record>
+<record id="amendment_reason_landlord_change" model="property.contract.amendment.reason">
+  <field name="name">Troca de locador</field>
+  <field name="code">landlord_change</field>
+  <field name="category">party</field>
+  <field name="description">Substituição do locador.</field>
+</record>
+<record id="amendment_reason_guarantor_change" model="property.contract.amendment.reason">
+  <field name="name">Troca de fiador/garantidor</field>
+  <field name="code">guarantor_change</field>
+  <field name="category">party</field>
+  <field name="description">Alteração de fiador ou garantidor.</field>
+</record>
+<record id="amendment_reason_solidary_debtor_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de devedor solidário</field>
+  <field name="code">solidary_debtor_change</field>
+  <field name="category">party</field>
+  <field name="description">Inclusão, substituição ou exclusão de responsável solidário.</field>
+</record>
+<record id="amendment_reason_corporate_reorganization" model="property.contract.amendment.reason">
+  <field name="name">Reorganização societária</field>
+  <field name="code">corporate_reorganization</field>
+  <field name="category">party</field>
+  <field name="description">Cisão, incorporação, fusão ou alteração societária com impacto contratual.</field>
+</record>
+<record id="amendment_reason_merger_or_acquisition" model="property.contract.amendment.reason">
+  <field name="name">Fusão ou aquisição</field>
+  <field name="code">merger_or_acquisition</field>
+  <field name="category">party</field>
+  <field name="description">Alteração decorrente de M&amp;A.</field>
+</record>
+<record id="amendment_reason_successor_party" model="property.contract.amendment.reason">
+  <field name="name">Sucessão contratual</field>
+  <field name="code">successor_party</field>
+  <field name="category">party</field>
+  <field name="description">Substituição por sucessor legal ou contratual.</field>
+</record>
+<record id="amendment_reason_representative_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de representante</field>
+  <field name="code">representative_change</field>
+  <field name="category">party</field>
+  <field name="description">Mudança de representante legal ou procurador.</field>
+</record>
+<record id="amendment_reason_contact_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de contato</field>
+  <field name="code">contact_change</field>
+  <field name="category">party</field>
+  <field name="description">Atualização de contatos contratuais.</field>
+</record>
+<record id="amendment_reason_billing_responsible_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração do responsável pelo faturamento</field>
+  <field name="code">billing_responsible_change</field>
+  <field name="category">party</field>
+  <field name="description">Mudança do responsável pelo pagamento ou recebimento.</field>
+</record>
+<record id="amendment_reason_term_extension" model="property.contract.amendment.reason">
+  <field name="name">Prorrogação de prazo</field>
+  <field name="code">term_extension</field>
+  <field name="category">term</field>
+  <field name="description">Extensão da vigência contratual.</field>
+</record>
+<record id="amendment_reason_term_reduction" model="property.contract.amendment.reason">
+  <field name="name">Redução de prazo</field>
+  <field name="code">term_reduction</field>
+  <field name="category">term</field>
+  <field name="description">Redução da vigência contratual.</field>
+</record>
+<record id="amendment_reason_renewal" model="property.contract.amendment.reason">
+  <field name="name">Renovação</field>
+  <field name="code">renewal</field>
+  <field name="category">term</field>
+  <field name="description">Renovação contratual.</field>
+</record>
+<record id="amendment_reason_early_renewal" model="property.contract.amendment.reason">
+  <field name="name">Renovação antecipada</field>
+  <field name="code">early_renewal</field>
+  <field name="category">term</field>
+  <field name="description">Renovação antes do fim da vigência.</field>
+</record>
+<record id="amendment_reason_automatic_renewal_clause" model="property.contract.amendment.reason">
+  <field name="name">Cláusula de renovação automática</field>
+  <field name="code">automatic_renewal_clause</field>
+  <field name="category">term</field>
+  <field name="description">Inclusão ou alteração de renovação automática.</field>
+</record>
+<record id="amendment_reason_holdover_regularization" model="property.contract.amendment.reason">
+  <field name="name">Regularização de permanência após prazo</field>
+  <field name="code">holdover_regularization</field>
+  <field name="category">term</field>
+  <field name="description">Regularização de ocupação após fim do contrato.</field>
+</record>
+<record id="amendment_reason_start_date_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração da data inicial</field>
+  <field name="code">start_date_change</field>
+  <field name="category">term</field>
+  <field name="description">Mudança da data de início.</field>
+</record>
+<record id="amendment_reason_end_date_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração da data final</field>
+  <field name="code">end_date_change</field>
+  <field name="category">term</field>
+  <field name="description">Mudança da data de encerramento.</field>
+</record>
+<record id="amendment_reason_possession_date_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração da data de posse</field>
+  <field name="code">possession_date_change</field>
+  <field name="category">term</field>
+  <field name="description">Mudança da data de posse ou entrega.</field>
+</record>
+<record id="amendment_reason_suspension_period" model="property.contract.amendment.reason">
+  <field name="name">Suspensão temporária</field>
+  <field name="code">suspension_period</field>
+  <field name="category">term</field>
+  <field name="description">Suspensão de vigência ou obrigações.</field>
+</record>
+<record id="amendment_reason_reactivation" model="property.contract.amendment.reason">
+  <field name="name">Reativação</field>
+  <field name="code">reactivation</field>
+  <field name="category">term</field>
+  <field name="description">Reativação de contrato suspenso ou encerrado.</field>
+</record>
+<record id="amendment_reason_rent_increase" model="property.contract.amendment.reason">
+  <field name="name">Aumento de aluguel</field>
+  <field name="code">rent_increase</field>
+  <field name="category">financial</field>
+  <field name="description">Aumento permanente do aluguel-base.</field>
+</record>
+<record id="amendment_reason_rent_reduction" model="property.contract.amendment.reason">
+  <field name="name">Redução de aluguel</field>
+  <field name="code">rent_reduction</field>
+  <field name="category">financial</field>
+  <field name="description">Redução permanente do aluguel-base.</field>
+</record>
+<record id="amendment_reason_temporary_discount" model="property.contract.amendment.reason">
+  <field name="name">Desconto temporário</field>
+  <field name="code">temporary_discount</field>
+  <field name="category">financial</field>
+  <field name="description">Desconto por período determinado.</field>
+</record>
+<record id="amendment_reason_permanent_discount" model="property.contract.amendment.reason">
+  <field name="name">Desconto permanente</field>
+  <field name="code">permanent_discount</field>
+  <field name="category">financial</field>
+  <field name="description">Desconto permanente sobre a cobrança.</field>
+</record>
+<record id="amendment_reason_grace_period" model="property.contract.amendment.reason">
+  <field name="name">Carência</field>
+  <field name="code">grace_period</field>
+  <field name="category">financial</field>
+  <field name="description">Carência total ou parcial.</field>
+</record>
+<record id="amendment_reason_rent_free_period" model="property.contract.amendment.reason">
+  <field name="name">Período sem aluguel</field>
+  <field name="code">rent_free_period</field>
+  <field name="category">financial</field>
+  <field name="description">Período de isenção de aluguel.</field>
+</record>
+<record id="amendment_reason_step_rent" model="property.contract.amendment.reason">
+  <field name="name">Aluguel escalonado</field>
+  <field name="code">step_rent</field>
+  <field name="category">financial</field>
+  <field name="description">Alteração programada de aluguel por etapas.</field>
+</record>
+<record id="amendment_reason_index_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de índice de reajuste</field>
+  <field name="code">index_change</field>
+  <field name="category">financial</field>
+  <field name="description">Mudança de IPCA, IGPM, INCC ou índice contratual.</field>
+</record>
+<record id="amendment_reason_fixed_adjustment" model="property.contract.amendment.reason">
+  <field name="name">Reajuste fixo</field>
+  <field name="code">fixed_adjustment</field>
+  <field name="category">financial</field>
+  <field name="description">Percentual ou valor fixo de reajuste.</field>
+</record>
+<record id="amendment_reason_extraordinary_adjustment" model="property.contract.amendment.reason">
+  <field name="name">Reajuste extraordinário</field>
+  <field name="code">extraordinary_adjustment</field>
+  <field name="category">financial</field>
+  <field name="description">Reajuste fora da regra ordinária.</field>
+</record>
+<record id="amendment_reason_retroactive_adjustment" model="property.contract.amendment.reason">
+  <field name="name">Ajuste retroativo</field>
+  <field name="code">retroactive_adjustment</field>
+  <field name="category">financial</field>
+  <field name="description">Débito ou crédito retroativo.</field>
+</record>
+<record id="amendment_reason_billing_frequency_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração da frequência de cobrança</field>
+  <field name="code">billing_frequency_change</field>
+  <field name="category">financial</field>
+  <field name="description">Mensal, trimestral, anual etc.</field>
+</record>
+<record id="amendment_reason_payment_day_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração do dia de vencimento</field>
+  <field name="code">payment_day_change</field>
+  <field name="category">financial</field>
+  <field name="description">Mudança do dia de pagamento.</field>
+</record>
+<record id="amendment_reason_payment_method_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração da forma de pagamento</field>
+  <field name="code">payment_method_change</field>
+  <field name="category">financial</field>
+  <field name="description">Boleto, transferência, invoice etc.</field>
+</record>
+<record id="amendment_reason_late_fee_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração da multa por atraso</field>
+  <field name="code">late_fee_change</field>
+  <field name="category">financial</field>
+  <field name="description">Mudança de multa moratória.</field>
+</record>
+<record id="amendment_reason_interest_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de juros</field>
+  <field name="code">interest_change</field>
+  <field name="category">financial</field>
+  <field name="description">Mudança de juros de mora.</field>
+</record>
+<record id="amendment_reason_penalty_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de penalidade</field>
+  <field name="code">penalty_change</field>
+  <field name="category">financial</field>
+  <field name="description">Mudança de penalidade contratual.</field>
+</record>
+<record id="amendment_reason_minimum_rent_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de aluguel mínimo</field>
+  <field name="code">minimum_rent_change</field>
+  <field name="category">financial</field>
+  <field name="description">Mudança de aluguel mínimo garantido.</field>
+</record>
+<record id="amendment_reason_variable_rent_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de aluguel variável</field>
+  <field name="code">variable_rent_change</field>
+  <field name="category">financial</field>
+  <field name="description">Mudança de cobrança variável.</field>
+</record>
+<record id="amendment_reason_percentage_rent_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de aluguel percentual</field>
+  <field name="code">percentage_rent_change</field>
+  <field name="category">financial</field>
+  <field name="description">Mudança de percentual sobre faturamento.</field>
+</record>
+<record id="amendment_reason_turnover_rent_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de aluguel sobre faturamento</field>
+  <field name="code">turnover_rent_change</field>
+  <field name="category">financial</field>
+  <field name="description">Mudança do aluguel de varejo baseado em faturamento.</field>
+</record>
+<record id="amendment_reason_abatement" model="property.contract.amendment.reason">
+  <field name="name">Abatimento</field>
+  <field name="code">abatement</field>
+  <field name="category">financial</field>
+  <field name="description">Abatimento parcial de cobrança.</field>
+</record>
+<record id="amendment_reason_waiver" model="property.contract.amendment.reason">
+  <field name="name">Renúncia de cobrança</field>
+  <field name="code">waiver</field>
+  <field name="category">financial</field>
+  <field name="description">Perdão ou renúncia de valor.</field>
+</record>
+<record id="amendment_reason_credit_memo" model="property.contract.amendment.reason">
+  <field name="name">Crédito contratual</field>
+  <field name="code">credit_memo</field>
+  <field name="category">financial</field>
+  <field name="description">Geração de crédito a favor de uma parte.</field>
+</record>
+<record id="amendment_reason_settlement" model="property.contract.amendment.reason">
+  <field name="name">Acordo financeiro</field>
+  <field name="code">settlement</field>
+  <field name="category">financial</field>
+  <field name="description">Composição financeira ou quitação.</field>
+</record>
+<record id="amendment_reason_asset_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de imóvel</field>
+  <field name="code">asset_change</field>
+  <field name="category">asset</field>
+  <field name="description">Substituição do imóvel locado.</field>
+</record>
+<record id="amendment_reason_area_expansion" model="property.contract.amendment.reason">
+  <field name="name">Expansão de área</field>
+  <field name="code">area_expansion</field>
+  <field name="category">asset</field>
+  <field name="description">Aumento da área locada.</field>
+</record>
+<record id="amendment_reason_area_reduction" model="property.contract.amendment.reason">
+  <field name="name">Redução de área</field>
+  <field name="code">area_reduction</field>
+  <field name="category">asset</field>
+  <field name="description">Redução da área locada.</field>
+</record>
+<record id="amendment_reason_unit_substitution" model="property.contract.amendment.reason">
+  <field name="name">Substituição de unidade</field>
+  <field name="code">unit_substitution</field>
+  <field name="category">asset</field>
+  <field name="description">Troca de loja, sala, galpão ou unidade.</field>
+</record>
+<record id="amendment_reason_partial_delivery" model="property.contract.amendment.reason">
+  <field name="name">Entrega parcial</field>
+  <field name="code">partial_delivery</field>
+  <field name="category">asset</field>
+  <field name="description">Entrega parcial da área.</field>
+</record>
+<record id="amendment_reason_partial_return" model="property.contract.amendment.reason">
+  <field name="name">Devolução parcial</field>
+  <field name="code">partial_return</field>
+  <field name="category">asset</field>
+  <field name="description">Devolução parcial da área.</field>
+</record>
+<record id="amendment_reason_parking_space_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de vagas</field>
+  <field name="code">parking_space_change</field>
+  <field name="category">asset</field>
+  <field name="description">Inclusão, exclusão ou troca de vagas.</field>
+</record>
+<record id="amendment_reason_storage_area_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de depósito</field>
+  <field name="code">storage_area_change</field>
+  <field name="category">asset</field>
+  <field name="description">Alteração de área de depósito.</field>
+</record>
+<record id="amendment_reason_common_area_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de área comum</field>
+  <field name="code">common_area_change</field>
+  <field name="category">asset</field>
+  <field name="description">Mudança de uso de área comum.</field>
+</record>
+<record id="amendment_reason_measurement_correction" model="property.contract.amendment.reason">
+  <field name="name">Correção de metragem</field>
+  <field name="code">measurement_correction</field>
+  <field name="category">asset</field>
+  <field name="description">Correção de área ou medição.</field>
+</record>
+<record id="amendment_reason_property_description_rectification" model="property.contract.amendment.reason">
+  <field name="name">Retificação da descrição do imóvel</field>
+  <field name="code">property_description_rectification</field>
+  <field name="category">asset</field>
+  <field name="description">Correção de endereço, matrícula, área ou cadastro.</field>
+</record>
+<record id="amendment_reason_registration_update" model="property.contract.amendment.reason">
+  <field name="name">Atualização registral</field>
+  <field name="code">registration_update</field>
+  <field name="category">asset</field>
+  <field name="description">Atualização em matrícula, inscrição ou registro.</field>
+</record>
+<record id="amendment_reason_purpose_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de finalidade</field>
+  <field name="code">purpose_change</field>
+  <field name="category">operation</field>
+  <field name="description">Mudança da finalidade da locação.</field>
+</record>
+<record id="amendment_reason_use_restriction_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de restrição de uso</field>
+  <field name="code">use_restriction_change</field>
+  <field name="category">operation</field>
+  <field name="description">Inclusão ou remoção de restrições de uso.</field>
+</record>
+<record id="amendment_reason_operating_hours_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de horário de funcionamento</field>
+  <field name="code">operating_hours_change</field>
+  <field name="category">operation</field>
+  <field name="description">Mudança de horário de operação.</field>
+</record>
+<record id="amendment_reason_brand_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de marca</field>
+  <field name="code">brand_change</field>
+  <field name="category">operation</field>
+  <field name="description">Mudança de marca operada no imóvel.</field>
+</record>
+<record id="amendment_reason_trade_name_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de nome fantasia</field>
+  <field name="code">trade_name_change</field>
+  <field name="category">operation</field>
+  <field name="description">Mudança de nome fantasia.</field>
+</record>
+<record id="amendment_reason_exclusivity_grant" model="property.contract.amendment.reason">
+  <field name="name">Concessão de exclusividade</field>
+  <field name="code">exclusivity_grant</field>
+  <field name="category">operation</field>
+  <field name="description">Criação de exclusividade comercial.</field>
+</record>
+<record id="amendment_reason_exclusivity_removal" model="property.contract.amendment.reason">
+  <field name="name">Remoção de exclusividade</field>
+  <field name="code">exclusivity_removal</field>
+  <field name="category">operation</field>
+  <field name="description">Extinção de exclusividade comercial.</field>
+</record>
+<record id="amendment_reason_sublicense_authorization" model="property.contract.amendment.reason">
+  <field name="name">Autorização de sublicença</field>
+  <field name="code">sublicense_authorization</field>
+  <field name="category">operation</field>
+  <field name="description">Autorização operacional específica.</field>
+</record>
+<record id="amendment_reason_sublocation_authorization" model="property.contract.amendment.reason">
+  <field name="name">Autorização de sublocação</field>
+  <field name="code">sublocation_authorization</field>
+  <field name="category">operation</field>
+  <field name="description">Autorização para sublocação.</field>
+</record>
+<record id="amendment_reason_cession_authorization" model="property.contract.amendment.reason">
+  <field name="name">Autorização de cessão</field>
+  <field name="code">cession_authorization</field>
+  <field name="category">operation</field>
+  <field name="description">Autorização de cessão contratual.</field>
+</record>
+<record id="amendment_reason_activity_expansion" model="property.contract.amendment.reason">
+  <field name="name">Expansão de atividade</field>
+  <field name="code">activity_expansion</field>
+  <field name="category">operation</field>
+  <field name="description">Permissão para novas atividades.</field>
+</record>
+<record id="amendment_reason_activity_restriction" model="property.contract.amendment.reason">
+  <field name="name">Restrição de atividade</field>
+  <field name="code">activity_restriction</field>
+  <field name="category">operation</field>
+  <field name="description">Restrição de atividades permitidas.</field>
+</record>
+<record id="amendment_reason_deposit_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de caução</field>
+  <field name="code">deposit_change</field>
+  <field name="category">guarantee</field>
+  <field name="description">Mudança de caução.</field>
+</record>
+<record id="amendment_reason_deposit_reinforcement" model="property.contract.amendment.reason">
+  <field name="name">Reforço de caução</field>
+  <field name="code">deposit_reinforcement</field>
+  <field name="category">guarantee</field>
+  <field name="description">Aumento ou complementação de caução.</field>
+</record>
+<record id="amendment_reason_deposit_release" model="property.contract.amendment.reason">
+  <field name="name">Liberação de caução</field>
+  <field name="code">deposit_release</field>
+  <field name="category">guarantee</field>
+  <field name="description">Liberação total ou parcial de caução.</field>
+</record>
+<record id="amendment_reason_surety_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de fiança</field>
+  <field name="code">surety_change</field>
+  <field name="category">guarantee</field>
+  <field name="description">Mudança de fiança.</field>
+</record>
+<record id="amendment_reason_guarantor_replacement" model="property.contract.amendment.reason">
+  <field name="name">Substituição de fiador</field>
+  <field name="code">guarantor_replacement</field>
+  <field name="category">guarantee</field>
+  <field name="description">Substituição do fiador.</field>
+</record>
+<record id="amendment_reason_insurance_bond_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de seguro-fiança</field>
+  <field name="code">insurance_bond_change</field>
+  <field name="category">guarantee</field>
+  <field name="description">Mudança de seguro-fiança.</field>
+</record>
+<record id="amendment_reason_bank_guarantee_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de garantia bancária</field>
+  <field name="code">bank_guarantee_change</field>
+  <field name="category">guarantee</field>
+  <field name="description">Mudança de carta fiança ou garantia bancária.</field>
+</record>
+<record id="amendment_reason_corporate_guarantee_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de garantia corporativa</field>
+  <field name="code">corporate_guarantee_change</field>
+  <field name="category">guarantee</field>
+  <field name="description">Mudança de garantia empresarial.</field>
+</record>
+<record id="amendment_reason_guarantee_release" model="property.contract.amendment.reason">
+  <field name="name">Liberação de garantia</field>
+  <field name="code">guarantee_release</field>
+  <field name="category">guarantee</field>
+  <field name="description">Extinção ou liberação de garantia.</field>
+</record>
+<record id="amendment_reason_guarantee_expiration_regularization" model="property.contract.amendment.reason">
+  <field name="name">Regularização de garantia vencida</field>
+  <field name="code">guarantee_expiration_regularization</field>
+  <field name="category">guarantee</field>
+  <field name="description">Regularização ou renovação de garantia vencida.</field>
+</record>
+<record id="amendment_reason_fit_out_authorization" model="property.contract.amendment.reason">
+  <field name="name">Autorização de adaptação/implantação</field>
+  <field name="code">fit_out_authorization</field>
+  <field name="category">works</field>
+  <field name="description">Autorização para obras de implantação.</field>
+</record>
+<record id="amendment_reason_construction_allowance" model="property.contract.amendment.reason">
+  <field name="name">Verba de obra</field>
+  <field name="code">construction_allowance</field>
+  <field name="category">works</field>
+  <field name="description">Concessão de verba para obra.</field>
+</record>
+<record id="amendment_reason_tenant_improvement" model="property.contract.amendment.reason">
+  <field name="name">Benfeitoria do locatário</field>
+  <field name="code">tenant_improvement</field>
+  <field name="category">works</field>
+  <field name="description">Benfeitorias feitas pelo locatário.</field>
+</record>
+<record id="amendment_reason_landlord_work" model="property.contract.amendment.reason">
+  <field name="name">Obra do locador</field>
+  <field name="code">landlord_work</field>
+  <field name="category">works</field>
+  <field name="description">Obra de responsabilidade do locador.</field>
+</record>
+<record id="amendment_reason_maintenance_responsibility_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de responsabilidade de manutenção</field>
+  <field name="code">maintenance_responsibility_change</field>
+  <field name="category">works</field>
+  <field name="description">Mudança de obrigação de manutenção.</field>
+</record>
+<record id="amendment_reason_capex_reimbursement" model="property.contract.amendment.reason">
+  <field name="name">Reembolso de CAPEX</field>
+  <field name="code">capex_reimbursement</field>
+  <field name="category">works</field>
+  <field name="description">Reembolso de investimento ou obra.</field>
+</record>
+<record id="amendment_reason_work_delay_compensation" model="property.contract.amendment.reason">
+  <field name="name">Compensação por atraso de obra</field>
+  <field name="code">work_delay_compensation</field>
+  <field name="category">works</field>
+  <field name="description">Compensação por atraso de entrega ou obra.</field>
+</record>
+<record id="amendment_reason_technical_project_approval" model="property.contract.amendment.reason">
+  <field name="name">Aprovação de projeto técnico</field>
+  <field name="code">technical_project_approval</field>
+  <field name="category">works</field>
+  <field name="description">Aprovação de projeto técnico ou arquitetônico.</field>
+</record>
+<record id="amendment_reason_renovation_obligation" model="property.contract.amendment.reason">
+  <field name="name">Obrigação de reforma</field>
+  <field name="code">renovation_obligation</field>
+  <field name="category">works</field>
+  <field name="description">Inclusão de obrigação de reforma.</field>
+</record>
+<record id="amendment_reason_reinstatement_obligation" model="property.contract.amendment.reason">
+  <field name="name">Obrigação de recomposição</field>
+  <field name="code">reinstatement_obligation</field>
+  <field name="category">works</field>
+  <field name="description">Obrigação de devolver/recompor imóvel.</field>
+</record>
+<record id="amendment_reason_iptu_responsibility_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de responsabilidade por IPTU</field>
+  <field name="code">iptu_responsibility_change</field>
+  <field name="category">expenses</field>
+  <field name="description">Mudança de responsabilidade por IPTU.</field>
+</record>
+<record id="amendment_reason_condominium_responsibility_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de responsabilidade por condomínio</field>
+  <field name="code">condominium_responsibility_change</field>
+  <field name="category">expenses</field>
+  <field name="description">Mudança de responsabilidade por condomínio.</field>
+</record>
+<record id="amendment_reason_cam_charge_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de despesas comuns</field>
+  <field name="code">cam_charge_change</field>
+  <field name="category">expenses</field>
+  <field name="description">Mudança de despesas comuns, rateio ou despesas comuns.</field>
+</record>
+<record id="amendment_reason_utility_charge_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de utilidades</field>
+  <field name="code">utility_charge_change</field>
+  <field name="category">expenses</field>
+  <field name="description">Água, energia, gás, telecom etc.</field>
+</record>
+<record id="amendment_reason_insurance_charge_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de encargo de seguro</field>
+  <field name="code">insurance_charge_change</field>
+  <field name="category">expenses</field>
+  <field name="description">Mudança de repasse ou responsabilidade de seguro.</field>
+</record>
+<record id="amendment_reason_marketing_fund_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de fundo de marketing</field>
+  <field name="code">marketing_fund_change</field>
+  <field name="category">expenses</field>
+  <field name="description">Mudança de contribuição de marketing.</field>
+</record>
+<record id="amendment_reason_promotion_fund_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de fundo promocional</field>
+  <field name="code">promotion_fund_change</field>
+  <field name="category">expenses</field>
+  <field name="description">Mudança de fundo promocional.</field>
+</record>
+<record id="amendment_reason_service_charge_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de taxa de serviço</field>
+  <field name="code">service_charge_change</field>
+  <field name="category">expenses</field>
+  <field name="description">Mudança de taxa de serviço.</field>
+</record>
+<record id="amendment_reason_common_cost_reconciliation" model="property.contract.amendment.reason">
+  <field name="name">Reconciliação de despesas comuns</field>
+  <field name="code">common_cost_reconciliation</field>
+  <field name="category">expenses</field>
+  <field name="description">Apuração ou ajuste de rateios.</field>
+</record>
+<record id="amendment_reason_expense_cap_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de teto de despesas</field>
+  <field name="code">expense_cap_change</field>
+  <field name="category">expenses</field>
+  <field name="description">Mudança de cap de despesas.</field>
+</record>
+<record id="amendment_reason_audit_adjustment" model="property.contract.amendment.reason">
+  <field name="name">Ajuste de auditoria</field>
+  <field name="code">audit_adjustment</field>
+  <field name="category">expenses</field>
+  <field name="description">Ajuste decorrente de auditoria.</field>
+</record>
+<record id="amendment_reason_confidentiality_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de confidencialidade</field>
+  <field name="code">confidentiality_change</field>
+  <field name="category">legal</field>
+  <field name="description">Mudança de confidencialidade.</field>
+</record>
+<record id="amendment_reason_lgpd_clause_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de cláusula LGPD</field>
+  <field name="code">lgpd_clause_change</field>
+  <field name="category">legal</field>
+  <field name="description">Mudança de tratamento de dados.</field>
+</record>
+<record id="amendment_reason_anti_corruption_clause_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração anticorrupção</field>
+  <field name="code">anti_corruption_clause_change</field>
+  <field name="category">legal</field>
+  <field name="description">Mudança de conformidade anticorrupção.</field>
+</record>
+<record id="amendment_reason_insurance_obligation_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de obrigação de seguro</field>
+  <field name="code">insurance_obligation_change</field>
+  <field name="category">legal</field>
+  <field name="description">Mudança de obrigação de seguro.</field>
+</record>
+<record id="amendment_reason_license_obligation_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de licenças</field>
+  <field name="code">license_obligation_change</field>
+  <field name="category">legal</field>
+  <field name="description">Mudança de licenças exigidas.</field>
+</record>
+<record id="amendment_reason_environmental_obligation_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração ambiental</field>
+  <field name="code">environmental_obligation_change</field>
+  <field name="category">legal</field>
+  <field name="description">Mudança de obrigação ambiental.</field>
+</record>
+<record id="amendment_reason_force_majeure_adjustment" model="property.contract.amendment.reason">
+  <field name="name">Ajuste por força maior</field>
+  <field name="code">force_majeure_adjustment</field>
+  <field name="category">legal</field>
+  <field name="description">Ajuste decorrente de força maior.</field>
+</record>
+<record id="amendment_reason_expropriation_clause_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de desapropriação</field>
+  <field name="code">expropriation_clause_change</field>
+  <field name="category">legal</field>
+  <field name="description">Mudança de cláusula de desapropriação.</field>
+</record>
+<record id="amendment_reason_dispute_resolution_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de solução de disputas</field>
+  <field name="code">dispute_resolution_change</field>
+  <field name="category">legal</field>
+  <field name="description">Mudança de mediação, arbitragem ou foro.</field>
+</record>
+<record id="amendment_reason_jurisdiction_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de foro</field>
+  <field name="code">jurisdiction_change</field>
+  <field name="category">legal</field>
+  <field name="description">Mudança de foro.</field>
+</record>
+<record id="amendment_reason_arbitration_clause_change" model="property.contract.amendment.reason">
+  <field name="name">Alteração de arbitragem</field>
+  <field name="code">arbitration_clause_change</field>
+  <field name="category">legal</field>
+  <field name="description">Mudança de cláusula arbitral.</field>
+</record>
+<record id="amendment_reason_termination" model="property.contract.amendment.reason">
+  <field name="name">Encerramento</field>
+  <field name="code">termination</field>
+  <field name="category">termination</field>
+  <field name="description">Encerramento contratual.</field>
+</record>
+<record id="amendment_reason_partial_termination" model="property.contract.amendment.reason">
+  <field name="name">Rescisão parcial</field>
+  <field name="code">partial_termination</field>
+  <field name="category">termination</field>
+  <field name="description">Encerramento parcial.</field>
+</record>
+<record id="amendment_reason_distrato" model="property.contract.amendment.reason">
+  <field name="name">Distrato</field>
+  <field name="code">distrato</field>
+  <field name="category">termination</field>
+  <field name="description">Distrato consensual.</field>
+</record>
+<record id="amendment_reason_rescission" model="property.contract.amendment.reason">
+  <field name="name">Rescisão</field>
+  <field name="code">rescission</field>
+  <field name="category">termination</field>
+  <field name="description">Rescisão por motivo contratual.</field>
+</record>
+<record id="amendment_reason_mutual_termination" model="property.contract.amendment.reason">
+  <field name="name">Rescisão amigável</field>
+  <field name="code">mutual_termination</field>
+  <field name="category">termination</field>
+  <field name="description">Encerramento por acordo.</field>
+</record>
+<record id="amendment_reason_default_termination" model="property.contract.amendment.reason">
+  <field name="name">Rescisão por inadimplência</field>
+  <field name="code">default_termination</field>
+  <field name="category">termination</field>
+  <field name="description">Encerramento por descumprimento.</field>
+</record>
+<record id="amendment_reason_expiration_regularization" model="property.contract.amendment.reason">
+  <field name="name">Regularização de término</field>
+  <field name="code">expiration_regularization</field>
+  <field name="category">termination</field>
+  <field name="description">Regularização após término.</field>
+</record>
+<record id="amendment_reason_handover_regularization" model="property.contract.amendment.reason">
+  <field name="name">Regularização de entrega</field>
+  <field name="code">handover_regularization</field>
+  <field name="category">termination</field>
+  <field name="description">Regularização de devolução/entrega de chaves.</field>
+</record>
+<record id="amendment_reason_key_return" model="property.contract.amendment.reason">
+  <field name="name">Devolução de chaves</field>
+  <field name="code">key_return</field>
+  <field name="category">termination</field>
+  <field name="description">Devolução formal de chaves.</field>
+</record>
+<record id="amendment_reason_settlement_after_termination" model="property.contract.amendment.reason">
+  <field name="name">Acordo pós-rescisão</field>
+  <field name="code">settlement_after_termination</field>
+  <field name="category">termination</field>
+  <field name="description">Composição após encerramento.</field>
+</record>
+<record id="financial_reason_base_rent_increase" model="property.contract.financial.reason">
+  <field name="name">Aumento do aluguel-base</field>
+  <field name="code">base_rent_increase</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_annual_index_adjustment" model="property.contract.financial.reason">
+  <field name="name">Reajuste anual por índice</field>
+  <field name="code">annual_index_adjustment</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_fixed_percentage_adjustment" model="property.contract.financial.reason">
+  <field name="name">Reajuste percentual fixo</field>
+  <field name="code">fixed_percentage_adjustment</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_extraordinary_rent_review" model="property.contract.financial.reason">
+  <field name="name">Revisão extraordinária do aluguel</field>
+  <field name="code">extraordinary_rent_review</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_market_rent_review" model="property.contract.financial.reason">
+  <field name="name">Revisão de aluguel a mercado</field>
+  <field name="code">market_rent_review</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_step_up_rent" model="property.contract.financial.reason">
+  <field name="name">Aluguel escalonado crescente</field>
+  <field name="code">step_up_rent</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_minimum_rent_increase" model="property.contract.financial.reason">
+  <field name="name">Aumento do aluguel mínimo</field>
+  <field name="code">minimum_rent_increase</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_variable_rent_overage" model="property.contract.financial.reason">
+  <field name="name">Excedente de aluguel variável</field>
+  <field name="code">variable_rent_overage</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_turnover_percentage_rent" model="property.contract.financial.reason">
+  <field name="name">Aluguel percentual sobre faturamento</field>
+  <field name="code">turnover_percentage_rent</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_retroactive_debit" model="property.contract.financial.reason">
+  <field name="name">Débito retroativo</field>
+  <field name="code">retroactive_debit</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_underbilling_correction" model="property.contract.financial.reason">
+  <field name="name">Correção de cobrança a menor</field>
+  <field name="code">underbilling_correction</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_area_expansion_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança por expansão de área</field>
+  <field name="code">area_expansion_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_measurement_increase_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança por aumento de metragem</field>
+  <field name="code">measurement_increase_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_additional_unit_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança por unidade adicional</field>
+  <field name="code">additional_unit_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_parking_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de estacionamento</field>
+  <field name="code">parking_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_storage_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de depósito/armazenagem</field>
+  <field name="code">storage_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_signage_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de letreiro/sinalização</field>
+  <field name="code">signage_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_kiosk_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de quiosque</field>
+  <field name="code">kiosk_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_common_area_use_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança por uso de área comum</field>
+  <field name="code">common_area_use_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_fit_out_amortization" model="property.contract.financial.reason">
+  <field name="name">Amortização de obras de adaptação</field>
+  <field name="code">fit_out_amortization</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_tenant_improvement_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de benfeitoria do locatário</field>
+  <field name="code">tenant_improvement_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_landlord_work_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de obra do locador</field>
+  <field name="code">landlord_work_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_construction_cost_recovery" model="property.contract.financial.reason">
+  <field name="name">Recuperação de custo de obra</field>
+  <field name="code">construction_cost_recovery</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_capex_recovery" model="property.contract.financial.reason">
+  <field name="name">Recuperação de investimento/CAPEX</field>
+  <field name="code">capex_recovery</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_iptu_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de IPTU</field>
+  <field name="code">iptu_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_condominium_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de condomínio</field>
+  <field name="code">condominium_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_cam_recovery" model="property.contract.financial.reason">
+  <field name="name">Recuperação de despesas comuns</field>
+  <field name="code">cam_recovery</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_common_expense_recovery" model="property.contract.financial.reason">
+  <field name="name">Recuperação de despesas comuns</field>
+  <field name="code">common_expense_recovery</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_utility_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de utilidades</field>
+  <field name="code">utility_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_water_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de água</field>
+  <field name="code">water_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_electricity_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de energia elétrica</field>
+  <field name="code">electricity_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_gas_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de gás</field>
+  <field name="code">gas_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_waste_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de resíduos/lixo</field>
+  <field name="code">waste_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_security_service_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de serviço de segurança</field>
+  <field name="code">security_service_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_cleaning_service_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de serviço de limpeza</field>
+  <field name="code">cleaning_service_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_maintenance_service_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de serviço de manutenção</field>
+  <field name="code">maintenance_service_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_insurance_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de seguro</field>
+  <field name="code">insurance_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_fire_insurance_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de seguro incêndio</field>
+  <field name="code">fire_insurance_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_liability_insurance_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de seguro de responsabilidade civil</field>
+  <field name="code">liability_insurance_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_marketing_fund_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de fundo de marketing</field>
+  <field name="code">marketing_fund_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_promotion_fund_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de fundo promocional</field>
+  <field name="code">promotion_fund_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_administrative_fee" model="property.contract.financial.reason">
+  <field name="name">Taxa administrativa</field>
+  <field name="code">administrative_fee</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_management_fee" model="property.contract.financial.reason">
+  <field name="name">Taxa de gestão</field>
+  <field name="code">management_fee</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_billing_fee" model="property.contract.financial.reason">
+  <field name="name">Taxa de faturamento/cobrança</field>
+  <field name="code">billing_fee</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_collection_fee" model="property.contract.financial.reason">
+  <field name="name">Taxa de cobrança</field>
+  <field name="code">collection_fee</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_late_fee" model="property.contract.financial.reason">
+  <field name="name">Multa por atraso</field>
+  <field name="code">late_fee</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_late_interest" model="property.contract.financial.reason">
+  <field name="name">Juros por atraso</field>
+  <field name="code">late_interest</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_monetary_correction" model="property.contract.financial.reason">
+  <field name="name">Correção monetária</field>
+  <field name="code">monetary_correction</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_legal_cost_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de custo jurídico</field>
+  <field name="code">legal_cost_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_collection_cost_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de custo de cobrança</field>
+  <field name="code">collection_cost_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_penalty_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de multa</field>
+  <field name="code">penalty_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_break_fee" model="property.contract.financial.reason">
+  <field name="name">Multa de saída/rescisão</field>
+  <field name="code">break_fee</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_holdover_premium" model="property.contract.financial.reason">
+  <field name="name">Adicional por permanência após prazo</field>
+  <field name="code">holdover_premium</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_occupancy_regularization_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de regularização de ocupação</field>
+  <field name="code">occupancy_regularization_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_retroactive_index_difference" model="property.contract.financial.reason">
+  <field name="name">Diferença retroativa de índice</field>
+  <field name="code">retroactive_index_difference</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_currency_variation_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança de variação cambial</field>
+  <field name="code">currency_variation_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_tax_gross_up" model="property.contract.financial.reason">
+  <field name="name">Recomposição tributária</field>
+  <field name="code">tax_gross_up</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_withholding_tax_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de imposto retido</field>
+  <field name="code">withholding_tax_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_license_cost_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de custo de licença</field>
+  <field name="code">license_cost_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_exclusive_right_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança por direito exclusivo</field>
+  <field name="code">exclusive_right_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_brand_use_charge" model="property.contract.financial.reason">
+  <field name="name">Cobrança por uso de marca</field>
+  <field name="code">brand_use_charge</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_assignment_fee" model="property.contract.financial.reason">
+  <field name="name">Taxa de cessão</field>
+  <field name="code">assignment_fee</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_sublicensing_fee" model="property.contract.financial.reason">
+  <field name="name">Taxa de sublicenciamento</field>
+  <field name="code">sublicensing_fee</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_renewal_fee" model="property.contract.financial.reason">
+  <field name="name">Taxa de renovação</field>
+  <field name="code">renewal_fee</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_novation_fee" model="property.contract.financial.reason">
+  <field name="name">Taxa de novação</field>
+  <field name="code">novation_fee</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_settlement_debit" model="property.contract.financial.reason">
+  <field name="name">Débito de acordo</field>
+  <field name="code">settlement_debit</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_invoice_reversal_debit" model="property.contract.financial.reason">
+  <field name="name">Débito por reversão de fatura</field>
+  <field name="code">invoice_reversal_debit</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_credit_reversal" model="property.contract.financial.reason">
+  <field name="name">Reversão de crédito</field>
+  <field name="code">credit_reversal</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_security_deposit_reinforcement" model="property.contract.financial.reason">
+  <field name="name">Reforço de caução/depósito de garantia</field>
+  <field name="code">security_deposit_reinforcement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_bank_guarantee_cost_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de custo de fiança bancária</field>
+  <field name="code">bank_guarantee_cost_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_insurance_bond_cost_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de custo de seguro garantia</field>
+  <field name="code">insurance_bond_cost_reimbursement</field>
+  <field name="impact_type">plus</field>
+</record>
+<record id="financial_reason_temporary_rent_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto temporário de aluguel</field>
+  <field name="code">temporary_rent_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_permanent_rent_reduction" model="property.contract.financial.reason">
+  <field name="name">Redução permanente de aluguel</field>
+  <field name="code">permanent_rent_reduction</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_commercial_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto comercial</field>
+  <field name="code">commercial_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_settlement_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto de acordo</field>
+  <field name="code">settlement_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_early_payment_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto por pagamento antecipado</field>
+  <field name="code">early_payment_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_loyalty_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto por fidelidade</field>
+  <field name="code">loyalty_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_pandemic_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto por pandemia</field>
+  <field name="code">pandemic_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_force_majeure_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto por força maior</field>
+  <field name="code">force_majeure_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_construction_disruption_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto por interferência de obra</field>
+  <field name="code">construction_disruption_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_access_restriction_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto por restrição de acesso</field>
+  <field name="code">access_restriction_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_operation_restriction_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto por restrição operacional</field>
+  <field name="code">operation_restriction_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_partial_closure_discount" model="property.contract.financial.reason">
+  <field name="name">Desconto por fechamento parcial</field>
+  <field name="code">partial_closure_discount</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_rent_free_period" model="property.contract.financial.reason">
+  <field name="name">Período sem aluguel</field>
+  <field name="code">rent_free_period</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_grace_period" model="property.contract.financial.reason">
+  <field name="name">Carência</field>
+  <field name="code">grace_period</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_abatement" model="property.contract.financial.reason">
+  <field name="name">Abatimento</field>
+  <field name="code">abatement</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_rent_waiver" model="property.contract.financial.reason">
+  <field name="name">Perdão de aluguel</field>
+  <field name="code">rent_waiver</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_late_fee_waiver" model="property.contract.financial.reason">
+  <field name="name">Perdão de multa por atraso</field>
+  <field name="code">late_fee_waiver</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_interest_waiver" model="property.contract.financial.reason">
+  <field name="name">Perdão de juros</field>
+  <field name="code">interest_waiver</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_penalty_waiver" model="property.contract.financial.reason">
+  <field name="name">Perdão de multa</field>
+  <field name="code">penalty_waiver</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_retroactive_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito retroativo</field>
+  <field name="code">retroactive_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_overbilling_correction" model="property.contract.financial.reason">
+  <field name="name">Correção de cobrança a maior</field>
+  <field name="code">overbilling_correction</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_area_reduction_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito por redução de área</field>
+  <field name="code">area_reduction_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_measurement_reduction_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito por redução de metragem</field>
+  <field name="code">measurement_reduction_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_partial_return_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito por devolução parcial</field>
+  <field name="code">partial_return_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_unit_unavailability_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito por indisponibilidade de unidade</field>
+  <field name="code">unit_unavailability_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_service_failure_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito por falha de serviço</field>
+  <field name="code">service_failure_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_common_expense_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito de despesa comum</field>
+  <field name="code">common_expense_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_cam_reconciliation_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito de reconciliação de despesas comuns</field>
+  <field name="code">cam_reconciliation_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_condominium_reconciliation_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito de reconciliação de condomínio</field>
+  <field name="code">condominium_reconciliation_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_iptu_exemption_pass_through" model="property.contract.financial.reason">
+  <field name="name">Repasse de isenção de IPTU</field>
+  <field name="code">iptu_exemption_pass_through</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_insurance_claim_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito de sinistro de seguro</field>
+  <field name="code">insurance_claim_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_landlord_work_delay_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito por atraso de obra do locador</field>
+  <field name="code">landlord_work_delay_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_fit_out_allowance" model="property.contract.financial.reason">
+  <field name="name">Subsídio para obras de adaptação</field>
+  <field name="code">fit_out_allowance</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_construction_allowance" model="property.contract.financial.reason">
+  <field name="name">Subsídio de obra</field>
+  <field name="code">construction_allowance</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_tenant_improvement_allowance" model="property.contract.financial.reason">
+  <field name="name">Subsídio para benfeitoria do locatário</field>
+  <field name="code">tenant_improvement_allowance</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_capex_contribution" model="property.contract.financial.reason">
+  <field name="name">Contribuição de investimento/CAPEX</field>
+  <field name="code">capex_contribution</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_marketing_incentive" model="property.contract.financial.reason">
+  <field name="name">Incentivo de marketing</field>
+  <field name="code">marketing_incentive</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_promotion_incentive" model="property.contract.financial.reason">
+  <field name="name">Incentivo promocional</field>
+  <field name="code">promotion_incentive</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_vacancy_incentive" model="property.contract.financial.reason">
+  <field name="name">Incentivo de vacância/ocupação</field>
+  <field name="code">vacancy_incentive</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_renewal_incentive" model="property.contract.financial.reason">
+  <field name="name">Incentivo de renovação</field>
+  <field name="code">renewal_incentive</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_lease_incentive" model="property.contract.financial.reason">
+  <field name="name">Incentivo de locação</field>
+  <field name="code">lease_incentive</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_free_parking_period" model="property.contract.financial.reason">
+  <field name="name">Período gratuito de estacionamento</field>
+  <field name="code">free_parking_period</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_free_storage_period" model="property.contract.financial.reason">
+  <field name="name">Período gratuito de armazenagem</field>
+  <field name="code">free_storage_period</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_free_signage_period" model="property.contract.financial.reason">
+  <field name="name">Período gratuito de sinalização</field>
+  <field name="code">free_signage_period</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_credit_memo" model="property.contract.financial.reason">
+  <field name="name">Memorando de crédito</field>
+  <field name="code">credit_memo</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_invoice_cancellation_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito por cancelamento de fatura</field>
+  <field name="code">invoice_cancellation_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_settlement_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito de acordo</field>
+  <field name="code">settlement_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_compensation_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito de compensação</field>
+  <field name="code">compensation_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_offset_against_deposit" model="property.contract.financial.reason">
+  <field name="name">Compensação contra caução/depósito</field>
+  <field name="code">offset_against_deposit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_security_deposit_release" model="property.contract.financial.reason">
+  <field name="name">Liberação de caução/depósito de garantia</field>
+  <field name="code">security_deposit_release</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_guarantee_cost_reimbursement" model="property.contract.financial.reason">
+  <field name="name">Reembolso de custo de garantia</field>
+  <field name="code">guarantee_cost_reimbursement</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_tax_credit_pass_through" model="property.contract.financial.reason">
+  <field name="name">Repasse de crédito tributário</field>
+  <field name="code">tax_credit_pass_through</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_expropriation_compensation" model="property.contract.financial.reason">
+  <field name="name">Compensação por desapropriação</field>
+  <field name="code">expropriation_compensation</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_casualty_compensation" model="property.contract.financial.reason">
+  <field name="name">Compensação por sinistro</field>
+  <field name="code">casualty_compensation</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="financial_reason_termination_settlement_credit" model="property.contract.financial.reason">
+  <field name="name">Crédito de acordo de rescisão</field>
+  <field name="code">termination_settlement_credit</field>
+  <field name="impact_type">minus</field>
+</record>
+<record id="document_type_original_contract" model="property.contract.document.type">
+  <field name="name">Contrato Original</field>
+  <field name="code">original_contract</field>
+  <field name="sequence">1</field>
+</record>
+<record id="document_type_amendment" model="property.contract.document.type">
+  <field name="name">Aditivo</field>
+  <field name="code">amendment</field>
+  <field name="sequence">2</field>
+</record>
+<record id="document_type_signature_certificate" model="property.contract.document.type">
+  <field name="name">Certificado de Assinatura</field>
+  <field name="code">signature_certificate</field>
+  <field name="sequence">3</field>
+</record>
+<record id="document_type_registration" model="property.contract.document.type">
+  <field name="name">Registro</field>
+  <field name="code">registration</field>
+  <field name="sequence">4</field>
+</record>
+<record id="document_type_notice" model="property.contract.document.type">
+  <field name="name">Notificação</field>
+  <field name="code">notice</field>
+  <field name="sequence">5</field>
+</record>
+<record id="document_type_invoice_support" model="property.contract.document.type">
+  <field name="name">Suporte Financeiro</field>
+  <field name="code">invoice_support</field>
+  <field name="sequence">6</field>
+</record>
+<record id="document_type_approval_document" model="property.contract.document.type">
+  <field name="name">Documento de Aprovação</field>
+  <field name="code">approval_document</field>
+  <field name="sequence">7</field>
+</record>
+<record id="document_type_termination_document" model="property.contract.document.type">
+  <field name="name">Documento de Encerramento</field>
+  <field name="code">termination_document</field>
+  <field name="sequence">8</field>
+</record>
+<record id="document_type_other" model="property.contract.document.type">
+  <field name="name">Outro</field>
+  <field name="code">other</field>
+  <field name="sequence">9</field>
+</record>
+</odoo>

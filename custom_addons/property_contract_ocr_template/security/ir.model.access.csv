@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_property_contract_ocr_template_user,property.contract.ocr.template user,model_property_contract_ocr_template,base.group_user,1,1,1,0
+access_property_contract_ocr_template_manager,property.contract.ocr.template manager,model_property_contract_ocr_template,base.group_system,1,1,1,1
+access_property_contract_ocr_template_line_user,property.contract.ocr.template.line user,model_property_contract_ocr_template_line,base.group_user,1,1,1,0
+access_property_contract_ocr_template_line_manager,property.contract.ocr.template.line manager,model_property_contract_ocr_template_line,base.group_system,1,1,1,1

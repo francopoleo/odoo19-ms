@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <record id="view_dossier_dossier_form_agenda_ext" model="ir.ui.view">
+        <field name="name">dossier.dossier.form.agenda.ext</field>
+        <field name="model">dossier.dossier</field>
+        <field name="inherit_id" ref="document_dossier.view_dossier_dossier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='document_ids']" position="after">
+                <separator string="Agenda e Atividades"/>
+                <div class="alert alert-info" role="alert">
+                    <p class="mb-0"><i class="fa fa-clock-o" title="Agenda"/> Use atividades para cobrar a conclusão do dossiê e calendário quando houver reunião/conferência documental marcada.</p>
+                </div>
+                <group>
+                    <group string="Responsáveis">
+                        <field name="agenda_responsible_id"/>
+                        <field name="agenda_responsible_ids" widget="many2many_tags"/>
+                        <field name="agenda_partner_ids" widget="many2many_tags"/>
+                    <field name="agenda_visibility"/><field name="agenda_viewer_user_ids" widget="many2many_tags" invisible="agenda_visibility != 'custom'"/></group>
+                    <group string="Prazo / Compromisso">
+                        <field name="agenda_deadline" placeholder="Se vazio, usa Data Alvo de Conclusão"/>
+                        <field name="agenda_start"/>
+                        <field name="agenda_stop"/>
+                        <field name="agenda_duration_hours"/>
+                        <field name="agenda_location"/>
+                        <field name="agenda_calendar_event_id" readonly="1"/>
+                    </group>
+                </group>
+                <group string="Notas de Agenda">
+                    <field name="agenda_notes" nolabel="1"/>
+                </group>
+                <div class="d-flex gap-2 mt-3">
+                    <button name="action_schedule_dossier_activity" type="object" string="Criar/Atualizar Atividades" class="btn btn-primary" icon="fa-tasks"/>
+                    <button name="action_agenda_sync_calendar" type="object" string="Sincronizar Agenda Geral" class="btn btn-secondary" icon="fa-calendar"/>
+                    <button name="action_agenda_open_calendar_event" type="object" string="Abrir Agenda" class="btn btn-link" icon="fa-external-link" invisible="not agenda_calendar_event_id"/>
+                </div>
+            </xpath>
+            <xpath expr="//sheet" position="after">
+                <chatter/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_dossier_dossier_calendar" model="ir.ui.view">
+        <field name="name">dossier.dossier.calendar</field>
+        <field name="model">dossier.dossier</field>
+        <field name="arch" type="xml">
+            <calendar string="Agenda de Dossiês" date_start="agenda_start" date_stop="agenda_stop" color="agenda_responsible_id" event_limit="5">
+                <field name="name"/>
+                <field name="process_id"/>
+                <field name="agenda_responsible_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_dossier_dossier_calendar" model="ir.actions.act_window">
+        <field name="name">Agenda de Dossiês</field>
+        <field name="res_model">dossier.dossier</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[("agenda_start", "!=", False)]</field>
+    </record>
+
+</odoo>

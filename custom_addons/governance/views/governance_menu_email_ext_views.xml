@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_governance_email_channels_registry"
+              name="Canais de E-mail"
+              parent="menu_governance_registry_root"
+              action="action_governance_email_channel"
+              sequence="25"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_governance_email_channels_config"
+              name="Canais de E-mail"
+              parent="menu_governance_config"
+              action="action_governance_email_channel"
+              sequence="35"
+              groups="governance.group_governance_manager"/>
+
+    <menuitem id="menu_governance_sla_rules_config"
+              name="Regras de SLA"
+              parent="menu_governance_config"
+              action="action_governance_sla_rule"
+              sequence="40"
+              groups="governance.group_governance_manager"/>
+</odoo>

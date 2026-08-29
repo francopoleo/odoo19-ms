@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_move_form_latam_provisional_document" model="ir.ui.view">
+        <field name="name">account.move.form.latam.provisional.document</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Campo oficial LATAM:
+                 - fica editável para trocar PROV-* pelo número fiscal real;
+                 - não fica required na view;
+                 - o pagamento bloqueia enquanto estiver vazio/provisório.
+            -->
+            <xpath expr="//field[@name='l10n_latam_document_number']" position="attributes">
+                <attribute name="required">0</attribute>
+                <attribute name="readonly">0</attribute>
+                <attribute name="placeholder">PROV-* ou número real antes do pagamento</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='l10n_latam_document_number']" position="after">
+                <field name="l10n_latam_is_provisional_document"
+                       string="⚠ Documento Fiscal Provisório — informe o número real antes de pagar"
+                       readonly="1"
+                       invisible="not l10n_latam_is_provisional_document"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

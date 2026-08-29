@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <!-- ==================== WIZARD FORM ==================== -->
+    <record id="view_property_maintenance_bill_wizard_form" model="ir.ui.view">
+        <field name="name">property.maintenance.bill.wiz.form</field>
+        <field name="model">property.maintenance.bill.wiz</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <p class="mb-0">
+                            <i class="fa fa-info-circle" title="Informação"/>
+                            <strong>Nova Fatura de Compra:</strong> preencha os dados da fatura e adicione itens.
+                            Ao confirmar, uma fatura será criada em rascunho no Accounting.
+                        </p>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="maintenance_id" readonly="1"/>
+                            <field name="partner_id" required="1" string="Fornecedor"/>
+                        </group>
+                        <group>
+                            <field name="invoice_date" required="1"/>
+                            <field name="ref" placeholder="NF-000123"/>
+                        </group>
+                    </group>
+
+                    <field name="line_ids" required="1">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="quantity"/>
+                            <field name="price_unit"/>
+                            <field name="account_id" required="1"/>
+                            <field name="subtotal" readonly="1"/>
+                        </list>
+                    </field>
+
+                    <group class="oe_subtotal_footer">
+                        <group>
+                            <div class="oe_subtotal_footer_separator">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="line_ids" invisible="1"/>
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_create_bill" type="object" string="Criar Fatura Rascunho" class="btn-primary"/>
+                    <button string="Cancelar" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

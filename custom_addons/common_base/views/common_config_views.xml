@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_common_config_form" model="ir.ui.view">
+        <field name="name">common.config.form</field>
+        <field name="model">common.config</field>
+        <field name="arch" type="xml">
+            <form string="Configurações Gerais">
+                <sheet>
+                    <group>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                    <group string="Governança">
+                        <group>
+                            <field name="governance_followup_days"/>
+                            <field name="governance_reminder_days"/>
+                            <field name="governance_silence_days"/>
+                        </group>
+                    </group>
+                    <group string="Financeiro">
+                        <group>
+                            <field name="default_late_fee"/>
+                            <field name="default_interest_per_day"/>
+                        </group>
+                    </group>
+                    <group string="Notificações">
+                        <group>
+                            <field name="enable_auto_followup"/>
+                            <field name="enable_email_notifications"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

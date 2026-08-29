@@ -1,0 +1,30 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "Conciliação Inteligente de Comprovantes de Aluguel",
+    "version": "19.0.1.0.0",
+    "category": "Real Estate",
+    "summary": "OCR/extração de comprovantes PIX/banco e conciliação inteligente com parcelas de aluguel.",
+    "author": "Franco Poleo / Manuela Silva",
+    "license": "LGPL-3",
+    "depends": [
+        "property_core",
+        "account",
+        "mail",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/ir_sequence.xml",
+        "wizard/bulk_upload_views.xml",
+        "wizard/manual_payment_views.xml",
+        "views/receipts_dashboard_views.xml",
+        "views/property_payment_authorized_payer_views.xml",
+        "views/property_payment_proof_views.xml",
+        "views/payment_proof_agenda_views.xml",
+        "views/property_contract_views.xml",
+        "views/property_rent_views.xml",
+        "views/menu_views.xml",
+    ],
+    "installable": True,
+    "application": True,
+    "auto_install": False,
+}

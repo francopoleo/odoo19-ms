@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_property_contract_history_bulk_upload_form" model="ir.ui.view">
+        <field name="name">property.contract.history.bulk.upload.form</field>
+        <field name="model">property.contract.history.bulk.upload</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <h2>Upload em Lote de Contratos</h2>
+                    <group col="2">
+                        <group string="Arquivos">
+                            <field name="attachment_ids" widget="many2many_binary" nolabel="1"
+                                   placeholder="Selecione um ou mais arquivos (PDF, PNG, JPG, etc.)"/>
+                            <field name="auto_extract" widget="boolean_toggle"/>
+                            <field name="auto_sync" widget="boolean_toggle" invisible="not auto_extract"/>
+                        </group>
+                        <group string="Configurações (Opcional)">
+                            <field name="asset_id" placeholder="Deixe em branco para auto-detectar"/>
+                            <field name="contract_type" placeholder="Deixe em branco para auto-detectar"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info mt-3" role="alert">
+                        <p><strong>Instruções:</strong></p>
+                        <ul>
+                            <li>Selecione um ou mais arquivos (PDF ou imagens) de contratos históricos</li>
+                            <li>Se "Extrair Automaticamente" estiver habilitado, o OCR será executado imediatamente</li>
+                            <li>Se "Sincronizar Automaticamente" estiver habilitado, os dados serão sincronizados ao imóvel</li>
+                            <li>Deixe "Imóvel" em branco para auto-detectar via endereço extraído</li>
+                            <li>Deixe "Tipo" em branco para o parser detectar automaticamente</li>
+                        </ul>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_process" type="object" string="Processar Arquivos" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- ══════════════════════════════════════════════════════════════════
+         GOVERNANCE PROCESSES
+         ══════════════════════════════════════════════════════════════════ -->
+
+    <record id="process_governance_audit" model="dossier.process">
+        <field name="name">Audit / Auditoria</field>
+        <field name="domain">governance</field>
+        <field name="sequence">10</field>
+        <field name="description">Process for internal and external audit procedures, documentation gathering, and findings management.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_governance_compliance" model="dossier.process">
+        <field name="name">Compliance / Conformidade</field>
+        <field name="domain">governance</field>
+        <field name="sequence">20</field>
+        <field name="description">Process for compliance verification, regulatory documentation, and policy adherence tracking.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_governance_risk" model="dossier.process">
+        <field name="name">Risk Management / Gestão de Riscos</field>
+        <field name="domain">governance</field>
+        <field name="sequence">30</field>
+        <field name="description">Process for risk assessment, mitigation planning, and ongoing risk monitoring.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_governance_review" model="dossier.process">
+        <field name="name">Periodic Review / Revisão Periódica</field>
+        <field name="domain">governance</field>
+        <field name="sequence">40</field>
+        <field name="description">Process for periodic reviews, documentation updates, and policy renewals.</field>
+        <field name="active">True</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         PROPERTY / REAL ESTATE PROCESSES
+         ══════════════════════════════════════════════════════════════════ -->
+
+    <record id="process_property_purchase" model="dossier.process">
+        <field name="name">Property Purchase / Compra de Imóvel</field>
+        <field name="domain">property</field>
+        <field name="sequence">10</field>
+        <field name="description">Process for property acquisition including title verification, inspections, legal documentation, and financing.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_sale" model="dossier.process">
+        <field name="name">Property Sale / Venda de Imóvel</field>
+        <field name="domain">property</field>
+        <field name="sequence">20</field>
+        <field name="description">Process for property disposition including listing preparation, buyer documentation, and closing requirements.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_lease" model="dossier.process">
+        <field name="name">Property Lease / Locação de Imóvel</field>
+        <field name="domain">property</field>
+        <field name="sequence">30</field>
+        <field name="description">Process for property leasing including tenant documentation, lease agreements, and rental management.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_inspection" model="dossier.process">
+        <field name="name">Property Inspection / Inspeção de Imóvel</field>
+        <field name="domain">property</field>
+        <field name="sequence">40</field>
+        <field name="description">Process for property inspections including condition assessment, defect documentation, and remediation tracking.</field>
+        <field name="active">True</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         GENERIC PROCESS
+         ══════════════════════════════════════════════════════════════════ -->
+
+    <record id="process_generic_default" model="dossier.process">
+        <field name="name">Generic / Genérico</field>
+        <field name="domain">generic</field>
+        <field name="sequence">100</field>
+        <field name="description">Generic process for creating custom dossiérs without predefined templates.</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

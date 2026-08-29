@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id="view_property_contract_amendment_form_agenda_ext" model="ir.ui.view">
+        <field name="name">property.contract.amendment.form.agenda.ext</field>
+        <field name="model">property.contract.amendment</field>
+        <field name="inherit_id" ref="property_contract_amendment_enterprise.view_property_contract_amendment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Agenda e Atividades" name="agenda_activities">
+                    <group>
+                        <group string="Responsáveis">
+                            <field name="agenda_responsible_id"/>
+                            <field name="agenda_responsible_ids" widget="many2many_tags"/>
+                            <field name="agenda_partner_ids" widget="many2many_tags"/>
+                        <field name="agenda_visibility"/><field name="agenda_viewer_user_ids" widget="many2many_tags" invisible="agenda_visibility != 'custom'"/></group>
+                        <group string="Prazo / Compromisso">
+                            <field name="agenda_deadline" placeholder="Se vazio, usa assinatura ou data de efeito"/>
+                            <field name="agenda_start"/>
+                            <field name="agenda_stop"/>
+                            <field name="agenda_duration_hours"/>
+                            <field name="agenda_location"/>
+                            <field name="agenda_calendar_event_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notas de Agenda"><field name="agenda_notes" nolabel="1"/></group>
+                    <div class="d-flex gap-2 mt-3">
+                        <button name="action_schedule_amendment_activity" type="object" string="Criar/Atualizar Atividades" class="btn btn-primary" icon="fa-tasks"/>
+                        <button name="action_agenda_sync_calendar" type="object" string="Sincronizar Agenda Geral" class="btn btn-secondary" icon="fa-calendar"/>
+                        <button name="action_agenda_open_calendar_event" type="object" string="Abrir Agenda" class="btn btn-link" icon="fa-external-link" invisible="not agenda_calendar_event_id"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

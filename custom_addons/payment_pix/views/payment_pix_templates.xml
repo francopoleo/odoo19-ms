@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Estende o template do payment_custom para substituir a geração do QR Code
+        pelo BR Code PIX (EMV/BACEN) quando o provedor é do modo 'pix'.
+    -->
+    <template id="payment_pix_state_header" inherit_id="payment_custom.custom_state_header">
+
+        <!-- Substitui o t-set do qr_code: para PIX usa BR Code; para outros mantém lógica original -->
+        <xpath expr="//t[@t-set='qr_code']" position="replace">
+            <t t-if="tx.provider_id.sudo().custom_mode == 'pix'"
+               t-set="qr_code"
+               t-value="tx.provider_id.sudo()._pix_build_qr_code_base64(tx.amount, tx._get_communication())"
+            />
+            <t t-else=""
+               t-set="qr_code"
+               t-value="tx.provider_id.sudo().qr_code and tx.company_id.sudo().partner_id.bank_ids[:1].build_qr_code_base64(tx.amount, tx._get_communication(), None, tx.currency_id, tx.partner_id)"
+            />
+        </xpath>
+
+        <!--
+            Adiciona a seção "PIX Copia e Cola" ao rodapé do cartão de mensagem.
+            O BR Code completo (string EMV) permite ao cliente colar no app do banco
+            sem precisar escanear o QR Code.
+        -->
+        <xpath expr="//div[@id='o_payment_status_message_details']" position="inside">
+            <t t-if="tx.provider_id.sudo().custom_mode == 'pix'">
+                <hr class="w-100 mt-2"/>
+                <strong>PIX Copia e Cola</strong>
+                <div class="mt-1">
+                    <textarea
+                        class="form-control form-control-sm"
+                        readonly="readonly"
+                        rows="4"
+                        style="font-size: 0.65rem; word-break: break-all; resize: none;"
+                        t-out="tx.provider_id.sudo()._pix_build_br_code(tx.amount, tx._get_communication())"
+                    />
+                </div>
+            </t>
+        </xpath>
+
+    </template>
+
+</odoo>

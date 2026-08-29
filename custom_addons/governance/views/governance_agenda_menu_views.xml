@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Agenda Geral - Menus de Governança -->
+    <menuitem id="menu_common_agenda_governance_root" name="Governança" parent="common_base.menu_common_agenda_root" sequence="30" groups="base.group_user"/>
+    <menuitem id="menu_common_agenda_governance_all" name="Todos de Governança" parent="menu_common_agenda_governance_root" action="common_base.action_common_agenda_calendar_governance" sequence="10" groups="base.group_user"/>
+    <menuitem id="menu_common_agenda_governance_case" name="Marcos dos Casos" parent="menu_common_agenda_governance_root" action="common_base.action_common_agenda_calendar_governance_case" sequence="20" groups="base.group_user"/>
+    <menuitem id="menu_common_agenda_governance_response_deadline" name="Prazos de Resposta" parent="menu_common_agenda_governance_root" action="common_base.action_common_agenda_calendar_governance_response_deadline" sequence="30" groups="base.group_user"/>
+    <menuitem id="menu_common_agenda_governance_resolution_deadline" name="Prazos de Resolução" parent="menu_common_agenda_governance_root" action="common_base.action_common_agenda_calendar_governance_resolution_deadline" sequence="40" groups="base.group_user"/>
+    <menuitem id="menu_common_agenda_governance_followup" name="Follow-ups" parent="menu_common_agenda_governance_root" action="common_base.action_common_agenda_calendar_governance_followup" sequence="50" groups="base.group_user"/>
+    <menuitem id="menu_common_agenda_governance_pending" name="Pendências" parent="menu_common_agenda_governance_root" action="common_base.action_common_agenda_calendar_pending" sequence="60" groups="base.group_user"/>
+    <menuitem id="menu_common_agenda_governance_meeting" name="Compromissos" parent="menu_common_agenda_governance_root" action="common_base.action_common_agenda_calendar_governance_meeting" sequence="70" groups="base.group_user"/>
+
+</odoo>

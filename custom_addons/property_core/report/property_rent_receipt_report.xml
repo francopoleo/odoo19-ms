@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_property_rent_receipt" model="ir.actions.report">
+        <field name="name">Recibo de Aluguel</field>
+        <field name="model">property.rent</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">property_core.report_property_rent_receipt_document</field>
+        <field name="report_file">property_core.report_property_rent_receipt_document</field>
+        <field name="print_report_name">'Recibo de Aluguel - %s' % (object.receipt_number or object.reference)</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_property_rent_receipt_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="r">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: Arial, sans-serif; font-size: 10pt; color: #1a1a1a;">
+
+                        <div style="border-bottom: 2px solid #1a3a5c; padding-bottom: 12px; margin-bottom: 24px;">
+                            <h2 style="font-size: 16pt; color: #1a3a5c; margin: 0;">RECIBO DE ALUGUEL</h2>
+                            <div style="margin-top: 6px; font-size: 10pt; color: #555;">
+                                Nº <strong><t t-out="r.receipt_number or r.reference"/></strong>
+                                <span style="margin-left: 18px;">Data: <t t-out="r.receipt_date.strftime('%d/%m/%Y') if r.receipt_date else ''"/></span>
+                            </div>
+                        </div>
+
+                        <p style="line-height: 1.7; text-align: justify; font-size: 11pt;">
+                            Recebemos de <strong><t t-out="r.partner_id.name or ''"/></strong>,
+                            referente ao contrato <strong><t t-out="r.contract_id.name or ''"/></strong>,
+                            a importância de <strong>R$ <t t-out="'{:,.2f}'.format(r.amount_paid).replace(',','X').replace('.',',').replace('X','.')"/></strong>,
+                            correspondente ao aluguel do imóvel
+                            <strong><t t-out="r.asset_id.name or ''"/></strong>,
+                            competência <strong><t t-out="'%02d/%d' % (r.competence_month or 0, r.competence_year or 0)"/></strong>.
+                        </p>
+
+                        <table style="width:100%; border-collapse:collapse; margin-top: 18px; font-size: 10pt;">
+                            <tr>
+                                <td style="width:35%; padding:7px; border:1px solid #ddd; background:#f6f8fa;"><strong>Locatário</strong></td>
+                                <td style="padding:7px; border:1px solid #ddd;"><t t-out="r.partner_id.name or ''"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px; border:1px solid #ddd; background:#f6f8fa;"><strong>Imóvel</strong></td>
+                                <td style="padding:7px; border:1px solid #ddd;"><t t-out="r.asset_id.name or ''"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px; border:1px solid #ddd; background:#f6f8fa;"><strong>Vencimento</strong></td>
+                                <td style="padding:7px; border:1px solid #ddd;"><t t-out="r.due_date.strftime('%d/%m/%Y') if r.due_date else ''"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px; border:1px solid #ddd; background:#f6f8fa;"><strong>Pagamento</strong></td>
+                                <td style="padding:7px; border:1px solid #ddd;">
+                                    <t t-out="r.payment_date.strftime('%d/%m/%Y') if r.payment_date else ''"/>
+                                    <t t-if="r.payment_method"> — <t t-out="dict(r._fields['payment_method'].selection).get(r.payment_method)"/></t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:7px; border:1px solid #ddd; background:#f6f8fa;"><strong>Valor Recebido</strong></td>
+                                <td style="padding:7px; border:1px solid #ddd;"><strong>R$ <t t-out="'{:,.2f}'.format(r.amount_paid).replace(',','X').replace('.',',').replace('X','.')"/></strong></td>
+                            </tr>
+                        </table>
+
+                        <div style="margin-top: 26px; padding: 10px; border-left: 4px solid #1a3a5c; background: #f6f8fa; font-size: 9pt; color:#444;">
+                            Este documento é um recibo de recebimento de aluguel, emitido para controle financeiro e comprovação de pagamento.
+                            Para locação de imóvel, em regra, não substitui documento fiscal quando legislação específica exigir tratamento diverso.
+                        </div>
+
+                        <div style="margin-top: 55px; text-align:center;">
+                            <div style="border-top:1px solid #333; width: 60%; margin: 0 auto; padding-top: 8px;">
+                                <t t-out="user.company_id.name"/>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

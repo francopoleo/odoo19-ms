@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_rent_list" model="ir.ui.view">
+        <field name="name">property.rent.list</field>
+        <field name="model">property.rent</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="status == 'late'"
+                  decoration-warning="status in ('open','partial')"
+                  decoration-success="status == 'paid'"
+                  decoration-muted="status == 'cancelled'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="contract_id"/>
+                <field name="asset_id"/>
+                <field name="partner_id"/>
+                <field name="due_date"/>
+                <field name="amount"/>
+                <field name="amount_due"/>
+                <field name="amount_paid"/>
+                <field name="days_late"/>
+                <field name="payment_date"/>
+                <field name="receipt_number" optional="show"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'paid'"
+                       decoration-warning="status in ('open','partial')"
+                       decoration-danger="status == 'late'"
+                       decoration-muted="status == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_rent_form" model="ir.ui.view">
+        <field name="name">property.rent.form</field>
+        <field name="model">property.rent</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open" type="object" string="Abrir Cobrança"
+                            invisible="status != 'draft'" class="btn-primary"/>
+                    <button name="action_register_payment" type="object" string="Registrar Pagamento"
+                            invisible="status not in ['open','late','partial']" class="btn-primary"/>
+                    <button name="action_print_receipt" type="object" string="Imprimir Recibo"
+                            invisible="receipt_state != 'issued'"/>
+                    <button name="action_cancel" type="object" string="Cancelar"
+                            invisible="status in ['paid','cancelled']"/>
+                    <button name="action_reset_draft" type="object" string="Redefinir"
+                            invisible="status != 'cancelled'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="draft,open,partial,paid,late"/>
+                </header>
+                <sheet>
+                    <!-- Smart button: lançamento contábil -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_account_move" type="object"
+                                class="oe_stat_button" icon="fa-university"
+                                invisible="not account_move_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Lançamento</span>
+                                <span class="o_stat_text">Contábil</span>
+                            </div>
+                        </button>
+                        <button name="action_print_receipt" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="receipt_state != 'issued'">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Recibo</span>
+                                <span class="o_stat_text">Aluguel</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="o_row">
+                            <field name="reference" readonly="1" class="text-muted"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Vínculo">
+                            <field name="contract_id"/>
+                            <field name="asset_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Competência e Vencimento">
+                            <field name="competence_month"/>
+                            <field name="competence_year"/>
+                            <field name="due_date"/>
+                            <field name="days_late" readonly="1"
+                                   invisible="status not in ['late','open']"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Valores">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount"/>
+                            <field name="discount"/>
+                            <field name="fine"/>
+                            <field name="interest"/>
+                            <field name="amount_due" readonly="1"/>
+                        </group>
+                        <group string="Pagamento">
+                            <field name="amount_paid"/>
+                            <field name="payment_date"/>
+                            <field name="payment_method"/>
+                            <field name="payment_notes"/>
+                            <field name="account_move_id" readonly="1"
+                                   invisible="not account_move_id"/>
+                            <separator string="Recibo de Aluguel" invisible="receipt_state == 'none'"/>
+                            <field name="receipt_number" readonly="1" invisible="receipt_state == 'none'"/>
+                            <field name="receipt_date" readonly="1" invisible="receipt_state == 'none'"/>
+                            <field name="receipt_state" readonly="1" invisible="receipt_state == 'none'" widget="badge"/>
+                        </group>
+                    </group>
+
+                    <group string="Controle de Notificações" invisible="status not in ['late']">
+                        <group>
+                            <field name="notified_d1"/>
+                            <field name="notified_d5"/>
+                            <field name="notified_d15"/>
+                            <field name="notified_d30"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Comunicações">
+                            <chatter/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_rent_search" model="ir.ui.view">
+        <field name="name">property.rent.search</field>
+        <field name="model">property.rent</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="contract_id"/>
+                <field name="asset_id"/>
+                <field name="partner_id"/>
+                <filter string="Em Aberto" name="open" domain="[('status','=','open')]"/>
+                <filter string="Atrasadas" name="late" domain="[('status','=','late')]"/>
+                <filter string="Parcial" name="partial" domain="[('status','=','partial')]"/>
+                <filter string="Pagas" name="paid" domain="[('status','=','paid')]"/>
+                <separator/>
+                <filter string="Vence este mês" name="due_this_month"
+                        domain="[('due_date','&gt;=', (context_today()).strftime('%Y-%m-01')),
+                                 ('due_date','&lt;=', (context_today()).strftime('%Y-%m-28'))]"/>
+                <separator/>
+                <filter string="Por Imóvel" name="group_asset" context="{'group_by':'asset_id'}"/>
+                <filter string="Por Contrato" name="group_contract" context="{'group_by':'contract_id'}"/>
+                <filter string="Por Status" name="group_status" context="{'group_by':'status'}"/>
+                <filter string="Por Mês" name="group_due_date" context="{'group_by':'due_date:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== PIVOT ==================== -->
+    <record id="view_property_rent_pivot" model="ir.ui.view">
+        <field name="name">property.rent.pivot</field>
+        <field name="model">property.rent</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="asset_id" type="row"/>
+                <field name="due_date" type="col" interval="month"/>
+                <field name="amount_due" type="measure"/>
+                <field name="amount_paid" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ==================== GRAPH ==================== -->
+    <record id="view_property_rent_graph" model="ir.ui.view">
+        <field name="name">property.rent.graph</field>
+        <field name="model">property.rent</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="1">
+                <field name="due_date" type="row" interval="month"/>
+                <field name="status" type="col"/>
+                <field name="amount_due" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_rent" model="ir.actions.act_window">
+        <field name="name">Parcelas de Aluguel</field>
+        <field name="res_model">property.rent</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="context">{"search_default_open": 1, "search_default_late": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nenhuma parcela encontrada.</p>
+        </field>
+    </record>
+
+</odoo>

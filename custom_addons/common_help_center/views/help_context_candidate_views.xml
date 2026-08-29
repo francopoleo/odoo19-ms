@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_help_context_candidate_list" model="ir.ui.view">
+        <field name="name">help.context.candidate.list</field>
+        <field name="model">help.context.candidate</field>
+        <field name="arch" type="xml">
+            <list string="Mapa de Contextos" decoration-danger="status == 'missing'" decoration-warning="status == 'empty'" decoration-success="status == 'documented'">
+                <field name="status"/>
+                <field name="module_name"/>
+                <field name="model_name"/>
+                <field name="view_type"/>
+                <field name="name"/>
+                <field name="article_count"/>
+                <field name="context_id"/>
+                <field name="menu_xmlid" optional="hide"/>
+                <field name="action_xmlid" optional="hide"/>
+                <field name="view_xmlid" optional="hide"/>
+                <button name="action_open_or_create_context" type="object" string="Abrir/Criar Contexto" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_help_context_candidate_form" model="ir.ui.view">
+        <field name="name">help.context.candidate.form</field>
+        <field name="model">help.context.candidate</field>
+        <field name="arch" type="xml">
+            <form string="Mapa de Contexto">
+                <header>
+                    <button name="action_open_or_create_context" type="object" string="Abrir/Criar Contexto" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="status" readonly="1"/>
+                            <field name="module_name"/>
+                            <field name="model_name"/>
+                            <field name="view_type"/>
+                            <field name="article_count" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="context_id"/>
+                            <field name="last_scan_date" readonly="1"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Técnico">
+                            <group>
+                                <field name="view_id"/>
+                                <field name="view_xmlid"/>
+                                <field name="action_id"/>
+                                <field name="action_xmlid"/>
+                                <field name="menu_id"/>
+                                <field name="menu_xmlid"/>
+                            </group>
+                        </page>
+                        <page string="Observações">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_help_context_candidate_search" model="ir.ui.view">
+        <field name="name">help.context.candidate.search</field>
+        <field name="model">help.context.candidate</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="module_name"/>
+                <field name="model_name"/>
+                <filter name="missing" string="Sem contexto" domain="[('status','=','missing')]"/>
+                <filter name="empty" string="Contexto sem artigo" domain="[('status','=','empty')]"/>
+                <filter name="documented" string="Documentados" domain="[('status','=','documented')]"/>
+                <filter name="group_module" string="Agrupar por Módulo" context="{'group_by':'module_name'}"/>
+                <filter name="group_model" string="Agrupar por Model" context="{'group_by':'model_name'}"/>
+                <filter name="group_status" string="Agrupar por Situação" context="{'group_by':'status'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_help_context_candidate" model="ir.actions.act_window">
+        <field name="name">Mapa de Contextos</field>
+        <field name="res_model">help.context.candidate</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_help_context_candidate_search"/>
+        <field name="context">{'search_default_missing': 1}</field>
+    </record>
+</odoo>

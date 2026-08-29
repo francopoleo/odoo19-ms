@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_property_payment_proof_bulk_upload_user,property.payment.proof.bulk.upload.user,model_property_payment_proof_bulk_upload,base.group_user,1,1,1,1
+access_property_receipts_dashboard_user,property.receipts.dashboard.user,model_property_receipts_dashboard,base.group_user,1,1,1,1
+access_property_payment_authorized_payer_user,property.payment.authorized.payer.user,model_property_payment_authorized_payer,base.group_user,1,1,1,0
+access_property_payment_authorized_payer_manager,property.payment.authorized.payer.manager,model_property_payment_authorized_payer,property_core.group_property_manager,1,1,1,1
+access_property_payment_proof_user,property.payment.proof.user,model_property_payment_proof,base.group_user,1,1,1,0
+access_property_payment_proof_manager,property.payment.proof.manager,model_property_payment_proof,property_core.group_property_manager,1,1,1,1
+access_property_payment_proof_match_user,property.payment.proof.match.user,model_property_payment_proof_match,base.group_user,1,1,1,0
+access_property_payment_proof_match_manager,property.payment.proof.match.manager,model_property_payment_proof_match,property_core.group_property_manager,1,1,1,1
+access_property_payment_proof_manual_user,property.payment.proof.manual.user,model_property_payment_proof_manual,base.group_user,1,1,1,1

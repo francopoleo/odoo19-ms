@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- GOVERNANCE CASE 1: Auditoria Q2 2024 -->
+        <record id="demo_case_audit_q2_2024" model="governance.case">
+            <field name="name">Auditoria Interna Q2 2024</field>
+            <field name="type_id" ref="demo_case_type_audit"/>
+            <field name="stage_id" ref="demo_case_stage_in_progress"/>
+            <field name="create_date">2024-06-01</field>
+            <field name="description">Auditoria interna abrangente das operações do 1º semestre de 2024</field>
+            <field name="priority">high</field>
+        </record>
+
+        <!-- GOVERNANCE CASE 2: Revisão Jurídica -->
+        <record id="demo_case_legal_review_2024" model="governance.case">
+            <field name="name">Revisão Jurídica - Contratos Padrão</field>
+            <field name="type_id" ref="demo_case_type_legal"/>
+            <field name="stage_id" ref="demo_case_stage_in_progress"/>
+            <field name="create_date">2024-05-15</field>
+            <field name="description">Revisão dos contratos padrão de locação para adequação à legislação atual</field>
+            <field name="priority">high</field>
+        </record>
+
+        <!-- GOVERNANCE CASE 3: Conformidade Regulatory -->
+        <record id="demo_case_compliance_2024" model="governance.case">
+            <field name="name">Compliance - LGPD 2024</field>
+            <field name="type_id" ref="demo_case_type_compliance"/>
+            <field name="stage_id" ref="demo_case_stage_planned"/>
+            <field name="create_date">2024-06-10</field>
+            <field name="description">Avaliação de conformidade com LGPD - revisão de políticas de privacidade</field>
+            <field name="priority">high</field>
+        </record>
+
+        <!-- GOVERNANCE CASE 4: Auditoria Anterior (Closed) -->
+        <record id="demo_case_audit_q1_2024" model="governance.case">
+            <field name="name">Auditoria Q1 2024 - Concluída</field>
+            <field name="type_id" ref="demo_case_type_audit"/>
+            <field name="stage_id" ref="demo_case_stage_completed"/>
+            <field name="create_date">2024-03-01</field>
+            <field name="description">Auditoria do 1º trimestre - concluída com sucesso</field>
+            <field name="priority">medium</field>
+        </record>
+
+        <!-- GOVERNANCE CASE PARTICIPANTS -->
+        <record id="demo_case_participant_audit_mgr" model="governance.case.participant">
+            <field name="case_id" ref="demo_case_audit_q2_2024"/>
+            <field name="partner_id" ref="base.partner_root"/>
+            <field name="role">manager</field>
+            <field name="is_primary">True</field>
+        </record>
+
+        <record id="demo_case_participant_legal_mgr" model="governance.case.participant">
+            <field name="case_id" ref="demo_case_legal_review_2024"/>
+            <field name="partner_id" ref="base.partner_root"/>
+            <field name="role">manager</field>
+            <field name="is_primary">True</field>
+        </record>
+
+        <record id="demo_case_participant_compliance_mgr" model="governance.case.participant">
+            <field name="case_id" ref="demo_case_compliance_2024"/>
+            <field name="partner_id" ref="base.partner_root"/>
+            <field name="role">manager</field>
+            <field name="is_primary">True</field>
+        </record>
+
+        <!-- GOVERNANCE CASE PENDING ITEMS (Checklist) -->
+        <record id="demo_pending_audit_1" model="governance.case.pending">
+            <field name="case_id" ref="demo_case_audit_q2_2024"/>
+            <field name="name">Coletar Extratos Bancários Q1 e Q2</field>
+            <field name="due_date">2024-06-30</field>
+            <field name="is_mandatory">True</field>
+            <field name="priority">high</field>
+            <field name="state">todo</field>
+        </record>
+
+        <record id="demo_pending_audit_2" model="governance.case.pending">
+            <field name="case_id" ref="demo_case_audit_q2_2024"/>
+            <field name="name">Revisar Políticas de Risco</field>
+            <field name="due_date">2024-07-15</field>
+            <field name="is_mandatory">True</field>
+            <field name="priority">high</field>
+            <field name="state">in_progress</field>
+        </record>
+
+        <record id="demo_pending_audit_3" model="governance.case.pending">
+            <field name="case_id" ref="demo_case_audit_q2_2024"/>
+            <field name="name">Validação de Controles Internos</field>
+            <field name="due_date">2024-08-31</field>
+            <field name="is_mandatory">True</field>
+            <field name="priority">medium</field>
+            <field name="state">todo</field>
+        </record>
+
+        <record id="demo_pending_legal_1" model="governance.case.pending">
+            <field name="case_id" ref="demo_case_legal_review_2024"/>
+            <field name="name">Análise Comparativa com Legislação Vigente</field>
+            <field name="due_date">2024-07-20</field>
+            <field name="is_mandatory">True</field>
+            <field name="priority">high</field>
+            <field name="state">in_progress</field>
+        </record>
+
+        <record id="demo_pending_legal_2" model="governance.case.pending">
+            <field name="case_id" ref="demo_case_legal_review_2024"/>
+            <field name="name">Ajustes Recomendados - Documento</field>
+            <field name="due_date">2024-08-10</field>
+            <field name="is_mandatory">True</field>
+            <field name="priority">high</field>
+            <field name="state">todo</field>
+        </record>
+
+        <record id="demo_pending_compliance_1" model="governance.case.pending">
+            <field name="case_id" ref="demo_case_compliance_2024"/>
+            <field name="name">Auditoria de Dados Pessoais Coletados</field>
+            <field name="due_date">2024-07-31</field>
+            <field name="is_mandatory">True</field>
+            <field name="priority">high</field>
+            <field name="state">todo</field>
+        </record>
+
+        <record id="demo_pending_compliance_2" model="governance.case.pending">
+            <field name="case_id" ref="demo_case_compliance_2024"/>
+            <field name="name">Implementar Política de Privacidade</field>
+            <field name="due_date">2024-08-31</field>
+            <field name="is_mandatory">True</field>
+            <field name="priority">high</field>
+            <field name="state">todo</field>
+        </record>
+
+    </data>
+</odoo>

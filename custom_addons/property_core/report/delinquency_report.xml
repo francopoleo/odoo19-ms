@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_property_delinquency" model="ir.actions.report">
+        <field name="name">Relatório de Inadimplência</field>
+        <field name="model">property.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">property_core.report_delinquency_document</field>
+        <field name="report_file">property_core.report_delinquency_document</field>
+        <field name="binding_model_id" ref="model_property_contract"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_delinquency_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-family: Arial, sans-serif; font-size: 9pt; color: #1a1a1a;">
+
+                    <div style="border-bottom: 2px solid #dc3545; padding-bottom: 10px; margin-bottom: 16px;">
+                        <h2 style="color:#dc3545; margin:0; font-size:14pt;">RELATÓRIO DE INADIMPLÊNCIA</h2>
+                        <div style="color:#555; font-size:8pt; margin-top:4px;">
+                            Gerado em <t t-out="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y às %H:%M')"/>
+                        </div>
+                    </div>
+
+                    <t t-set="late_contracts" t-value="docs.filtered(lambda c: c.status in ('late','defaulting'))"/>
+                    <t t-set="total_pending" t-value="sum(late_contracts.mapped('total_pending'))"/>
+
+                    <!-- RESUMO -->
+                    <table style="width:100%; margin-bottom:16px; border-collapse:collapse;">
+                        <tr>
+                            <td style="padding:8px; background:#fce8e8; text-align:center; width:25%; border:1px solid #f5c2c7;">
+                                <div style="font-size:18pt; font-weight:bold; color:#dc3545;">
+                                    <t t-out="len(late_contracts)"/>
+                                </div>
+                                <div style="font-size:8pt; color:#555;">Contratos Inadimplentes</div>
+                            </td>
+                            <td style="padding:8px; background:#fce8e8; text-align:center; width:25%; border:1px solid #f5c2c7;">
+                                <div style="font-size:14pt; font-weight:bold; color:#dc3545;">
+                                    R$ <t t-out="'{:,.2f}'.format(total_pending).replace(',','X').replace('.',',').replace('X','.')"/>
+                                </div>
+                                <div style="font-size:8pt; color:#555;">Total em Aberto</div>
+                            </td>
+                            <td style="padding:8px; background:#fce8e8; text-align:center; width:25%; border:1px solid #f5c2c7;">
+                                <div style="font-size:18pt; font-weight:bold; color:#fd7e14;">
+                                    <t t-out="len(docs.filtered(lambda c: c.status == 'defaulting'))"/>
+                                </div>
+                                <div style="font-size:8pt; color:#555;">Inadimplentes</div>
+                            </td>
+                            <td style="padding:8px; background:#fce8e8; text-align:center; width:25%; border:1px solid #f5c2c7;">
+                                <div style="font-size:18pt; font-weight:bold; color:#ffc107;">
+                                    <t t-out="len(docs.filtered(lambda c: c.status == 'late'))"/>
+                                </div>
+                                <div style="font-size:8pt; color:#555;">Atrasados</div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- TABELA -->
+                    <t t-if="late_contracts">
+                        <table style="width:100%; border-collapse:collapse; font-size:8pt;">
+                            <thead>
+                                <tr style="background:#dc3545; color:white;">
+                                    <th style="padding:5px; text-align:left;">Contrato</th>
+                                    <th style="padding:5px; text-align:left;">Imóvel</th>
+                                    <th style="padding:5px; text-align:left;">Locatário</th>
+                                    <th style="padding:5px; text-align:center;">Vencimento</th>
+                                    <th style="padding:5px; text-align:right;">Parc. Atrasadas</th>
+                                    <th style="padding:5px; text-align:right;">Valor em Aberto</th>
+                                    <th style="padding:5px; text-align:center;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="late_contracts.sorted(lambda c: c.total_pending, reverse=True)" t-as="c">
+                                    <tr t-attf-style="background:{{ '#fff5f5' if c_index % 2 == 0 else 'white' }}">
+                                        <td style="padding:4px; border-bottom:1px solid #eee;">
+                                            <t t-out="c.reference"/>
+                                        </td>
+                                        <td style="padding:4px; border-bottom:1px solid #eee; font-weight:bold;">
+                                            <t t-out="c.asset_id.name if c.asset_id else '—'"/>
+                                        </td>
+                                        <td style="padding:4px; border-bottom:1px solid #eee;">
+                                            <t t-out="c.partner_id.name if c.partner_id else '—'"/>
+                                        </td>
+                                        <td style="padding:4px; border-bottom:1px solid #eee; text-align:center;">
+                                            <t t-out="c.end_date.strftime('%d/%m/%Y') if c.end_date else '—'"/>
+                                        </td>
+                                        <td style="padding:4px; border-bottom:1px solid #eee; text-align:right; color:#dc3545; font-weight:bold;">
+                                            <t t-out="c.rent_late_count"/>
+                                        </td>
+                                        <td style="padding:4px; border-bottom:1px solid #eee; text-align:right; color:#dc3545; font-weight:bold;">
+                                            R$ <t t-out="'{:,.2f}'.format(c.total_pending).replace(',','X').replace('.',',').replace('X','.')"/>
+                                        </td>
+                                        <td style="padding:4px; border-bottom:1px solid #eee; text-align:center;">
+                                            <span t-attf-style="padding:2px 6px; border-radius:3px; font-size:7pt; font-weight:bold;
+                                                background:{{ '#fce8e8' if c.status == 'defaulting' else '#fff3cd' }};
+                                                color:{{ '#dc3545' if c.status == 'defaulting' else '#664d03' }};">
+                                                <t t-out="dict(c._fields['status'].selection).get(c.status, c.status)"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr style="background:#fce8e8; font-weight:bold; font-size:9pt;">
+                                    <td colspan="5" style="padding:5px; border-top:2px solid #dc3545;">
+                                        TOTAL (<t t-out="len(late_contracts)"/> contratos)
+                                    </td>
+                                    <td style="padding:5px; border-top:2px solid #dc3545; text-align:right; color:#dc3545;">
+                                        R$ <t t-out="'{:,.2f}'.format(total_pending).replace(',','X').replace('.',',').replace('X','.')"/>
+                                    </td>
+                                    <td style="border-top:2px solid #dc3545;"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </t>
+                    <t t-else="">
+                        <div style="text-align:center; padding:24px; color:#198754; font-size:11pt;">
+                            ✓ Nenhum contrato inadimplente encontrado.
+                        </div>
+                    </t>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

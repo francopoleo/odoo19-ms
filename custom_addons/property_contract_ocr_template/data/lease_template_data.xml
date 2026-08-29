@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- The default template is created by post_init_hook to avoid brittle ir.model.fields xmlids. -->
+</odoo>

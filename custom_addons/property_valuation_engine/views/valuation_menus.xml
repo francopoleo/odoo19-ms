@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Menus integrados ao property_core.
+        O arquivo property_menu_views.xml do property_core define o menu raiz:
+        property_core.menu_property_root = Imóveis
+    -->
+
+    <menuitem id="menu_property_valuation_root"
+              name="Valuation"
+              parent="property_core.menu_property_root"
+              sequence="25"
+              groups="property_valuation_engine.group_property_valuation_user"/>
+
+    <menuitem id="menu_property_valuation_operations"
+              name="Operações"
+              parent="menu_property_valuation_root"
+              sequence="10"
+              groups="property_valuation_engine.group_property_valuation_user"/>
+
+    <menuitem id="menu_property_asset_valuation"
+              name="Imóveis para Valuation"
+              parent="menu_property_valuation_operations"
+              action="action_property_asset_valuation"
+              sequence="10"
+              groups="property_valuation_engine.group_property_valuation_user"/>
+
+    <menuitem id="menu_property_valuation_run"
+              name="Estimativas"
+              parent="menu_property_valuation_operations"
+              action="action_property_valuation_run"
+              sequence="20"
+              groups="property_valuation_engine.group_property_valuation_user"/>
+
+    <menuitem id="menu_property_valuation_market"
+              name="Mercado"
+              parent="menu_property_valuation_root"
+              sequence="20"
+              groups="property_valuation_engine.group_property_valuation_user"/>
+
+    <menuitem id="menu_property_price_m2_reference"
+              name="Referências m²"
+              parent="menu_property_valuation_market"
+              action="action_property_price_m2_reference"
+              sequence="10"
+              groups="property_valuation_engine.group_property_valuation_user"/>
+
+    <menuitem id="menu_property_market_comparable"
+              name="Comparáveis"
+              parent="menu_property_valuation_market"
+              action="action_property_market_comparable"
+              sequence="20"
+              groups="property_valuation_engine.group_property_valuation_user"/>
+
+    <menuitem id="menu_property_valuation_configuration"
+              name="Configuração"
+              parent="menu_property_valuation_root"
+              sequence="90"
+              groups="property_valuation_engine.group_property_valuation_manager"/>
+
+    <menuitem id="menu_property_valuation_source"
+              name="Fontes"
+              parent="menu_property_valuation_configuration"
+              action="action_property_valuation_source"
+              sequence="10"
+              groups="property_valuation_engine.group_property_valuation_manager"/>
+
+    <menuitem id="menu_property_valuation_factor"
+              name="Fatores"
+              parent="menu_property_valuation_configuration"
+              action="action_property_valuation_factor"
+              sequence="20"
+              groups="property_valuation_engine.group_property_valuation_manager"/>
+
+    <menuitem id="menu_property_valuation_algorithm"
+              name="Algoritmos"
+              parent="menu_property_valuation_configuration"
+              action="action_property_valuation_algorithm"
+              sequence="30"
+              groups="property_valuation_engine.group_property_valuation_manager"/>
+</odoo>

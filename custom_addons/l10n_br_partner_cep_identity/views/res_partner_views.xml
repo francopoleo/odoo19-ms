@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_partner_view_form_inherit_br_cep_identity" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.br.cep.identity</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='zip']" position="after">
+                <button name="action_lookup_zip_br"
+                        type="object"
+                        string="Buscar CEP"
+                        class="btn-link"
+                        icon="fa-search"
+                        help="Consulta o CEP e atualiza logradouro, bairro, cidade, UF e país. Se o serviço externo falhar, o contato não será bloqueado."/>
+            </xpath>
+
+            <xpath expr="//field[@name='street2']" position="after">
+                <field name="br_district" placeholder="Bairro"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Brasil" name="br_contact_data">
+                    <group string="Classificação Brasileira" col="2">
+                        <field name="br_person_type" colspan="1"/>
+                        <field name="vat" string="CPF/CNPJ no Campo Fiscal" placeholder="Usado pelo Odoo em documentos fiscais" colspan="1"/>
+                    </group>
+
+                    <group string="Pessoa Física" col="4" invisible="br_person_type != 'pf'">
+                        <field name="br_cpf" placeholder="000.000.000-00"/>
+                        <field name="br_rg"/>
+                        <field name="br_rg_issuer" placeholder="SSP, DETRAN, IFP..."/>
+                        <field name="br_rg_issuer_state_id"/>
+                        <field name="br_rg_issue_date"/>
+                        <field name="br_birth_date"/>
+                        <field name="br_mother_name" colspan="2"/>
+                    </group>
+
+                    <group string="Pessoa Jurídica" col="2" invisible="br_person_type != 'pj'">
+                        <field name="br_legal_name" placeholder="Razão Social" colspan="1"/>
+                        <field name="br_trade_name" placeholder="Nome Fantasia" colspan="1"/>
+                    </group>
+
+                    <group string="Endereço Brasil / CEP" col="4">
+                        <field name="zip" placeholder="00000-000" colspan="2"/>
+                        <div colspan="2">
+                            <button name="action_lookup_zip_br"
+                                    type="object"
+                                    string="Consultar CEP"
+                                    class="btn-primary btn-sm"
+                                    icon="fa-search"
+                                    help="Consulta o CEP e preenche o endereço. A falha de consulta não impede salvar o contato."/>
+                        </div>
+                        <field name="br_district" colspan="2"/>
+                        <field name="br_ibge_code" force_save="1" colspan="2" invisible="not br_ibge_code"/>
+                        <field name="br_zip_source" force_save="1" colspan="2" invisible="not br_zip_source"/>
+                        <field name="br_zip_lookup_date" force_save="1" colspan="2" invisible="not br_zip_lookup_date"/>
+                        <field name="br_zip_lookup_status" force_save="1" colspan="2" invisible="not br_zip_lookup_status"/>
+                        <field name="br_zip_lookup_message" colspan="2" force_save="1" nolabel="1" invisible="not br_zip_lookup_message"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_partner_view_tree_inherit_br_cep_identity" model="ir.ui.view">
+        <field name="name">res.partner.list.inherit.br.cep.identity</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone']" position="after">
+                <field name="br_person_type" optional="hide"/>
+                <field name="br_cpf" optional="hide"/>
+                <field name="br_cnpj" optional="hide"/>
+                <field name="br_district" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_partner_view_search_inherit_br_cep_identity" model="ir.ui.view">
+        <field name="name">res.partner.search.inherit.br.cep.identity</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="br_cpf" string="CPF"/>
+                <field name="br_cnpj" string="CNPJ"/>
+                <field name="br_rg" string="RG"/>
+                <field name="br_district" string="Bairro"/>
+                <filter name="br_person_pf" string="Pessoa Física" domain="[('br_person_type','=','pf')]"/>
+                <filter name="br_person_pj" string="Pessoa Jurídica" domain="[('br_person_type','=','pj')]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

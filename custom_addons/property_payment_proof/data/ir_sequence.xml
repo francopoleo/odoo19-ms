@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_property_payment_proof" model="ir.sequence">
+        <field name="name">Comprovante de Pagamento</field>
+        <field name="code">property.payment.proof</field>
+        <field name="prefix">COMP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

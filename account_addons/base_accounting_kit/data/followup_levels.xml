@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+<!--    Data file for the follow-up lines    -->
+        <record model="account.followup" id="followup">
+        </record>
+
+        <record model="followup.line" id="followup_line_id">
+            <field name="name">Reminder</field>
+            <field name="delay">5</field>
+            <field name="followup_id" ref="followup"/>
+        </record>
+    </data>
+</odoo>

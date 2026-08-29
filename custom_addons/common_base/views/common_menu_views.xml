@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_common_root" name="Configurações" sequence="100"/>
+</odoo>

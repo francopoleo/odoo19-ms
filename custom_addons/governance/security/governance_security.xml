@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ==================== PRIVILEGE ==================== -->
+        <record id="privilege_governance" model="res.groups.privilege">
+            <field name="name">Governança</field>
+            <field name="sequence" eval="50"/>
+            <field name="category_id" ref="common_base.module_category_realestate_governance"/>
+        </record>
+
+        <!-- ==================== GROUPS ==================== -->
+        <record id="group_governance_user" model="res.groups">
+            <field name="name">Usuário de Governança</field>
+            <field name="privilege_id" ref="governance.privilege_governance"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_governance_manager" model="res.groups">
+            <field name="name">Gestor de Governança</field>
+            <field name="privilege_id" ref="governance.privilege_governance"/>
+            <field name="implied_ids" eval="[(4, ref('governance.group_governance_user'))]"/>
+        </record>
+
+        <!-- Regras por empresa -->
+        <record id="rule_governance_case_company_user" model="ir.rule">
+            <field name="name">Governança: Casos do Usuário por Empresa</field>
+            <field name="model_id" ref="governance.model_governance_case"/>
+            <field name="domain_force">[
+                ('company_id', 'in', company_ids),
+                '|', '|', '|',
+                ('responsible_id', '=', user.id),
+                ('responsible_id', '=', False),
+                ('participant_ids.partner_id', '=', user.partner_id.id),
+                ('create_uid', '=', user.id)
+            ]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_user'))]"/>
+        </record>
+
+
+        <record id="rule_governance_case_company_base_user" model="ir.rule">
+            <field name="name">Governança: Casos do Usuário Interno por Empresa</field>
+            <field name="model_id" ref="governance.model_governance_case"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_governance_participant_base_user" model="ir.rule">
+            <field name="name">Governança: Participantes do Usuário Interno por Empresa</field>
+            <field name="model_id" ref="governance.model_governance_case_participant"/>
+            <field name="domain_force">[('case_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_governance_stage_base_user" model="ir.rule">
+            <field name="name">Governança: Etapas visíveis para Usuário Interno</field>
+            <field name="model_id" ref="governance.model_governance_stage"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_governance_case_company_manager" model="ir.rule">
+            <field name="name">Governança: Casos do Gestor por Empresa</field>
+            <field name="model_id" ref="governance.model_governance_case"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_manager'))]"/>
+        </record>
+
+        <record id="rule_governance_participant_user" model="ir.rule">
+            <field name="name">Governança: Participantes do Usuário</field>
+            <field name="model_id" ref="governance.model_governance_case_participant"/>
+            <field name="domain_force">[
+                ('case_id.company_id', 'in', company_ids),
+                '|', '|', '|',
+                ('case_id.responsible_id', '=', user.id),
+                ('case_id.responsible_id', '=', False),
+                ('partner_id', '=', user.partner_id.id),
+                ('case_id.create_uid', '=', user.id)
+            ]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_user'))]"/>
+        </record>
+
+        <record id="rule_governance_participant_manager" model="ir.rule">
+            <field name="name">Governança: Participantes do Gestor</field>
+            <field name="model_id" ref="governance.model_governance_case_participant"/>
+            <field name="domain_force">[('case_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_manager'))]"/>
+        </record>
+
+        <record id="rule_governance_stage_manager" model="ir.rule">
+            <field name="name">Governança: Etapas editáveis só por gestor</field>
+            <field name="model_id" ref="governance.model_governance_stage"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_manager'))]"/>
+        </record>
+
+
+        <record id="rule_governance_communication_base_user" model="ir.rule">
+            <field name="name">Governança: Comunicações do Usuário Interno por Empresa</field>
+            <field name="model_id" ref="governance.model_governance_case_communication"/>
+            <field name="domain_force">[('case_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_governance_pending_base_user" model="ir.rule">
+            <field name="name">Governança: Pendências do Usuário Interno por Empresa</field>
+            <field name="model_id" ref="governance.model_governance_case_pending"/>
+            <field name="domain_force">[('case_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_governance_communication_user" model="ir.rule">
+            <field name="name">Governança: Comunicações do Usuário</field>
+            <field name="model_id" ref="governance.model_governance_case_communication"/>
+            <field name="domain_force">[
+                ('case_id.company_id', 'in', company_ids),
+                '|', '|', '|',
+                ('case_id.responsible_id', '=', user.id),
+                ('case_id.responsible_id', '=', False),
+                ('partner_id', '=', user.partner_id.id),
+                ('case_id.create_uid', '=', user.id)
+            ]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_user'))]"/>
+        </record>
+
+        <record id="rule_governance_pending_user" model="ir.rule">
+            <field name="name">Governança: Pendências do Usuário</field>
+            <field name="model_id" ref="governance.model_governance_case_pending"/>
+            <field name="domain_force">[
+                ('case_id.company_id', 'in', company_ids),
+                '|', '|', '|',
+                ('case_id.responsible_id', '=', user.id),
+                ('responsible_id', '=', user.id),
+                ('partner_id', '=', user.partner_id.id),
+                ('case_id.create_uid', '=', user.id)
+            ]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_user'))]"/>
+        </record>
+
+        <record id="rule_governance_communication_manager" model="ir.rule">
+            <field name="name">Governança: Comunicações do Gestor</field>
+            <field name="model_id" ref="governance.model_governance_case_communication"/>
+            <field name="domain_force">[('case_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_manager'))]"/>
+        </record>
+
+        <record id="rule_governance_pending_manager" model="ir.rule">
+            <field name="name">Governança: Pendências do Gestor</field>
+            <field name="model_id" ref="governance.model_governance_case_pending"/>
+            <field name="domain_force">[('case_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_manager'))]"/>
+        </record>
+
+
+        <record id="rule_governance_response_base_user" model="ir.rule">
+            <field name="name">Governança: Respostas do Usuário Interno por Empresa</field>
+            <field name="model_id" ref="governance.model_governance_case_response"/>
+            <field name="domain_force">[('case_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_governance_response_user" model="ir.rule">
+            <field name="name">Governança: Respostas do Usuário</field>
+            <field name="model_id" ref="governance.model_governance_case_response"/>
+            <field name="domain_force">[
+                ('case_id.company_id', 'in', company_ids),
+                '|', '|', '|',
+                ('case_id.responsible_id', '=', user.id),
+                ('responsible_id', '=', user.id),
+                ('partner_id', '=', user.partner_id.id),
+                ('case_id.create_uid', '=', user.id)
+            ]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_user'))]"/>
+        </record>
+
+        <record id="rule_governance_response_manager" model="ir.rule">
+            <field name="name">Governança: Respostas do Gestor</field>
+            <field name="model_id" ref="governance.model_governance_case_response"/>
+            <field name="domain_force">[('case_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('governance.group_governance_manager'))]"/>
+        </record>
+
+    </data>
+</odoo>

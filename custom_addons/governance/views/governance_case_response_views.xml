@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_governance_case_response_list" model="ir.ui.view">
+        <field name="name">governance.case.response.list</field>
+        <field name="model">governance.case.response</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="response_date"/>
+                <field name="name"/>
+                <field name="case_id"/>
+                <field name="response_type" widget="badge"/>
+                <field name="outcome" widget="badge" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="responsible_id" optional="show"/>
+                <field name="close_open_pendings" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_governance_case_response_form" model="ir.ui.view">
+        <field name="name">governance.case.response.form</field>
+        <field name="model">governance.case.response</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_case" type="object" string="Abrir Caso" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="case_id"/>
+                            <field name="response_date"/>
+                            <field name="response_type"/>
+                            <field name="outcome"/>
+                        </group>
+                        <group>
+                            <field name="participant_id"/>
+                            <field name="partner_id"/>
+                            <field name="communication_id"/>
+                            <field name="responsible_id"/>
+                            <field name="close_open_pendings"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detalhes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_governance_case_response_search" model="ir.ui.view">
+        <field name="name">governance.case.response.search</field>
+        <field name="model">governance.case.response</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="case_id"/>
+                <field name="partner_id"/>
+                <field name="responsible_id"/>
+                <filter string="Formais" name="formal" domain="[('response_type','=','formal')]"/>
+                <filter string="Cumprimento" name="compliance" domain="[('response_type','=','compliance')]"/>
+                <filter string="Aceitas" name="accepted" domain="[('outcome','=','accepted')]"/>
+                <separator/>
+                <filter string="Agrupar por Caso" name="grp_case" context="{'group_by':'case_id'}"/>
+                <filter string="Agrupar por Tipo" name="grp_type" context="{'group_by':'response_type'}"/>
+                <filter string="Agrupar por Responsável" name="grp_resp" context="{'group_by':'responsible_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_governance_case_response" model="ir.actions.act_window">
+        <field name="name">Respostas Formais</field>
+        <field name="res_model">governance.case.response</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>Registre respostas recebidas, resultados e desdobramentos do caso.</p>
+        </field>
+    </record>
+</odoo>

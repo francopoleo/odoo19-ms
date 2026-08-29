@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Vencimento de Contrato -->
+        <record id="mail_activity_type_contract_expiry" model="mail.activity.type">
+            <field name="name">Vencimento de Contrato</field>
+            <field name="icon">fa-file-text</field>
+            <field name="category">default</field>
+            <field name="res_model">property.contract</field>
+            <field name="delay_count">1</field>
+            <field name="delay_unit">days</field>
+        </record>
+
+        <!-- Mandato de Corretor -->
+        <record id="mail_activity_type_broker_assignment" model="mail.activity.type">
+            <field name="name">Mandato de Corretor</field>
+            <field name="icon">fa-id-card</field>
+            <field name="category">default</field>
+            <field name="res_model">property.broker.assignment</field>
+            <field name="delay_count">1</field>
+            <field name="delay_unit">days</field>
+        </record>
+
+        <!-- Reajuste de Aluguel Pendente -->
+        <record id="mail_activity_type_rent_adjustment" model="mail.activity.type">
+            <field name="name">Reajuste de Aluguel</field>
+            <field name="icon">fa-percent</field>
+            <field name="category">default</field>
+            <field name="res_model">property.contract</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+        </record>
+
+        <!-- Cobrança de Aluguel em Atraso -->
+        <record id="mail_activity_type_rent_overdue" model="mail.activity.type">
+            <field name="name">Cobrança de Aluguel</field>
+            <field name="icon">fa-exclamation-circle</field>
+            <field name="category">default</field>
+            <field name="res_model">property.rent</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+        </record>
+
+        <!-- Vistoria Agendada -->
+        <record id="mail_activity_type_inspection" model="mail.activity.type">
+            <field name="name">Vistoria de Imóvel</field>
+            <field name="icon">fa-search</field>
+            <field name="category">default</field>
+            <field name="res_model">property.inspection</field>
+            <field name="delay_count">1</field>
+            <field name="delay_unit">days</field>
+        </record>
+
+        <!-- Manutenção Pendente -->
+        <record id="mail_activity_type_maintenance" model="mail.activity.type">
+            <field name="name">Manutenção de Imóvel</field>
+            <field name="icon">fa-wrench</field>
+            <field name="category">default</field>
+            <field name="res_model">property.maintenance</field>
+            <field name="delay_count">1</field>
+            <field name="delay_unit">days</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_property_valuation_source_company" model="ir.rule">
+        <field name="name">Fontes de valuation por empresa</field>
+        <field name="model_id" ref="model_property_valuation_source"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('property_valuation_engine.group_property_valuation_user'))]"/>
+    </record>
+
+    <record id="rule_property_valuation_factor_company" model="ir.rule">
+        <field name="name">Fatores de valuation por empresa</field>
+        <field name="model_id" ref="model_property_valuation_factor"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('property_valuation_engine.group_property_valuation_user'))]"/>
+    </record>
+
+    <record id="rule_property_price_m2_reference_company" model="ir.rule">
+        <field name="name">Referências m² por empresa</field>
+        <field name="model_id" ref="model_property_price_m2_reference"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('property_valuation_engine.group_property_valuation_user'))]"/>
+    </record>
+
+    <record id="rule_property_market_comparable_company" model="ir.rule">
+        <field name="name">Comparáveis por empresa</field>
+        <field name="model_id" ref="model_property_market_comparable"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('property_valuation_engine.group_property_valuation_user'))]"/>
+    </record>
+
+    <record id="rule_property_valuation_run_company" model="ir.rule">
+        <field name="name">Estimativas por empresa</field>
+        <field name="model_id" ref="model_property_valuation_run"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('property_valuation_engine.group_property_valuation_user'))]"/>
+    </record>
+</odoo>

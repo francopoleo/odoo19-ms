@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== PROPERTY SETTINGS ==================== -->
+
+    <!-- Menu Root for Settings -->
+    <menuitem
+        id="menu_property_settings"
+        name="Imóveis"
+        parent="base.menu_administration"
+        sequence="100"
+        groups="base.group_system"/>
+
+    <!-- Stakeholder Profiles Configuration -->
+    <menuitem
+        id="menu_property_settings_profiles"
+        name="Perfis Imobiliários"
+        parent="menu_property_settings"
+        action="action_property_stakeholder_profile"
+        sequence="10"
+        groups="base.group_system"/>
+
+    <!-- Stakeholder Types Configuration -->
+    <menuitem
+        id="menu_property_settings_types"
+        name="Tipos de Perfil Imobiliário"
+        parent="menu_property_settings"
+        action="action_property_stakeholder_type"
+        sequence="20"
+        groups="base.group_system"/>
+
+</odoo>

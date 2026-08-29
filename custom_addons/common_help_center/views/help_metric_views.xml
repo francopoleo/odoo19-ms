@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_help_metric_search" model="ir.ui.view">
+        <field name="name">help.metric.search</field>
+        <field name="model">help.metric</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="article_id"/>
+                <field name="user_id"/>
+                <field name="model_name"/>
+                <field name="query"/>
+                <filter name="drawer" string="Painel" domain="[('event_type','=','drawer_open')]"/>
+                <filter name="article" string="Artigos" domain="[('event_type','=','article_open')]"/>
+                <filter name="search" string="Buscas" domain="[('event_type','=','search')]"/>
+                <filter name="error" string="Erros" domain="[('event_type','=','error_suggest')]"/>
+                <filter name="group_type" string="Agrupar por Evento" context="{'group_by':'event_type'}"/>
+                <filter name="group_model" string="Agrupar por Model" context="{'group_by':'model_name'}"/>
+                <filter name="group_user" string="Agrupar por Usuário" context="{'group_by':'user_id'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_help_metric_list" model="ir.ui.view">
+        <field name="name">help.metric.list</field>
+        <field name="model">help.metric</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0">
+                <field name="create_date"/>
+                <field name="event_type"/>
+                <field name="article_id"/>
+                <field name="user_id"/>
+                <field name="model_name"/>
+                <field name="view_type"/>
+                <field name="query"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_help_metric_form" model="ir.ui.view">
+        <field name="name">help.metric.form</field>
+        <field name="model">help.metric</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0">
+                <sheet>
+                    <group>
+                        <field name="event_type"/>
+                        <field name="article_id"/>
+                        <field name="user_id"/>
+                        <field name="model_name"/>
+                        <field name="view_type"/>
+                        <field name="record_id"/>
+                        <field name="query"/>
+                    </group>
+                    <field name="error_text"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_help_metric" model="ir.actions.act_window">
+        <field name="name">Métricas de Uso</field>
+        <field name="res_model">help.metric</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_help_metric_search"/>
+    </record>
+</odoo>

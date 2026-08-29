@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Integração com o property_core:
+        property_core.menu_property_root      = Imóveis
+        property_core.menu_property_comercial = Comercial
+        property_core.menu_property_contract  = Contratos
+
+        O menu principal do módulo fica diretamente dentro de Imóveis para facilitar
+        a operação: Imóveis > Aditivos Contratuais.
+    -->
+
+    <menuitem id="menu_property_contract_amendment_root"
+              name="Aditivos Contratuais"
+              parent="property_core.menu_property_root"
+              action="action_property_contract_amendment"
+              sequence="11"/>
+
+    <menuitem id="menu_property_contract_amendments"
+              name="Todos os Aditivos"
+              parent="menu_property_contract_amendment_root"
+              action="action_property_contract_amendment"
+              sequence="10"/>
+
+    <menuitem id="menu_property_contract_rent_schedule"
+              name="Tabela de Valores"
+              parent="menu_property_contract_amendment_root"
+              action="action_property_contract_rent_schedule"
+              sequence="20"/>
+
+    <menuitem id="menu_property_contract_billing_plan"
+              name="Plano de Cobrança"
+              parent="menu_property_contract_amendment_root"
+              action="action_property_contract_billing_plan"
+              sequence="30"/>
+
+    <menuitem id="menu_property_contract_billing_impact"
+              name="Parcelas Afetadas"
+              parent="menu_property_contract_amendment_root"
+              action="action_property_contract_billing_impact"
+              sequence="35"/>
+
+    <menuitem id="menu_property_contract_financial_adjustment"
+              name="Ajustes Financeiros"
+              parent="menu_property_contract_amendment_root"
+              action="action_property_contract_financial_adjustment"
+              sequence="40"/>
+
+    <menuitem id="menu_property_contract_documents"
+              name="Documentos Contratuais"
+              parent="menu_property_contract_amendment_root"
+              action="action_property_contract_document"
+              sequence="50"/>
+
+    <menuitem id="menu_property_contract_obligations"
+              name="Obrigações"
+              parent="menu_property_contract_amendment_root"
+              action="action_property_contract_obligation"
+              sequence="60"/>
+
+    <menuitem id="menu_property_contract_options"
+              name="Opções Contratuais"
+              parent="menu_property_contract_amendment_root"
+              action="action_property_contract_option"
+              sequence="70"/>
+
+    <menuitem id="menu_property_contract_config"
+              name="Configuração de Aditivos"
+              parent="menu_property_contract_amendment_root"
+              sequence="100"
+              groups="property_contract_amendment_enterprise.group_property_contract_amendment_manager"/>
+
+    <menuitem id="menu_property_contract_amendment_reason"
+              name="Motivos de Aditivo"
+              parent="menu_property_contract_config"
+              action="action_property_contract_amendment_reason"
+              sequence="10"
+              groups="property_contract_amendment_enterprise.group_property_contract_amendment_manager"/>
+
+    <menuitem id="menu_property_contract_financial_reason"
+              name="Motivos Financeiros"
+              parent="menu_property_contract_config"
+              action="action_property_contract_financial_reason"
+              sequence="20"
+              groups="property_contract_amendment_enterprise.group_property_contract_amendment_manager"/>
+
+    <menuitem id="menu_property_contract_document_type"
+              name="Tipos de Documento"
+              parent="menu_property_contract_config"
+              action="action_property_contract_document_type"
+              sequence="30"
+              groups="property_contract_amendment_enterprise.group_property_contract_amendment_manager"/>
+</odoo>

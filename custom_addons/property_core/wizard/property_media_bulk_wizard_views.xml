@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_media_bulk_wizard_form" model="ir.ui.view">
+        <field name="name">property.media.bulk.wizard.form</field>
+        <field name="model">property.media.bulk.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Adicionar Mídias">
+                <field name="step" invisible="1"/>
+                <field name="purpose" invisible="1"/>
+
+                <div invisible="step != 'select_context'">
+                    <div class="alert alert-info" role="status">
+                        <strong>Passo 1 de 3:</strong> escolha o fluxo correto. Galeria, Vistoria e Manutenção têm regras próprias; Outras Mídias usa categorias livres controladas.
+                    </div>
+                    <group string="Fluxo">
+                        <field name="context_selection" widget="radio"/>
+                    </group>
+                    <group invisible="context_selection not in ['asset_gallery','asset_other','document_support']">
+                        <field name="asset_id" string="Imóvel" required="context_selection in ['asset_gallery','asset_other']"/>
+                    </group>
+                    <group invisible="context_selection != 'inspection'">
+                        <field name="inspection_id" string="Vistoria" required="context_selection == 'inspection'"/>
+                        <field name="asset_id" readonly="1"/>
+                    </group>
+                    <group invisible="context_selection != 'maintenance'">
+                        <field name="maintenance_id" string="Manutenção" required="context_selection == 'maintenance'"/>
+                        <field name="asset_id" readonly="1"/>
+                    </group>
+
+                    <group string="Classificação">
+                        <field name="category_id" options="{'no_create_edit': False}"/>
+                        <field name="upload_kind"/>
+                    </group>
+                    <group string="Publicação e Acesso">
+                        <field name="visibility_level"/>
+                        <field name="website_published" readonly="purpose != 'asset_gallery'"/>
+                        <field name="publication_state" readonly="purpose != 'asset_gallery'"/>
+                        <field name="allow_download"/>
+                    </group>
+                </div>
+
+                <div invisible="step != 'upload_files'">
+                    <div class="alert alert-info" role="status">
+                        <strong>Passo 2 de 3:</strong> envie os arquivos. Em Galeria, os arquivos serão tratados como fotos/imagens.
+                    </div>
+                    <group string="Upload de Múltiplos Arquivos">
+                        <field name="image_ids" widget="many2many_binary" nolabel="1" colspan="2"/>
+                    </group>
+                </div>
+
+                <div invisible="step != 'confirm'">
+                    <div class="alert alert-success" role="status">
+                        <strong>Passo 3 de 3:</strong> confirme o envio. Os títulos serão gerados a partir dos nomes originais dos arquivos.
+                    </div>
+                    <group string="Resumo">
+                        <field name="purpose" readonly="1"/>
+                        <field name="category_id" readonly="1"/>
+                        <field name="upload_kind" readonly="1"/>
+                        <field name="visibility_level" readonly="1"/>
+                        <field name="website_published" readonly="1"/>
+                        <field name="publication_state" readonly="1"/>
+                    </group>
+                    <group string="Arquivos Selecionados">
+                        <field name="image_ids" widget="many2many_tags" readonly="1" nolabel="1"/>
+                    </group>
+                </div>
+
+                <footer>
+                    <button name="action_previous_step" type="object" string="← Anterior" invisible="step == 'select_context'" class="btn-secondary" icon="fa-arrow-left"/>
+                    <button name="action_next_step" type="object" string="Próximo →" invisible="step == 'confirm'" class="btn-primary" icon="fa-arrow-right"/>
+                    <button name="action_create_media" type="object" string="✓ Confirmar Upload" invisible="step != 'confirm'" class="btn-success" icon="fa-check"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_property_media_bulk_wizard" model="ir.actions.act_window">
+        <field name="name">Adicionar Mídias</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">property.media.bulk.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

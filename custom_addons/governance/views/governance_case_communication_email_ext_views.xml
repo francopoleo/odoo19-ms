@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_governance_case_communication_list_email_ext" model="ir.ui.view">
+        <field name="name">governance.case.communication.list.email.ext</field>
+        <field name="model">governance.case.communication</field>
+        <field name="inherit_id" ref="governance.view_governance_case_communication_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='direction']" position="after">
+                <field name="sent_by_odoo" optional="hide"/>
+                <field name="external_message_id" optional="hide"/>
+                <field name="partner_match_source" optional="hide"/>
+                <field name="partner_match_confidence" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_governance_case_communication_form_email_ext" model="ir.ui.view">
+        <field name="name">governance.case.communication.form.email.ext</field>
+        <field name="model">governance.case.communication</field>
+        <field name="inherit_id" ref="governance.view_governance_case_communication_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[last()]" position="after">
+                <page name="email_metadata" string="Metadados de E-mail">
+                    <group>
+                        <group string="Identificação do Contato">
+                            <field name="partner_match_source" readonly="1"/>
+                            <field name="partner_match_confidence" readonly="1"
+                                   decoration-danger="partner_match_confidence &lt; 80 and partner_match_confidence &gt; 0"
+                                   decoration-success="partner_match_confidence &gt;= 90"
+                                   widget="integer"/>
+                        </group>
+                        <group string="Rastreamento">
+                            <field name="sent_by_odoo" readonly="1"/>
+                            <field name="external_message_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Endereços">
+                            <field name="email_from" readonly="1"/>
+                            <field name="email_to" readonly="1"/>
+                            <field name="email_cc" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

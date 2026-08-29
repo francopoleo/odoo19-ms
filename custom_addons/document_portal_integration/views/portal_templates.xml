@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== PORTAL HOME ==================== -->
+    <template id="portal_my_home_documents" name="Portal Documents Menu" inherit_id="portal.portal_breadcrumbs" priority="20">
+        <xpath expr="//ol[@class='breadcrumb']" position="inside">
+            <li t-if="page_name == 'document'" class="breadcrumb-item active">
+                <span>Documentos</span>
+            </li>
+        </xpath>
+    </template>
+
+    <!-- ==================== DOCUMENTS LIST ==================== -->
+    <template id="portal_my_documents" name="My Documents">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_list" t-value="[{'label': 'Documentos'}]"/>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Meus Documentos</h1>
+
+                    <div t-if="not documents" class="alert alert-info">
+                        <p>Nenhum documento disponível no momento.</p>
+                    </div>
+
+                    <div t-if="documents" class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Tipo</th>
+                                    <th>Data</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="documents" t-as="document">
+                                    <td>
+                                        <a t-attf-href="/my/documents/#{document.id}">
+                                            <t t-out="document.name"/>
+                                        </a>
+                                    </td>
+                                    <td><t t-out="document.document_type_id.name"/></td>
+                                    <td>
+                                        <span t-field="document.publication_date" t-options="{'widget': 'date'}"/>
+                                    </td>
+                                    <td>
+                                        <a t-attf-href="/my/documents/#{document.id}" class="btn btn-sm btn-outline-primary">
+                                            Ver
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <t t-call="portal.pager"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ==================== DOCUMENT DETAIL ==================== -->
+    <template id="portal_document_view" name="Document Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_list" t-value="[
+                {'label': 'Documentos', 'url': '/my/documents'},
+                {'label': document.name}
+            ]"/>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 t-out="document.name"/>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <strong>Tipo:</strong>
+                            <span t-out="document.document_type_id.name"/>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Data:</strong>
+                            <span t-field="document.publication_date" t-options="{'widget': 'date'}"/>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h3>Descrição</h3>
+                        <div t-field="document.description"/>
+                    </div>
+
+                    <div class="mt-4">
+                        <a t-attf-href="/web/content/document.document/#{document.id}/file_path" class="btn btn-primary">
+                            <i class="fa fa-download"/> Baixar Documento
+                        </a>
+                        <a href="/my/documents" class="btn btn-secondary">
+                            Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Informações</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>
+                                <strong>Número de páginas:</strong><br/>
+                                <span t-out="document.total_pages or '—'"/>
+                            </p>
+                            <p>
+                                <strong>Tamanho:</strong><br/>
+                                <span t-out="document.file_size_human or '—'"/>
+                            </p>
+                            <p>
+                                <strong>Status:</strong><br/>
+                                <span t-field="document.status" t-options="{'widget': 'badge'}"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

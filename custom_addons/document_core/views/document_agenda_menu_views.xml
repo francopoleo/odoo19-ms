@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Agenda Geral - Menus de Documentos -->
+    <menuitem id="menu_common_agenda_document_root" name="Documentos" parent="common_base.menu_common_agenda_root" sequence="40" groups="document_core.group_document_operator"/>
+    <menuitem id="menu_common_agenda_document_all" name="Todos de Documentos" parent="menu_common_agenda_document_root" action="common_base.action_common_agenda_calendar_document" sequence="10" groups="document_core.group_document_operator"/>
+    <menuitem id="menu_common_agenda_document_item" name="Documentos" parent="menu_common_agenda_document_root" action="common_base.action_common_agenda_calendar_document_item" sequence="20" groups="document_core.group_document_operator"/>
+    <menuitem id="menu_common_agenda_document_dossier" name="Dossiês" parent="menu_common_agenda_document_root" action="common_base.action_common_agenda_calendar_dossier" sequence="30" groups="document_core.group_document_operator"/>
+
+</odoo>

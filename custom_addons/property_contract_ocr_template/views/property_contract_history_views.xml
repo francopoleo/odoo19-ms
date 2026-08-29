@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_contract_history_form_ocr_template_ext" model="ir.ui.view">
+        <field name="name">property.contract.history.form.ocr.template.ext</field>
+        <field name="model">property.contract.history</field>
+        <field name="inherit_id" ref="property_contract_history.view_property_contract_history_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_extract']" position="after">
+                <button name="action_detect_ocr_template" type="object" string="Detectar Template"
+                        class="btn-secondary" invisible="state not in ('draft','failed')"/>
+                <button name="action_extract_by_template" type="object" string="Extrair por Template"
+                        class="btn-primary" invisible="state not in ('draft','failed')"/>
+                <button name="action_debug_ocr_file" type="object" string="Testar OCR do Arquivo"
+                        class="btn-secondary" invisible="state not in ('draft','failed','extracted')"/>
+                <button name="action_debug_ocr_environment" type="object" string="Diagnosticar Ambiente OCR"
+                        class="btn-secondary"/>
+            </xpath>
+
+            <!-- Garante que o nome do arquivo seja salvo junto com o binário. Sem isso, PDF pode ser salvo como 'contrato' sem .pdf. -->
+            <xpath expr="//field[@name='contract_file']" position="attributes">
+                <attribute name="filename">contract_filename</attribute>
+                <attribute name="help">Anexe aqui o PDF ou imagem do contrato. O nome do arquivo será usado para identificar PDF/imagem, mas o módulo também detecta por assinatura binária.</attribute>
+            </xpath>
+
+
+            <xpath expr="//field[@name='parser_used']" position="after">
+                <field name="ocr_template_id" options="{'no_create_edit': False}"/>
+                <field name="ocr_force_template"/>
+                <field name="ocr_template_auto_detected" readonly="1"/>
+            </xpath>
+
+            <!-- Odoo 19 não permite usar @string como seletor em views herdadas. Inserimos antes do campo raw_text. -->
+            <xpath expr="//field[@name='raw_text']" position="before">
+                <div class="alert alert-danger" role="alert" invisible="state != 'failed'">
+                    <strong>Falha na extração:</strong> veja o painel <b>Log de Extração / OCR</b>.
+                    Ele mostra arquivo, tipo detectado, páginas, bibliotecas, idiomas Tesseract e resultado das regex do template.
+                </div>
+                <div class="alert alert-info" role="alert">
+                    <strong>Fluxo recomendado:</strong>
+                    1) anexe o PDF/imagem; 2) clique em <b>Diagnosticar Ambiente OCR</b>;
+                    3) clique em <b>Testar OCR do Arquivo</b>; 4) confira o texto;
+                    5) use <b>Extrair por Template</b>.
+                    Se os campos não forem encontrados, o log abaixo mostrará quais regex falharam.
+                </div>
+                <separator string="Log de Extração / OCR"/>
+                <field name="extraction_log"
+                       readonly="1"
+                       nolabel="1"
+                       widget="text"
+                       style="min-height: 340px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace; white-space: pre-wrap;"
+                       placeholder="O log aparecerá aqui após Diagnosticar Ambiente OCR, Testar OCR do Arquivo ou Extrair por Template."/>
+                <separator string="Texto extraído / OCR"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_property_contract_history_list_ocr_template_ext" model="ir.ui.view">
+        <field name="name">property.contract.history.list.ocr.template.ext</field>
+        <field name="model">property.contract.history</field>
+        <field name="inherit_id" ref="property_contract_history.view_property_contract_history_list"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='parser_used']" position="after">
+                <field name="ocr_template_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

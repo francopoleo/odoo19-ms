@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_activity_type_operational_deadline" model="mail.activity.type">
+            <field name="name">Pendência Operacional</field>
+            <field name="icon">fa-clock-o</field>
+            <field name="category">default</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+        </record>
+</data>
+</odoo>

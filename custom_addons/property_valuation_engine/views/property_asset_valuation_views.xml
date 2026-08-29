@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        View própria de valuation para property.asset.
+        Ela evita depender do XML ID exato da view principal do property_core.
+        Assim o módulo instala sem quebrar caso o property_core tenha menus/views customizados.
+    -->
+    <record id="view_property_asset_valuation_list" model="ir.ui.view">
+        <field name="name">property.asset.valuation.list</field>
+        <field name="model">property.asset</field>
+        <field name="arch" type="xml">
+            <list string="Imóveis - Valuation">
+                <field name="name"/>
+                <field name="valuation_area_m2"/>
+                <field name="valuation_city"/>
+                <field name="valuation_neighborhood"/>
+                <field name="valuation_use_type"/>
+                <field name="valuation_standard"/>
+                <field name="estimated_rent_value"/>
+                <field name="estimated_sale_value"/>
+                <field name="valuation_confidence_score"/>
+                <field name="valuation_currency_id" invisible="1"/>
+                <field name="valuation_run_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_asset_valuation_form" model="ir.ui.view">
+        <field name="name">property.asset.valuation.form</field>
+        <field name="model">property.asset</field>
+        <field name="arch" type="xml">
+            <form string="Imóvel - Valuation">
+                <header>
+                    <button name="action_pve_calculate_rent" string="Calcular locação" type="object" class="btn-primary" groups="property_valuation_engine.group_property_valuation_manager"/>
+                    <button name="action_pve_calculate_sale" string="Calcular venda" type="object" class="btn-secondary" groups="property_valuation_engine.group_property_valuation_manager"/>
+                    <button name="action_pve_open_valuation_runs" string="Ver estimativas" type="object"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_pve_open_valuation_runs" type="object" class="oe_stat_button" icon="fa-line-chart">
+                            <field name="valuation_run_count" widget="statinfo" string="Estimativas"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group string="Parâmetros de Valuation">
+                        <group>
+                            <field name="valuation_area_m2"/>
+                            <field name="valuation_city"/>
+                            <field name="valuation_neighborhood"/>
+                            <field name="valuation_use_type"/>
+                        </group>
+                        <group>
+                            <field name="valuation_standard"/>
+                            <field name="valuation_conservation"/>
+                            <field name="valuation_location_factor"/>
+                            <field name="valuation_liquidity_factor"/>
+                            <field name="valuation_vacancy_factor"/>
+                        </group>
+                    </group>
+                    <group string="Resumo de Estimativa">
+                        <group>
+                            <field name="valuation_currency_id" invisible="1"/>
+                            <field name="estimated_rent_value" readonly="1"/>
+                            <field name="latest_rent_valuation_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="estimated_sale_value" readonly="1"/>
+                            <field name="latest_sale_valuation_id" readonly="1"/>
+                            <field name="valuation_confidence_score" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Histórico de estimativas">
+                            <field name="valuation_run_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="valuation_date"/>
+                                    <field name="valuation_type"/>
+                                    <field name="state"/>
+                                    <field name="calculated_value"/>
+                                    <field name="low_value"/>
+                                    <field name="high_value"/>
+                                    <field name="approved_value"/>
+                                    <field name="confidence_score"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_asset_valuation_search" model="ir.ui.view">
+        <field name="name">property.asset.valuation.search</field>
+        <field name="model">property.asset</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Imóveis para Valuation">
+                <field name="name"/>
+                <field name="valuation_city"/>
+                <field name="valuation_neighborhood"/>
+                <field name="valuation_use_type"/>
+                <field name="valuation_standard"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_asset_valuation" model="ir.actions.act_window">
+        <field name="name">Imóveis para Valuation</field>
+        <field name="res_model">property.asset</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_property_asset_valuation_list"/>
+        <field name="search_view_id" ref="view_property_asset_valuation_search"/>
+    </record>
+</odoo>

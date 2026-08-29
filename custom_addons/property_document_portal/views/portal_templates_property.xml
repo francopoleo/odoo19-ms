@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== DOCUMENTS LIST WITH PROPERTY GROUPING ==================== -->
+    <template id="portal_my_documents_property" name="My Documents (Property Grouped)" inherit_id="document_portal_integration.portal_my_documents">
+        <xpath expr="//tbody" position="replace">
+            <tbody t-foreach="grouped_documents.items()" t-as="group">
+                <tr class="table-active">
+                    <td colspan="4">
+                        <strong t-out="group[0]"/>
+                    </td>
+                </tr>
+                <tr t-foreach="group[1]" t-as="document">
+                    <td>
+                        <a t-attf-href="/my/documents/#{document.id}">
+                            <t t-out="document.name"/>
+                        </a>
+                    </td>
+                    <td><t t-out="document.document_type_id.name"/></td>
+                    <td>
+                        <span t-field="document.publication_date" t-options="{'widget': 'date'}"/>
+                    </td>
+                    <td>
+                        <a t-attf-href="/my/documents/#{document.id}" class="btn btn-sm btn-outline-primary">
+                            Ver
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </xpath>
+    </template>
+
+</odoo>

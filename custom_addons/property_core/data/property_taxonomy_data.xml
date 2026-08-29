@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ========== TAXONOMIA IMOBILIÁRIA ==========
+         Arquivo centralizado com todas as classificações e tipos do sistema imobiliário.
+
+         Seções:
+         1. Categorias de Parceiros (res.partner.category) - Tags genéricas Odoo
+         2. Tipos de Stakeholder (property.stakeholder.type) - Perfis imobiliários detalhados
+    -->
+
+    <!-- ==================== 1. CATEGORIAS DE PARCEIROS ====================
+         Tags padrão Odoo para classificar contatos.
+         Usadas para segmentação simples e filtros rápidos.
+    -->
+    <record id="res_partner_category_owner" model="res.partner.category">
+        <field name="name">Proprietário</field>
+        <field name="color">3</field>
+    </record>
+    <record id="res_partner_category_broker" model="res.partner.category">
+        <field name="name">Corretor</field>
+        <field name="color">1</field>
+    </record>
+    <record id="res_partner_category_property_prospect" model="res.partner.category">
+        <field name="name">Prospect Imobiliário</field>
+        <field name="color">2</field>
+    </record>
+    <record id="res_partner_category_property_contacted" model="res.partner.category">
+        <field name="name">Contato Imobiliário</field>
+        <field name="color">5</field>
+    </record>
+    <record id="res_partner_category_tenant" model="res.partner.category">
+        <field name="name">Locatário</field>
+        <field name="color">4</field>
+    </record>
+    <record id="res_partner_category_buyer" model="res.partner.category">
+        <field name="name">Comprador</field>
+        <field name="color">6</field>
+    </record>
+    <record id="res_partner_category_seller" model="res.partner.category">
+        <field name="name">Vendedor</field>
+        <field name="color">7</field>
+    </record>
+    <record id="res_partner_category_investor" model="res.partner.category">
+        <field name="name">Investidor</field>
+        <field name="color">8</field>
+    </record>
+    <record id="res_partner_category_brokerage" model="res.partner.category">
+        <field name="name">Imobiliária</field>
+        <field name="color">9</field>
+    </record>
+    <record id="res_partner_category_developer" model="res.partner.category">
+        <field name="name">Incorporadora</field>
+        <field name="color">1</field>
+    </record>
+    <record id="res_partner_category_co_owner" model="res.partner.category">
+        <field name="name">Coproprietário</field>
+        <field name="color">3</field>
+    </record>
+    <record id="res_partner_category_channel" model="res.partner.category">
+        <field name="name">Canal de Venda</field>
+        <field name="color">10</field>
+    </record>
+    <record id="res_partner_category_affiliate" model="res.partner.category">
+        <field name="name">Indicador/Afiliado</field>
+        <field name="color">11</field>
+    </record>
+    <record id="res_partner_category_constructor" model="res.partner.category">
+        <field name="name">Construtora</field>
+        <field name="color">4</field>
+    </record>
+    <record id="res_partner_category_contractor" model="res.partner.category">
+        <field name="name">Empreiteiro</field>
+        <field name="color">5</field>
+    </record>
+    <record id="res_partner_category_appraiser" model="res.partner.category">
+        <field name="name">Avaliador</field>
+        <field name="color">6</field>
+    </record>
+    <record id="res_partner_category_inspector" model="res.partner.category">
+        <field name="name">Vistoriador</field>
+        <field name="color">7</field>
+    </record>
+    <record id="res_partner_category_property_manager" model="res.partner.category">
+        <field name="name">Administradora</field>
+        <field name="color">8</field>
+    </record>
+    <record id="res_partner_category_supplier_service" model="res.partner.category">
+        <field name="name">Prestador de Serviços</field>
+        <field name="color">9</field>
+    </record>
+    <record id="res_partner_category_supplier_maintenance" model="res.partner.category">
+        <field name="name">Fornecedor de Manutenção</field>
+        <field name="color">10</field>
+    </record>
+    <record id="res_partner_category_financial_institution" model="res.partner.category">
+        <field name="name">Instituição Financeira</field>
+        <field name="color">11</field>
+    </record>
+    <record id="res_partner_category_legal_firm" model="res.partner.category">
+        <field name="name">Escritório Jurídico</field>
+        <field name="color">2</field>
+    </record>
+    <record id="res_partner_category_accounting_firm" model="res.partner.category">
+        <field name="name">Escritório Contábil</field>
+        <field name="color">3</field>
+    </record>
+
+    <!-- ==================== 2. TIPOS DE STAKEHOLDER ====================
+         Perfis imobiliários detalhados com lógica de negócio específica.
+         Cada tipo define comportamentos, permissões e relacionamentos.
+    -->
+
+    <!-- Grupo: CORE - Partes principais de uma transação imobiliária -->
+    <record id="stakeholder_type_owner" model="property.stakeholder.type">
+        <field name="name">Proprietário</field>
+        <field name="code">owner</field>
+        <field name="category_group">core</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_owner"/>
+    </record>
+    <record id="stakeholder_type_co_owner" model="property.stakeholder.type">
+        <field name="name">Coproprietário</field>
+        <field name="code">co_owner</field>
+        <field name="category_group">core</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_co_owner"/>
+    </record>
+    <record id="stakeholder_type_tenant" model="property.stakeholder.type">
+        <field name="name">Locatário</field>
+        <field name="code">tenant</field>
+        <field name="category_group">core</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_tenant"/>
+        <field name="can_have_portal_access" eval="True"/>
+    </record>
+    <record id="stakeholder_type_buyer" model="property.stakeholder.type">
+        <field name="name">Comprador</field>
+        <field name="code">buyer</field>
+        <field name="category_group">core</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_buyer"/>
+    </record>
+    <record id="stakeholder_type_seller" model="property.stakeholder.type">
+        <field name="name">Vendedor</field>
+        <field name="code">seller</field>
+        <field name="category_group">core</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_seller"/>
+    </record>
+    <record id="stakeholder_type_prospect" model="property.stakeholder.type">
+        <field name="name">Prospect</field>
+        <field name="code">prospect</field>
+        <field name="category_group">core</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_property_prospect"/>
+    </record>
+    <record id="stakeholder_type_investor" model="property.stakeholder.type">
+        <field name="name">Investidor</field>
+        <field name="code">investor</field>
+        <field name="category_group">core</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_investor"/>
+    </record>
+
+    <!-- Grupo: INTERMEDIATION - Intermediários em operações imobiliárias -->
+    <record id="stakeholder_type_broker" model="property.stakeholder.type">
+        <field name="name">Corretor</field>
+        <field name="code">broker</field>
+        <field name="category_group">intermediation</field>
+        <field name="can_receive_commission" eval="True"/>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_broker"/>
+    </record>
+    <record id="stakeholder_type_brokerage" model="property.stakeholder.type">
+        <field name="name">Imobiliária</field>
+        <field name="code">brokerage</field>
+        <field name="category_group">intermediation</field>
+        <field name="is_company_role" eval="True"/>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_brokerage"/>
+    </record>
+    <record id="stakeholder_type_channel" model="property.stakeholder.type">
+        <field name="name">Canal de Venda</field>
+        <field name="code">channel</field>
+        <field name="category_group">intermediation</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_channel"/>
+    </record>
+    <record id="stakeholder_type_affiliate" model="property.stakeholder.type">
+        <field name="name">Indicador / Afiliado</field>
+        <field name="code">affiliate</field>
+        <field name="category_group">intermediation</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_affiliate"/>
+    </record>
+
+    <!-- Grupo: DEVELOPMENT - Agentes do lado do desenvolvimento imobiliário -->
+    <record id="stakeholder_type_developer" model="property.stakeholder.type">
+        <field name="name">Incorporadora</field>
+        <field name="code">developer</field>
+        <field name="category_group">development</field>
+        <field name="is_company_role" eval="True"/>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_developer"/>
+    </record>
+    <record id="stakeholder_type_constructor" model="property.stakeholder.type">
+        <field name="name">Construtora</field>
+        <field name="code">constructor</field>
+        <field name="category_group">development</field>
+        <field name="is_company_role" eval="True"/>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_constructor"/>
+    </record>
+    <record id="stakeholder_type_contractor" model="property.stakeholder.type">
+        <field name="name">Empreiteiro</field>
+        <field name="code">contractor</field>
+        <field name="category_group">development</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_contractor"/>
+    </record>
+    <record id="stakeholder_type_appraiser" model="property.stakeholder.type">
+        <field name="name">Avaliador</field>
+        <field name="code">appraiser</field>
+        <field name="category_group">development</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_appraiser"/>
+    </record>
+    <record id="stakeholder_type_inspector" model="property.stakeholder.type">
+        <field name="name">Vistoriador</field>
+        <field name="code">inspector</field>
+        <field name="category_group">development</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_inspector"/>
+    </record>
+
+    <!-- Grupo: OPERATIONS - Agentes de operação e manutenção -->
+    <record id="stakeholder_type_property_manager" model="property.stakeholder.type">
+        <field name="name">Administradora</field>
+        <field name="code">property_manager</field>
+        <field name="category_group">operations</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_property_manager"/>
+    </record>
+    <record id="stakeholder_type_supplier_service" model="property.stakeholder.type">
+        <field name="name">Prestador de Serviços</field>
+        <field name="code">supplier_service</field>
+        <field name="category_group">operations</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_supplier_service"/>
+    </record>
+    <record id="stakeholder_type_supplier_maintenance" model="property.stakeholder.type">
+        <field name="name">Fornecedor de Manutenção</field>
+        <field name="code">supplier_maintenance</field>
+        <field name="category_group">operations</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_supplier_maintenance"/>
+    </record>
+
+    <!-- Grupo: INSTITUTIONAL - Agentes institucionais e profissionais -->
+    <record id="stakeholder_type_financial_institution" model="property.stakeholder.type">
+        <field name="name">Instituição Financeira</field>
+        <field name="code">financial_institution</field>
+        <field name="category_group">institutional</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_financial_institution"/>
+    </record>
+    <record id="stakeholder_type_legal_firm" model="property.stakeholder.type">
+        <field name="name">Escritório Jurídico</field>
+        <field name="code">legal_firm</field>
+        <field name="category_group">institutional</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_legal_firm"/>
+    </record>
+    <record id="stakeholder_type_accounting_firm" model="property.stakeholder.type">
+        <field name="name">Escritório Contábil</field>
+        <field name="code">accounting_firm</field>
+        <field name="category_group">institutional</field>
+        <field name="default_partner_tag_id" ref="property_core.res_partner_category_accounting_firm"/>
+    </record>
+
+</odoo>

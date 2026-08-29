@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_help_suggestion_rule_search" model="ir.ui.view">
+        <field name="name">help.suggestion.rule.search</field>
+        <field name="model">help.suggestion.rule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="pattern"/>
+                <field name="model_name"/>
+                <field name="field_name"/>
+                <filter name="active" string="Ativas" domain="[('active','=',True)]"/>
+                <filter name="error" string="Erros" domain="[('rule_type','=','error')]"/>
+                <filter name="missing" string="Campo obrigatório" domain="[('rule_type','=','missing_required')]"/>
+                <filter name="state" string="Por situação" domain="[('rule_type','=','state_flow')]"/>
+                <filter name="group_type" string="Agrupar por Tipo" context="{'group_by':'rule_type'}"/>
+                <filter name="group_model" string="Agrupar por Model" context="{'group_by':'model_name'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_help_suggestion_rule_list" model="ir.ui.view">
+        <field name="name">help.suggestion.rule.list</field>
+        <field name="model">help.suggestion.rule</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="rule_type"/>
+                <field name="model_name"/>
+                <field name="field_name"/>
+                <field name="state_value"/>
+                <field name="pattern"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_help_suggestion_rule_form" model="ir.ui.view">
+        <field name="name">help.suggestion.rule.form</field>
+        <field name="model">help.suggestion.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="rule_type"/>
+                            <field name="pattern"/>
+                            <field name="state_value"/>
+                        </group>
+                        <group>
+                            <field name="module_name"/>
+                            <field name="model_name"/>
+                            <field name="field_name"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="tip_text"/>
+                    <field name="article_ids" widget="many2many_tags"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_help_suggestion_rule" model="ir.actions.act_window">
+        <field name="name">Regras Inteligentes</field>
+        <field name="res_model">help.suggestion.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_help_suggestion_rule_search"/>
+    </record>
+</odoo>

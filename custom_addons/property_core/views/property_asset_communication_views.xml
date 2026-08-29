@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_asset_communication_list" model="ir.ui.view">
+        <field name="name">property.asset.communication.list</field>
+        <field name="model">property.asset.communication</field>
+        <field name="arch" type="xml">
+            <list decoration-info="status == 'draft'" decoration-success="status == 'registered'">
+                <field name="communication_date"/>
+                <field name="name"/>
+                <field name="asset_id"/>
+                <field name="contract_id" optional="show"/>
+                <field name="partner_id"/>
+                <field name="responsible_id"/>
+                <field name="channel_type"/>
+                <field name="requires_action" widget="boolean" optional="show"/>
+                <field name="tracking_token" optional="hide"/>
+                <field name="status" widget="badge" decoration-info="status == 'draft'" decoration-success="status == 'registered'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_asset_communication_form" model="ir.ui.view">
+        <field name="name">property.asset.communication.form</field>
+        <field name="model">property.asset.communication</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_done" type="object" string="Registrar Comunicação"
+                            invisible="status != 'draft'" class="btn-primary"/>
+                    <button name="action_create_task" type="object" string="Criar Tarefa"
+                            class="btn-secondary"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,registered"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Assunto..."/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Comunicação">
+                            <field name="asset_id" readonly="1"/>
+                            <field name="contract_id"/>
+                            <field name="communication_date" readonly="1"/>
+                            <field name="channel_type"/>
+                            <field name="channel_origin" readonly="1"/>
+                        </group>
+                        <group string="Participantes">
+                            <field name="partner_id"/>
+                            <field name="responsible_id"/>
+                        </group>
+                    </group>
+
+                    <group string="E-mail" invisible="channel_type != 'email'">
+                        <group>
+                            <field name="email_from" readonly="1"/>
+                            <field name="email_to" readonly="1"/>
+                            <field name="email_cc" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="external_message_id" readonly="1"/>
+                            <field name="email_message_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Rastreamento">
+                        <group>
+                            <field name="tracking_token" readonly="1" widget="CopyClipboardText" help="ID único para correlacionar com outras comunicações"/>
+                            <field name="sent_by_odoo" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Ações Relacionadas">
+                        <field name="requires_action"/>
+                        <field name="action_deadline" invisible="not requires_action"/>
+                    </group>
+
+
+                    <group string="Descrição">
+                        <field name="description" nolabel="1" colspan="2"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Comunicações">
+                            <chatter/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_asset_communication_search" model="ir.ui.view">
+        <field name="name">property.asset.communication.search</field>
+        <field name="model">property.asset.communication</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="asset_id"/>
+                <field name="contract_id"/>
+                <field name="partner_id"/>
+                <field name="responsible_id"/>
+                <field name="tracking_token"/>
+                <filter string="Rascunhos" name="draft" domain="[('status','=','draft')]"/>
+                <filter string="Registradas" name="registered" domain="[('status','=','registered')]"/>
+                <filter string="Requer Ação" name="requires_action" domain="[('requires_action','=',True)]"/>
+                <separator/>
+                <filter string="Por Status" name="group_status" context="{'group_by':'status'}"/>
+                <filter string="Por Tipo" name="group_type" context="{'group_by':'channel_type'}"/>
+                <filter string="Por Imóvel" name="group_asset" context="{'group_by':'asset_id'}"/>
+                <filter string="Por Responsável" name="group_resp" context="{'group_by':'responsible_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_asset_communication" model="ir.actions.act_window">
+        <field name="name">Comunicações de Imóvel</field>
+        <field name="res_model">property.asset.communication</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_registered": 1}</field>
+    </record>
+
+</odoo>

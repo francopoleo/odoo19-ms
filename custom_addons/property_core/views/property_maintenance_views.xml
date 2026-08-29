@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_maintenance_list" model="ir.ui.view">
+        <field name="name">property.maintenance.list</field>
+        <field name="model">property.maintenance</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="priority == '3'" decoration-warning="priority == '2'" decoration-muted="status in ('done','cancelled')">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="maintenance_type"/>
+                <field name="priority" widget="priority"/>
+                <field name="asset_id"/>
+                <field name="vendor_id"/>
+                <field name="responsible_party"/>
+                <field name="request_date"/>
+                <field name="scheduled_date"/>
+                <field name="cost_estimate"/>
+                <field name="cost_actual"/>
+                <field name="status" widget="badge" decoration-info="status == 'draft'" decoration-warning="status in ('quoted','scheduled')" decoration-primary="status == 'in_progress'" decoration-success="status == 'done'" decoration-muted="status == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_maintenance_form" model="ir.ui.view">
+        <field name="name">property.maintenance.form</field>
+        <field name="model">property.maintenance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_quote" type="object" string="Registrar Orçamento" invisible="status != 'draft'" class="btn-primary"/>
+                    <button name="action_create_bill" type="object" string="Nova Compra" invisible="status not in ('draft','quoted','scheduled','in_progress')" class="btn-primary"/>
+                    <button name="action_schedule" type="object" string="Agendar" invisible="status not in ['draft','quoted']"/>
+                    <button name="action_start" type="object" string="Iniciar Execução" invisible="status not in ['draft','quoted','scheduled']" class="btn-primary"/>
+                    <button name="action_done" type="object" string="Concluir" invisible="status not in ['scheduled','in_progress','draft','quoted']" class="btn-success"/>
+                    <button name="action_cancel" type="object" string="Cancelar" invisible="status in ['done','cancelled']"/>
+                    <button name="action_reset_draft" type="object" string="Reabrir" invisible="status != 'cancelled'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,quoted,scheduled,in_progress,done"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_bills" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="bill_count == 0">
+                            <div class="o_stat_info">
+                                <field name="bill_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Compras</span>
+                            </div>
+                        </button>
+                        <button name="action_view_media" type="object" class="oe_stat_button" icon="fa-camera" invisible="media_count == 0">
+                            <div class="o_stat_info">
+                                <field name="media_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Mídias</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Título da manutenção..."/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="reference" readonly="1" class="text-muted"/>
+                            <field name="priority" widget="priority" class="ms-3"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Identificação">
+                            <field name="maintenance_type"/>
+                            <field name="responsible_party"/>
+                            <field name="asset_id"/>
+                            <field name="contract_id" domain="[('asset_id','=',asset_id)]"/>
+                            <field name="vendor_id"/>
+                        </group>
+                        <group string="Datas">
+                            <field name="request_date"/>
+                            <field name="scheduled_date"/>
+                            <field name="completion_date" invisible="status not in ['done','in_progress']"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Financeiro - Manual">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="cost_estimate" help="Orçamento manual ou inicial da manutenção"/>
+                            <field name="cost_actual" invisible="status not in ['in_progress','done']" help="Custo real manual ou consolidado"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Empresa">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <group string="Descrição">
+                        <field name="description" nolabel="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Compras Vinculadas" name="bills">
+                            <field name="bill_ids" readonly="1">
+                                <list>
+                                    <field name="invoice_date"/>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="amount_total"/>
+                                    <field name="amount_residual"/>
+                                    <field name="payment_state" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                            <group invisible="bill_count == 0" class="oe_subtotal_footer">
+                                <field name="bill_amount_total" readonly="1" string="Total de Compras"/>
+                                <field name="bill_amount_due" readonly="1" string="A Pagar"/>
+                            </group>
+                        </page>
+                        <page string="Mídias da Manutenção"><div class="alert alert-info" role="alert"><p class="mb-0"><i class="fa fa-wrench" title="Mídias"/><strong>Fotos e arquivos:</strong> use a mesma área para antes/depois, evidências, orçamentos, notas fiscais, laudos, scans e demais anexos da manutenção.</p></div><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Mídias e Arquivos da Manutenção</h5><button name="action_open_bulk_media_wizard" type="object" class="btn btn-primary btn-sm" icon="fa-upload" string="Adicionar Fotos/Arquivos"/></div><field name="media_ids" mode="kanban,list,form" context="{'default_maintenance_id': id, 'default_asset_id': asset_id, 'default_purpose': 'maintenance', 'default_context_selection': 'maintenance', 'default_upload_kind': 'auto'}"><kanban class="o_kanban_small"><field name="id"/><field name="name"/><field name="image_512"/><field name="content_kind"/><field name="category_id"/><field name="file_name"/><field name="file_size_human"/><field name="location_note"/><field name="caption"/><templates><t t-name="card"><div class="oe_kanban_global_click position-relative h-100"><t t-if="record.image_512.raw_value"><img t-attf-src="/web/image/property.media/#{record.id.raw_value}/image_512" alt="Mídia" style="width:100%; height:150px; object-fit:cover; display:block;"/></t><t t-else=""><div style="width:100%; height:150px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;"><i class="fa fa-file-o" title="Arquivo" style="font-size:36px; color:#999;"/></div></t><div class="oe_kanban_details pt-2 px-2"><h6 class="mb-1 text-truncate"><span t-esc="record.name.value"/></h6><div class="small text-muted mb-1"><t t-if="record.file_name.value"><span t-esc="record.file_name.value"/></t></div><t t-if="record.location_note.value"><div class="small text-muted"><span t-esc="record.location_note.value"/></div></t><div class="mt-2"><t t-if="record.content_kind.raw_value == 'document'"><span class="badge bg-secondary">Arquivo</span></t><t t-if="record.content_kind.raw_value == 'image'"><span class="badge bg-info">Imagem</span></t><t t-if="record.category_id.value"><span class="badge bg-light text-dark ms-1"><span t-esc="record.category_id.value"/></span></t></div></div></div></t></templates></kanban><list editable="bottom"><field name="purpose" invisible="1"/><field name="sequence"/><field name="name"/><field name="content_kind"/><field name="category_id"/><field name="file_name" optional="show"/><field name="file_size_human" optional="show"/><field name="location_note" optional="show"/><field name="caption" optional="hide"/></list><form string="Mídias da Manutenção"><sheet><field name="purpose" invisible="1"/><field name="asset_id" invisible="1"/><field name="inspection_id" invisible="1"/><field name="maintenance_id" invisible="1"/><group><group string="Classificação"><field name="name"/><field name="content_kind"/><field name="category_id"/><field name="sequence"/></group><group string="Arquivo"><field name="file_name" placeholder="Nome original do arquivo"/><field name="file_size_human" readonly="1"/></group></group><group string="Foto / Imagem" invisible="content_kind != 'image'"><field name="image_1920" widget="image" options="{'size': [512, 512]}" nolabel="1"/></group><group string="Arquivo / Documento" invisible="content_kind != 'document'"><field name="file_data" filename="file_name" nolabel="1"/></group><group><field name="caption"/><field name="location_note"/><field name="date_taken"/></group><group string="Descrição"><field name="description" nolabel="1"/></group></sheet></form></field></page><page string="Comunicações">
+                            <chatter/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_maintenance_search" model="ir.ui.view">
+        <field name="name">property.maintenance.search</field>
+        <field name="model">property.maintenance</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="asset_id"/>
+                <field name="contract_id"/>
+                <field name="vendor_id"/>
+                <filter string="Em Aberto" name="open" domain="[('status','not in',['done','cancelled'])]"/>
+                <filter string="Em Execução" name="in_progress" domain="[('status','=','in_progress')]"/>
+                <filter string="Emergência" name="emergency" domain="[('maintenance_type','=','emergency')]"/>
+                <filter string="Críticas" name="critical" domain="[('priority','=','3')]"/>
+                <separator/>
+                <filter string="Por Imóvel" name="group_asset" context="{'group_by':'asset_id'}"/>
+                <filter string="Por Tipo" name="group_type" context="{'group_by':'maintenance_type'}"/>
+                <filter string="Por Status" name="group_status" context="{'group_by':'status'}"/>
+                <filter string="Por Responsável" name="group_party" context="{'group_by':'responsible_party'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== PIVOT ==================== -->
+    <record id="view_property_maintenance_pivot" model="ir.ui.view">
+        <field name="name">property.maintenance.pivot</field>
+        <field name="model">property.maintenance</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="asset_id" type="row"/>
+                <field name="maintenance_type" type="col"/>
+                <field name="cost_actual" type="measure"/>
+                <field name="cost_estimate" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_maintenance" model="ir.actions.act_window">
+        <field name="name">Manutenções</field>
+        <field name="res_model">property.maintenance</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="context">{"search_default_open": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nenhuma manutenção cadastrada.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================
+         Documentos - UX revisada
+         Objetivo:
+         - Kanban diferencia claramente dossiê, documento filho e avulso.
+         - Formulário coloca Arquivos no topo, porque o anexo é o centro do documento.
+         - Lista passa a ser a visualização padrão para reduzir confusão hierárquica.
+    ============================================================ -->
+    <record id="view_document_document_kanban" model="ir.ui.view">
+        <field name="name">document.document.kanban</field>
+        <field name="model">document.document</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_document_core" highlight_color="color" sample="1">
+                <field name="id"/>
+                <field name="color"/>                <field name="name"/>
+                <field name="reference"/>
+                <field name="description"/>
+                <field name="document_type_id"/>
+                <field name="category_id"/>                <field name="status"/>
+                <field name="review_status"/>
+                <field name="expiry_date"/>
+                <field name="is_sensitive"/>
+                <field name="attachment_count"/>
+                <field name="primary_attachment_name"/>
+                <field name="primary_attachment_mimetype"/>
+                <field name="preview_kind"/>
+                <field name="document_completion_state"/>
+                <field name="missing_requirements_count"/>                <templates>
+                    <t t-name="menu">
+                        <a t-if="widget.editable" role="menuitem" type="open" class="dropdown-item">Editar</a>
+                        <a t-else="" role="menuitem" type="open" class="dropdown-item">Abrir</a>
+                        <a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Excluir</a>
+                        <div role="separator" class="dropdown-divider"/>
+                        <field name="color" widget="kanban_color_picker"/>
+                    </t>
+                    <t t-name="card">
+                            <div class="o_kanban_record p-3" style="border-left: 3px solid #0aa2c0; display:flex; flex-direction:column; gap:6px;">
+                                <div class="d-flex gap-2 align-items-flex-start">
+                                    <aside class="pt-0 text-info">
+                                        <span class="fa fa-file-text-o fa-2x" title="Documento do dossiê"/>
+                                    </aside>
+                                    <div style="flex:1; min-width:0;">
+                                        <span class="badge text-bg-info mb-2" style="font-size:8px;">DOCUMENTO</span>
+                                        <div class="fw-bold" style="font-size:13px; line-height:1.3;"><field name="name"/></div>
+                                        <div class="text-muted" style="font-size:11px;margin-top:3px;" t-if="record.reference.value"><field name="reference"/></div>
+                                    </div>
+                                </div>
+
+                                <!-- Status Row -->
+                                <div class="d-flex gap-1 align-items-center" style="font-size:12px; padding-top:4px; border-top:1px solid #e9ecef;">
+                                    <span class="badge text-bg-success" t-if="record.document_completion_state.raw_value == 'complete'" title="Completo"><i class="fa fa-check"/> Completo</span>
+                                    <span class="badge text-bg-warning" t-if="record.document_completion_state.raw_value == 'incomplete'" title="Incompleto"><i class="fa fa-exclamation"/> Incompleto</span>
+                                    <span class="badge text-bg-danger" t-if="record.document_completion_state.raw_value == 'missing'" title="Faltando"><i class="fa fa-times"/> Faltando</span>
+                                    <span class="badge text-bg-light" t-if="record.missing_requirements_count.raw_value"><t t-esc="record.missing_requirements_count.raw_value"/> pendência(s)</span>
+                                    <span class="badge text-bg-warning" t-if="!record.attachment_count.raw_value">Sem arquivo</span>
+                                    <span class="badge text-bg-success" t-if="record.attachment_count.raw_value"><t t-esc="record.attachment_count.raw_value"/> arquivo(s)</span>
+                                    <span class="badge text-bg-warning" t-if="record.status.raw_value == 'expiring'">A vencer</span>
+                                    <span class="badge text-bg-danger" t-if="record.status.raw_value == 'expired'">Vencido</span>
+                                </div>
+
+                                <!-- Tags Row -->
+                                <div class="d-flex flex-wrap gap-1" style="font-size:11px; padding-top:4px;">
+                                    <span class="badge text-bg-light" t-if="record.category_id.value"><field name="category_id"/></span>
+                                    <span class="badge text-bg-light" t-if="record.document_type_id.value"><field name="document_type_id"/></span>
+                                    <button type="object" name="action_preview_primary_attachment" class="btn btn-sm btn-outline-primary py-0 px-1" style="font-size:10px;" t-if="record.attachment_count.raw_value" title="Visualizar arquivo">
+                                        <i class="fa fa-eye"/> Ver
+                                    </button>
+                                    <span class="badge text-bg-danger" t-if="record.review_status.raw_value == 'overdue'">Revisão atrasada</span>
+                                    <span class="badge text-bg-secondary" t-if="record.is_sensitive.raw_value">Sensível</span>
+                                </div>
+                            </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_document_document_list" model="ir.ui.view">
+        <field name="name">document.document.list</field>
+        <field name="model">document.document</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="version" optional="show"/>
+                <field name="attachment_count" string="Arquivos" optional="show"/>                <field name="document_completion_state" string="Completude" widget="badge"
+                       decoration-success="document_completion_state == 'complete'"
+                       decoration-warning="document_completion_state in ('missing', 'incomplete')"
+                       decoration-muted="document_completion_state == 'not_required'"
+                       optional="show"/>
+                <field name="missing_requirements_count" string="Qtd. Pend." optional="show"/>
+                <field name="missing_requirements" string="Pendências" optional="show"/>
+                <field name="primary_attachment_name" string="Arquivo Principal" optional="show"/>
+                <field name="preview_kind" string="Prévia" optional="hide"/>
+                <button name="action_preview_primary_attachment" type="object" string="Visualizar" icon="fa-eye" invisible="attachment_count == 0"/>                <field name="document_type_id"/>
+                <field name="category_id"/>
+                <field name="document_workflow_state" widget="badge" optional="show"/>
+                <field name="created_by_id" optional="show"/>
+                <field name="description" optional="hide"/>
+                <field name="responsible_id" optional="show"/>
+                <field name="issue_date" optional="show"/>
+                <field name="expiry_date"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'valid'"
+                       decoration-warning="status == 'expiring'"
+                       decoration-danger="status == 'expired'"
+                       decoration-muted="status == 'no_expiry'"/>
+                <field name="review_status" widget="badge"
+                       decoration-success="review_status == 'up_to_date'"
+                       decoration-warning="review_status == 'due_soon'"
+                       decoration-danger="review_status == 'overdue'"
+                       decoration-muted="review_status == 'no_review'"/>
+                <field name="is_sensitive" optional="show"/>
+                <field name="access_level" optional="hide"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_document_document_form" model="ir.ui.view">
+        <field name="name">document.document.form</field>
+        <field name="model">document.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_for_approval" type="object" string="Enviar para Aprovação" class="btn-primary" invisible="document_workflow_state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Aprovar" class="btn-success" invisible="document_workflow_state != 'pending_approval'"/>
+                    <button name="action_reject" type="object" string="Rejeitar" class="btn-danger" invisible="document_workflow_state != 'pending_approval'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reenviar" class="btn-warning" invisible="document_workflow_state != 'rejected'"/>
+                    <button name="action_archive" type="object" string="Arquivar" class="btn-secondary" invisible="document_workflow_state != 'validated'"/>
+                    <button name="action_create_new_version" type="object" string="Criar Nova Versão" class="btn-info" invisible="document_workflow_state not in ('validated', 'archived')"/>
+                    <field name="document_workflow_state" widget="statusbar" statusbar_visible="draft,pending_approval,validated,rejected,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_attachments" type="object" class="oe_stat_button" icon="fa-paperclip" invisible="attachment_count == 0">
+                            <field name="attachment_count" widget="statinfo" string="Arquivos"/>
+                        </button>
+                        <button name="action_preview_primary_attachment" type="object" class="oe_stat_button" icon="fa-eye" invisible="attachment_count == 0">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Visualizar</span>
+                                <span class="o_stat_text">Arquivo</span>
+                            </div>
+                        </button>
+                        <button name="action_view_versions" type="object" class="oe_stat_button" icon="fa-history" invisible="document_version_ids == 0">
+                            <field name="document_version_ids" widget="statinfo" string="Versões"/>
+                        </button>
+                    </div>
+
+                    <field name="missing_requirements_html" widget="html" nolabel="1" invisible="document_complete"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Nome do documento"/></h1>
+                        <group>
+                            <field name="reference" readonly="1"/>
+                            <field name="document_state" widget="badge"/>
+                            <field name="active"/>
+                        </group>
+                    </div>
+
+                    <group string="Arquivos do Documento" name="attachments_main">
+                        <field name="attachment_ids" widget="many2many_binary" nolabel="1" colspan="2"/>
+                    </group>
+
+                    <group string="Pré-visualização do Arquivo Selecionado" name="preview_main" invisible="attachment_count == 0">
+                        <field name="preview_attachment_id" domain="[('id','in', attachment_ids)]" options="{'no_create': True, 'no_create_edit': True}"/>
+                        <field name="primary_attachment_name" readonly="1"/>
+                        <field name="primary_attachment_mimetype" readonly="1"/>
+                        <field name="preview_html" widget="html" readonly="1" nolabel="1" colspan="2"/>
+                    </group>
+
+                    <group string="Classificação e Prazos">
+                        <group>
+                            <field name="document_type_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="category_id" readonly="1"/>
+                            <field name="document_number"/>
+                            <field name="version"/>
+                        </group>
+                        <group>
+                            <field name="issue_date"/>
+                            <field name="effective_date"/>
+                            <field name="expiry_date"/>
+                            <field name="review_date"/>
+                        </group>
+                    </group>
+
+                    <group string="Responsabilidades e Workflows">
+                        <group>
+                            <field name="responsible_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="validated_by" readonly="1"/>
+                            <field name="validation_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="next_review_date" readonly="1"/>
+                            <field name="review_status" widget="badge"
+                                   decoration-danger="review_status == 'overdue'"
+                                   decoration-warning="review_status == 'due_soon'"
+                                   decoration-success="review_status == 'up_to_date'"
+                                   decoration-muted="review_status == 'no_review'"
+                                   invisible="not next_review_date"/>
+                        </group>
+                    </group>
+
+                    <group string="Outras Informações">
+                        <group>
+                            <field name="received_date"/>
+                            <field name="issuer"/>
+                            <field name="source"/>
+                        </group>
+                        <group>
+                            <field name="company_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="access_level"/>
+                        </group>
+                    </group>
+
+                    <group string="Contexto do Documento">
+                        <field name="document_context_type" widget="radio"/>
+                        <field name="created_context_type" readonly="1"/>
+                        <field name="linked_entities_summary" readonly="1"/>
+                    </group>
+
+                    <group string="Portal/Website">
+                        <field name="website_published" colspan="2"/>
+                        <field name="website_visibility" invisible="not website_published"/>
+                        <field name="allow_download" invisible="not website_published"/>
+                        <field name="allowed_group_ids" widget="many2many_tags" placeholder="Selecione grupos..." colspan="2" invisible="not website_published"/>
+                        <field name="portal_uploadable" colspan="2"/>
+                    </group>
+
+                    <group string="Workflow &amp; Auditoria">
+                        <group>
+                            <field name="document_workflow_state" widget="badge"/>
+                            <field name="created_by_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="approved_by_id" readonly="1" invisible="not approved_by_id"/>
+                            <field name="approval_date" readonly="1" invisible="not approval_date"/>
+                        </group>
+                        <field name="approval_notes" colspan="2" invisible="not approval_notes" nolabel="1"/>
+                    </group>
+
+                    <group string="Versionamento" invisible="not parent_document_id">
+                        <field name="parent_document_id" readonly="1"/>
+                        <field name="version" readonly="1"/>
+                    </group>
+
+                    <group string="Versões Anteriores" invisible="not document_version_ids">
+                        <field name="document_version_ids" nolabel="1" readonly="1">
+                            <list>
+                                <field name="version"/>
+                                <field name="document_workflow_state" widget="badge"/>
+                                <field name="created_by_id"/>
+                                <field name="approval_date"/>
+                            </list>
+                        </field>
+                    </group>
+
+                    <group string="Observações e Metadados">
+                        <field name="notes" colspan="2" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_document_document_search" model="ir.ui.view">
+        <field name="name">document.document.search</field>
+        <field name="model">document.document</field>
+        <field name="arch" type="xml">
+            <search string="Pesquisar Documentos">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="reference"/>
+                <field name="document_number"/>
+                <field name="document_type_id"/>
+                <field name="category_id"/>                <field name="responsible_id"/>
+                <field name="issuer"/>
+                <field name="source"/>
+                <field name="access_level"/>
+
+                <separator/>
+                <filter string="Vigentes" name="state_active" domain="[('document_state','=','active')]"/>
+                <filter string="Rascunhos" name="state_draft" domain="[('document_state','=','draft')]"/>
+                <filter string="Arquivados" name="state_archived" domain="[('document_state','=','archived')]"/>
+                <filter string="Inativos" name="inactive" domain="[('active','=',False)]" context="{'active_test': False}"/>
+                <separator/>
+                <filter string="Válidos" name="valid" domain="[('status','=','valid')]"/>
+                <filter string="A Vencer" name="expiring" domain="[('status','=','expiring')]"/>
+                <filter string="Vencidos" name="expired" domain="[('status','=','expired')]"/>
+                <filter string="Sem Vencimento" name="no_expiry" domain="[('status','=','no_expiry')]"/>
+                <separator/>
+                <filter string="Com Arquivos" name="with_files" domain="[('attachment_ids','!=',False)]"/>
+                <separator/>
+                <filter string="Exigem Validação" name="requires_validation" domain="[('document_type_id.requires_validation','=',True)]"/>
+                <filter string="Pendentes de Validação" name="pending_validation" domain="[('document_type_id.requires_validation','=',True),('is_validated','=',False)]"/>
+                <filter string="Validados" name="validated" domain="[('is_validated','=',True)]"/>
+                <separator/>
+                <filter string="Revisão Próxima" name="review_due_soon" domain="[('review_status','=','due_soon')]"/>
+                <filter string="Revisão Atrasada" name="review_overdue" domain="[('review_status','=','overdue')]"/>
+                <separator/>
+                <filter string="Sensíveis" name="sensitive" domain="[('is_sensitive','=',True)]"/>
+                <filter string="Publicados no Site" name="website_published" domain="[('website_published','=',True)]"/>
+                <filter string="Com Original Físico" name="physical_original" domain="[('has_physical_original','=',True)]"/>
+
+                <separator/>
+                <filter string="Agrupar por Dossiê/Pai" name="group_parent" context="{}"/>
+                <filter string="Agrupar por Categoria" name="group_category" context="{}"/>
+                <filter string="Agrupar por Tipo" name="group_type" context="{}"/>
+                <filter string="Agrupar por Situação" name="group_status" context="{}"/>
+                <filter string="Agrupar por Completude" name="group_completion" context="{}"/>
+                <filter string="Agrupar por Estado" name="group_state" context="{}"/>
+                <filter string="Agrupar por Responsável" name="group_responsible" context="{}"/>
+                <filter string="Agrupar por Origem" name="group_source" context="{}"/>
+                <filter string="Agrupar por Acesso" name="group_access" context="{}"/>
+                <filter string="Agrupar por Empresa" name="group_company" context="{}"/>
+                <filter string="Agrupar por Mês de Vencimento" name="group_expiry_month" context="{}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_document_document" model="ir.actions.act_window">
+        <field name="name">Todos os Documentos</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="search_view_id" ref="view_document_document_search"/>
+        <field name="context">{'search_default_state_active': 1}</field>
+    </record>
+
+
+    <record id="action_document_document_with_files" model="ir.actions.act_window">
+        <field name="name">Documentos com Arquivos</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="domain">[('attachment_ids','!=',False)]</field>
+        <field name="search_view_id" ref="view_document_document_search"/>
+        <field name="context">{'search_default_state_active': 1}</field>
+    </record>
+
+    <record id="action_document_document_without_files" model="ir.actions.act_window">
+        <field name="name">Documentos sem Arquivos</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="domain">[('attachment_ids','=',False)]</field>
+        <field name="search_view_id" ref="view_document_document_search"/>
+        <field name="context">{'search_default_state_active': 1}</field>
+    </record>
+
+    <record id="action_document_document_expiring" model="ir.actions.act_window">
+        <field name="name">Documentos a Vencer</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="domain">[('status','=','expiring')]</field>
+        <field name="search_view_id" ref="view_document_document_search"/>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_document_document_expired" model="ir.actions.act_window">
+        <field name="name">Documentos Vencidos</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="domain">[('status','=','expired')]</field>
+        <field name="search_view_id" ref="view_document_document_search"/>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_document_document_pending_validation" model="ir.actions.act_window">
+        <field name="name">Pendentes de Validação</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="domain">[('document_type_id.requires_validation','=',True),('is_validated','=',False)]</field>
+        <field name="search_view_id" ref="view_document_document_search"/>
+        <field name="context">{}</field>
+    </record>
+
+
+</odoo>

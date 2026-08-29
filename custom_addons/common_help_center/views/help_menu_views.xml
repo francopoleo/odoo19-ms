@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_help_root" name="Central de Ajuda" sequence="95" web_icon="common_help_center,static/description/icon.png" action="action_help_article"/>
+
+    <menuitem id="menu_help_home" name="Início" parent="menu_help_root" action="action_help_article" sequence="1"/>
+
+    <menuitem id="menu_help_library" name="Biblioteca" parent="menu_help_root" sequence="10"/>
+    <menuitem id="menu_help_all_articles" name="Todos os Artigos" parent="menu_help_library" action="action_help_article" sequence="10"/>
+    <menuitem id="menu_help_manual" name="Manual do Usuário" parent="menu_help_library" action="action_help_article_manual" sequence="20"/>
+    <menuitem id="menu_help_technical" name="Documentação Técnica" parent="menu_help_library" action="action_help_article_technical" sequence="30"/>
+    <menuitem id="menu_help_troubleshooting" name="Troubleshooting" parent="menu_help_library" action="action_help_article_troubleshooting" sequence="40"/>
+
+    <menuitem id="menu_help_contextual_root" name="Ajuda Contextual" parent="menu_help_root" sequence="20"/>
+    
+    <menuitem id="menu_help_context_candidates" name="Mapa de Contextos" parent="menu_help_contextual_root" action="action_help_context_candidate" sequence="5"/>
+    <menuitem id="menu_help_contexts" name="Contextos de Ajuda" parent="menu_help_contextual_root" action="action_help_context" sequence="10"/>
+    <menuitem id="menu_help_tips" name="Dicas por Tela" parent="menu_help_contextual_root" action="action_help_tip" sequence="20"/>
+    <menuitem id="menu_help_checklists" name="Checklists" parent="menu_help_contextual_root" action="action_help_checklist_template" sequence="30"/>
+
+    <menuitem id="menu_help_learning_path_root" name="Onboarding" parent="menu_help_root" sequence="30"/>
+    <menuitem id="menu_help_learning_path" name="Trilhas de Aprendizado" parent="menu_help_learning_path_root" action="action_help_learning_path" sequence="10"/>
+    <menuitem id="menu_help_checklist_progress" name="Progresso dos Checklists" parent="menu_help_learning_path_root" action="action_help_checklist_progress" sequence="20"/>
+
+    <menuitem id="menu_help_intelligence_root" name="Inteligência Operacional" parent="menu_help_root" sequence="40"/>
+    <menuitem id="menu_help_suggestion_rule" name="Regras Inteligentes" parent="menu_help_intelligence_root" action="action_help_suggestion_rule" sequence="10"/>
+    <menuitem id="menu_help_metrics" name="Métricas de Uso" parent="menu_help_intelligence_root" action="action_help_metric" sequence="20"/>
+
+    <menuitem id="menu_help_feedback_root" name="Feedback" parent="menu_help_root" sequence="50"/>
+    <menuitem id="menu_help_feedback" name="Avaliações" parent="menu_help_feedback_root" action="action_help_feedback" sequence="10"/>
+
+    <menuitem id="menu_help_config_root" name="Configuração" parent="menu_help_root" sequence="90"/>
+    <menuitem id="menu_help_categories" name="Categorias" parent="menu_help_config_root" action="action_help_category" sequence="10"/>
+    <menuitem id="menu_help_tags" name="Tags" parent="menu_help_config_root" action="action_help_tag" sequence="20"/>
+    <menuitem id="menu_help_doc_sources" name="Fontes Markdown" parent="menu_help_config_root" action="action_help_doc_source" sequence="40"/>
+    <menuitem id="menu_help_import" name="Importar Documentação" parent="menu_help_config_root" action="action_help_import_wizard" sequence="50"/>
+</odoo>

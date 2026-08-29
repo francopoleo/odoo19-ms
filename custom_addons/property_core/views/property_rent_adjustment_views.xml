@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_rent_adjustment_list" model="ir.ui.view">
+        <field name="name">property.rent.adjustment.list</field>
+        <field name="model">property.rent.adjustment</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'applied'"
+                  decoration-muted="status == 'cancelled'"
+                  decoration-warning="status == 'draft'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="contract_id"/>
+                <field name="asset_id"/>
+                <field name="partner_id"/>
+                <field name="index_type"/>
+                <field name="index_rate" string="Taxa (%)"/>
+                <field name="previous_rent"/>
+                <field name="new_rent"/>
+                <field name="adjustment_pct" string="Variação (%)"/>
+                <field name="adjustment_date"/>
+                <field name="effective_date"/>
+                <field name="status" widget="badge"
+                       decoration-warning="status == 'draft'"
+                       decoration-success="status == 'applied'"
+                       decoration-muted="status == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_rent_adjustment_form" model="ir.ui.view">
+        <field name="name">property.rent.adjustment.form</field>
+        <field name="model">property.rent.adjustment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_apply" type="object" string="Aplicar Reajuste"
+                            invisible="status != 'draft'" class="btn-primary"
+                            confirm="Confirmar aplicação do reajuste? O valor do contrato será atualizado."/>
+                    <button name="action_create_renewal" type="object" string="Gerar Novo Contrato"
+                            invisible="status != 'applied'" class="btn-secondary"
+                            help="Cria um novo contrato em rascunho com o valor reajustado"/>
+                    <button name="action_cancel" type="object" string="Cancelar"
+                            invisible="status != 'draft'"/>
+                    <button name="action_reset_draft" type="object" string="Reabrir"
+                            invisible="status != 'cancelled'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="draft,applied"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="o_row">
+                            <field name="reference" readonly="1" class="text-muted"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Contrato">
+                            <field name="contract_id"/>
+                            <field name="asset_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                        </group>
+                        <group string="Datas">
+                            <field name="adjustment_date"/>
+                            <field name="effective_date"/>
+                        </group>
+                    </group>
+
+                    <group string="Índice de Reajuste">
+                        <group>
+                            <field name="index_type"/>
+                            <field name="index_id" readonly="1"
+                                   invisible="index_type not in ('igpm','ipca','inpc')"/>
+                            <field name="period_months"
+                                   invisible="index_type not in ('igpm','ipca','inpc')"/>
+                            <field name="period_start" readonly="1"
+                                   invisible="index_type not in ('igpm','ipca','inpc')"/>
+                            <field name="index_period" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="index_rate"
+                                   readonly="index_type in ('igpm','ipca','inpc')"/>
+                            <field name="months_found" readonly="1"
+                                   invisible="index_type not in ('igpm','ipca','inpc')"/>
+                            <div colspan="2"
+                                 invisible="index_type not in ('igpm','ipca','inpc') or status != 'draft'">
+                                <button name="action_fetch_rate" type="object"
+                                        string="Recalcular Taxa BCB"
+                                        class="btn-secondary"
+                                        help="Recalcula a taxa acumulada usando os dados sincronizados do Banco Central"/>
+                            </div>
+                        </group>
+                    </group>
+
+                    <group string="Valores">
+                        <group string="Cálculo">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="previous_rent"/>
+                            <field name="new_rent"/>
+                        </group>
+                        <group string="Resultado" readonly="1">
+                            <field name="adjustment_value"/>
+                            <field name="adjustment_pct" string="Variação (%)"/>
+                        </group>
+                    </group>
+
+                    <group string="Observações">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Comunicações">
+                            <chatter/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_rent_adjustment_search" model="ir.ui.view">
+        <field name="name">property.rent.adjustment.search</field>
+        <field name="model">property.rent.adjustment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="contract_id"/>
+                <field name="asset_id"/>
+                <field name="partner_id"/>
+                <filter string="Rascunhos" name="draft" domain="[('status','=','draft')]"/>
+                <filter string="Aplicados" name="applied" domain="[('status','=','applied')]"/>
+                <filter string="IGP-M" name="igpm" domain="[('index_type','=','igpm')]"/>
+                <filter string="IPCA" name="ipca" domain="[('index_type','=','ipca')]"/>
+                <separator/>
+                <filter string="Por Contrato" name="group_contract" context="{'group_by':'contract_id'}"/>
+                <filter string="Por Índice" name="group_index" context="{'group_by':'index_type'}"/>
+                <filter string="Por Mês" name="group_date" context="{'group_by':'adjustment_date:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== GRAPH ==================== -->
+    <record id="view_property_rent_adjustment_graph" model="ir.ui.view">
+        <field name="name">property.rent.adjustment.graph</field>
+        <field name="model">property.rent.adjustment</field>
+        <field name="arch" type="xml">
+            <graph type="line">
+                <field name="adjustment_date" type="row" interval="month"/>
+                <field name="new_rent" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_rent_adjustment" model="ir.actions.act_window">
+        <field name="name">Reajustes de Aluguel</field>
+        <field name="res_model">property.rent.adjustment</field>
+        <field name="view_mode">list,form,graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Registre o primeiro reajuste!</p>
+        </field>
+    </record>
+
+</odoo>

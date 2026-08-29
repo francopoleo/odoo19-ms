@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend property.asset form view with contract history section -->
+    <record id="view_property_asset_form_contract_history_ext" model="ir.ui.view">
+        <field name="name">property.asset.form.contract_history.ext</field>
+        <field name="model">property.asset</field>
+        <field name="inherit_id" ref="property_core.view_property_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_contract_history" type="object" class="oe_stat_button"
+                        icon="fa-file-pdf-o" invisible="not contract_history_count" groups="property_core.group_property_manager">
+                    <field string="Contratos" name="contract_history_count" widget="statinfo"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook/page[last()]" position="after">
+                <page string="Histórico de Contratos" groups="property_core.group_property_manager">
+                    <button name="action_import_contract_history" type="object" string="Importar Contrato"
+                            class="btn-primary mb-3"/>
+                    <field name="contract_history_ids" mode="list" nolabel="1" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="contract_filename"/>
+                            <field name="contract_type" widget="badge"/>
+                            <field name="state" widget="badge"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="monthly_amount"/>
+                            <field name="sync_timestamp"/>
+                        </list>
+                    </field>
+                    <div class="alert alert-info mt-3" role="alert" invisible="contract_history_ids">
+                        <p>Nenhum contrato importado ainda. Use o módulo de histórico de contratos para fazer upload e sincronizar.</p>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend property.asset list view to show contract history -->
+    <record id="view_property_asset_list_contract_history_ext" model="ir.ui.view">
+        <field name="name">property.asset.list.contract_history.ext</field>
+        <field name="model">property.asset</field>
+        <field name="inherit_id" ref="property_core.view_property_asset_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='status']" position="after">
+                <field name="contract_history_count" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

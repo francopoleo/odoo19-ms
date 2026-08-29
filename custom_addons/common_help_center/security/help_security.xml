@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="group_help_user" model="res.groups">
+            <field name="name">Usuário da Central de Ajuda</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="group_help_admin" model="res.groups">
+            <field name="name">Administrador da Central de Ajuda</field>
+            <field name="implied_ids" eval="[(4, ref('common_help_center.group_help_user'))]"/>
+        </record>
+        <record id="group_help_technical" model="res.groups">
+            <field name="name">Técnico da Central de Ajuda</field>
+            <field name="implied_ids" eval="[(4, ref('common_help_center.group_help_admin'))]"/>
+        </record>
+        <record id="base.group_user" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('common_help_center.group_help_user'))]"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('common_help_center.group_help_admin')), (4, ref('common_help_center.group_help_technical'))]"/>
+        </record>
+    </data>
+</odoo>

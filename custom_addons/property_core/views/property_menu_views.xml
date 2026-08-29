@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <menuitem id="menu_property_root" name="Imóveis" web_icon="property_core,static/description/icon.png" sequence="30"/>
+    <menuitem id="menu_property_dashboard" name="Dashboard" parent="menu_property_root" action="action_property_dashboard" sequence="1"/>
+
+    <menuitem id="menu_property_cadastros" name="Cadastros" parent="menu_property_root" sequence="10"/>
+    <menuitem id="menu_property_comercial" name="Comercial" parent="menu_property_root" sequence="20"/>
+    <menuitem id="menu_property_corretores" name="Corretores" parent="menu_property_root" sequence="30"/>
+    <menuitem id="menu_property_financeiro" name="Financeiro" parent="menu_property_root" sequence="40"/>
+    <menuitem id="menu_property_operations" name="Operações" parent="menu_property_root" sequence="50"/>
+
+    <menuitem id="menu_property_complex" name="Complexos" parent="menu_property_cadastros" action="action_property_complex" sequence="10"/>
+    <menuitem id="menu_property_asset" name="Imóveis" parent="menu_property_cadastros" action="action_property_asset" sequence="20"/>
+
+    <menuitem id="menu_property_contract" name="Contratos" parent="menu_property_comercial" action="action_property_contract" sequence="10"/>
+    <menuitem id="menu_property_rent" name="Parcelas" parent="menu_property_comercial" action="action_property_rent" sequence="20"/>
+    <menuitem id="menu_property_acquisition" name="Aquisições" parent="menu_property_comercial" action="action_property_acquisition" sequence="30"/>
+
+    <menuitem id="menu_property_broker" name="Corretores" parent="menu_property_corretores" action="action_res_partner_property_broker" sequence="10"/>
+    <menuitem id="menu_property_broker_assignment" name="Mandatos" parent="menu_property_corretores" action="action_property_broker_assignment" sequence="20"/>
+    <menuitem id="menu_property_commission" name="Comissões" parent="menu_property_corretores" action="action_property_commission" sequence="30"/>
+
+    <menuitem id="menu_property_rent_adjustment" name="Reajustes" parent="menu_property_financeiro" action="action_property_rent_adjustment" sequence="10"/>
+    <menuitem id="menu_property_index" name="Índices de Reajuste" parent="menu_property_financeiro" action="action_property_index" sequence="20"/>
+    <menuitem id="menu_property_owner_repasse" name="Repasses ao Proprietário" parent="menu_property_financeiro" action="action_property_owner_repasse" sequence="30"/>
+    <menuitem id="menu_property_inspection" name="Vistorias" parent="menu_property_operations" action="action_property_inspection" sequence="20"/>
+    <menuitem id="menu_property_maintenance" name="Manutenções" parent="menu_property_operations" action="action_property_maintenance" sequence="30"/>
+    <menuitem id="menu_property_media" name="Mídias e Fotos" parent="menu_property_operations" sequence="35"/>
+    <menuitem id="menu_property_media_all" name="Todas as Mídias" parent="menu_property_media" action="action_property_media" sequence="10"/>
+    <menuitem id="menu_property_media_site_review" name="Revisão para Site" parent="menu_property_media" action="action_property_media_site_review" sequence="40"/>
+    <menuitem id="menu_property_media_category" name="Categorias de Mídia" parent="menu_property_media" action="action_property_media_category" sequence="90"/>
+
+    <menuitem id="menu_property_agenda" name="Agenda Operacional" parent="menu_property_operations" sequence="40"/>
+    <menuitem id="menu_property_calendar_all" name="Calendário Geral de Imóveis" parent="menu_property_agenda" action="common_base.action_common_agenda_calendar_property" sequence="5"/>
+    <menuitem id="menu_property_inspection_calendar" name="Vistorias no Calendário" parent="menu_property_agenda" action="common_base.action_common_agenda_calendar_inspection" sequence="10"/>
+    <menuitem id="menu_property_maintenance_calendar" name="Manutenções no Calendário" parent="menu_property_agenda" action="common_base.action_common_agenda_calendar_maintenance" sequence="20"/>
+
+</odoo>

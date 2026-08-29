@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Agenda Geral - Menus de Imóveis -->
+    <menuitem id="menu_common_agenda_property_root" name="Imóveis" parent="common_base.menu_common_agenda_root" sequence="20"/>
+    <menuitem id="menu_common_agenda_property_all" name="Todos de Imóveis" parent="menu_common_agenda_property_root" action="common_base.action_common_agenda_calendar_property" sequence="10"/>
+    <menuitem id="menu_common_agenda_property_inspection" name="Vistorias" parent="menu_common_agenda_property_root" action="common_base.action_common_agenda_calendar_inspection" sequence="20"/>
+    <menuitem id="menu_common_agenda_property_maintenance" name="Manutenções" parent="menu_common_agenda_property_root" action="common_base.action_common_agenda_calendar_maintenance" sequence="30"/>
+    <menuitem id="menu_common_agenda_property_contract" name="Contratos" parent="menu_common_agenda_property_root" action="common_base.action_common_agenda_calendar_contract" sequence="40"/>
+
+    <!-- Agenda Geral - Menus de Financeiro (Property) -->
+    <menuitem id="menu_common_agenda_financial_rent" name="Parcelas / Aluguéis" parent="common_base.menu_common_agenda_financial_root" action="common_base.action_common_agenda_calendar_rent" sequence="20"/>
+    <menuitem id="menu_common_agenda_financial_adjustment" name="Reajustes" parent="common_base.menu_common_agenda_financial_root" action="common_base.action_common_agenda_calendar_rent_adjustment" sequence="30"/>
+    <menuitem id="menu_common_agenda_financial_amendment" name="Aditivos" parent="common_base.menu_common_agenda_financial_root" action="common_base.action_common_agenda_calendar_contract_amendment" sequence="40"/>
+
+</odoo>

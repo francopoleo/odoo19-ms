@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_owner_statement" model="ir.actions.report">
+        <field name="name">Extrato do Proprietário</field>
+        <field name="model">property.owner.statement</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">property_core.report_owner_statement_document</field>
+        <field name="report_file">property_core.report_owner_statement_document</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_owner_statement_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="s">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: Arial, sans-serif; font-size: 10pt; color: #1a1a1a;">
+
+                        <!-- CABEÇALHO -->
+                        <div style="border-bottom: 2px solid #1a3a5c; padding-bottom: 12px; margin-bottom: 20px;">
+                            <h2 style="font-size: 14pt; font-weight: bold; color: #1a3a5c; margin: 0;">
+                                EXTRATO DO PROPRIETÁRIO
+                            </h2>
+                            <div style="margin-top: 6px; color: #555; font-size: 9pt;">
+                                Período:
+                                <t t-out="s.date_from.strftime('%d/%m/%Y')"/> a
+                                <t t-out="s.date_to.strftime('%d/%m/%Y')"/>
+                            </div>
+                        </div>
+
+                        <!-- DADOS DO PROPRIETÁRIO -->
+                        <table style="width:100%; margin-bottom: 20px;">
+                            <tr>
+                                <td style="width:50%; vertical-align:top;">
+                                    <strong>Proprietário:</strong>
+                                    <t t-out="s.owner_id.name"/><br/>
+                                    <t t-if="s.owner_id.cpf_cnpj">
+                                        CPF/CNPJ: <t t-out="s.owner_id.cpf_cnpj"/><br/>
+                                    </t>
+                                    <t t-if="s.owner_id.email">
+                                        E-mail: <t t-out="s.owner_id.email"/>
+                                    </t>
+                                </td>
+                                <td style="width:50%; vertical-align:top;">
+                                    <t t-if="s.owner_id.pix_key">
+                                        <strong>PIX:</strong> <t t-out="s.owner_id.pix_key"/><br/>
+                                    </t>
+                                    <t t-if="s.owner_id.bank_name">
+                                        <strong>Banco:</strong> <t t-out="s.owner_id.bank_name"/>
+                                        <t t-if="s.owner_id.bank_agency">
+                                            Ag. <t t-out="s.owner_id.bank_agency"/>
+                                        </t>
+                                        <t t-if="s.owner_id.bank_account">
+                                            C/C <t t-out="s.owner_id.bank_account"/>
+                                        </t>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- ALUGUÉIS RECEBIDOS -->
+                        <t t-if="s.rent_ids">
+                            <h4 style="color:#1a3a5c; border-bottom:1px solid #ccc; padding-bottom:4px;">
+                                Aluguéis Recebidos
+                            </h4>
+                            <table style="width:100%; border-collapse:collapse; margin-bottom:16px; font-size:9pt;">
+                                <thead>
+                                    <tr style="background:#f0f4f8;">
+                                        <th style="padding:5px; text-align:left; border:1px solid #ddd;">Imóvel</th>
+                                        <th style="padding:5px; text-align:left; border:1px solid #ddd;">Competência</th>
+                                        <th style="padding:5px; text-align:left; border:1px solid #ddd;">Vencimento</th>
+                                        <th style="padding:5px; text-align:left; border:1px solid #ddd;">Pagamento</th>
+                                        <th style="padding:5px; text-align:right; border:1px solid #ddd;">Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="s.rent_ids" t-as="r">
+                                        <tr>
+                                            <td style="padding:4px; border:1px solid #ddd;">
+                                                <t t-out="r.asset_id.name or ''"/>
+                                            </td>
+                                            <td style="padding:4px; border:1px solid #ddd;">
+                                                <t t-out="'%02d/%d' % (r.competence_month, r.competence_year)"/>
+                                            </td>
+                                            <td style="padding:4px; border:1px solid #ddd;">
+                                                <t t-out="r.due_date.strftime('%d/%m/%Y') if r.due_date else ''"/>
+                                            </td>
+                                            <td style="padding:4px; border:1px solid #ddd;">
+                                                <t t-out="r.payment_date.strftime('%d/%m/%Y') if r.payment_date else ''"/>
+                                            </td>
+                                            <td style="padding:4px; border:1px solid #ddd; text-align:right;">
+                                                <t t-out="'R$ {:,.2f}'.format(r.amount_paid).replace(',','X').replace('.',',').replace('X','.')"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- COMISSÕES PAGAS -->
+                        <t t-if="s.commission_ids">
+                            <h4 style="color:#1a3a5c; border-bottom:1px solid #ccc; padding-bottom:4px;">
+                                Comissões Pagas a Corretores
+                            </h4>
+                            <table style="width:100%; border-collapse:collapse; margin-bottom:16px; font-size:9pt;">
+                                <thead>
+                                    <tr style="background:#f0f4f8;">
+                                        <th style="padding:5px; text-align:left; border:1px solid #ddd;">Corretor</th>
+                                        <th style="padding:5px; text-align:left; border:1px solid #ddd;">Tipo</th>
+                                        <th style="padding:5px; text-align:left; border:1px solid #ddd;">Pagamento</th>
+                                        <th style="padding:5px; text-align:right; border:1px solid #ddd;">Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="s.commission_ids" t-as="c">
+                                        <tr>
+                                            <td style="padding:4px; border:1px solid #ddd;"><t t-out="c.broker_id.name"/></td>
+                                            <td style="padding:4px; border:1px solid #ddd;">
+                                                <t t-if="c.commission_type == 'sale'">Venda</t>
+                                                <t t-else="">Locação</t>
+                                            </td>
+                                            <td style="padding:4px; border:1px solid #ddd;">
+                                                <t t-out="c.payment_date.strftime('%d/%m/%Y') if c.payment_date else ''"/>
+                                            </td>
+                                            <td style="padding:4px; border:1px solid #ddd; text-align:right;">
+                                                <t t-out="'R$ {:,.2f}'.format(c.commission_value).replace(',','X').replace('.',',').replace('X','.')"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- MANUTENÇÕES -->
+                        <t t-if="s.maintenance_ids">
+                            <h4 style="color:#1a3a5c; border-bottom:1px solid #ccc; padding-bottom:4px;">
+                                Manutenções Realizadas
+                            </h4>
+                            <table style="width:100%; border-collapse:collapse; margin-bottom:16px; font-size:9pt;">
+                                <thead>
+                                    <tr style="background:#f0f4f8;">
+                                        <th style="padding:5px; text-align:left; border:1px solid #ddd;">Imóvel</th>
+                                        <th style="padding:5px; text-align:left; border:1px solid #ddd;">Descrição</th>
+                                        <th style="padding:5px; text-align:left; border:1px solid #ddd;">Conclusão</th>
+                                        <th style="padding:5px; text-align:right; border:1px solid #ddd;">Custo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="s.maintenance_ids" t-as="m">
+                                        <tr>
+                                            <td style="padding:4px; border:1px solid #ddd;"><t t-out="m.asset_id.name"/></td>
+                                            <td style="padding:4px; border:1px solid #ddd;"><t t-out="m.name"/></td>
+                                            <td style="padding:4px; border:1px solid #ddd;">
+                                                <t t-out="m.completion_date.strftime('%d/%m/%Y') if m.completion_date else ''"/>
+                                            </td>
+                                            <td style="padding:4px; border:1px solid #ddd; text-align:right;">
+                                                <t t-out="'R$ {:,.2f}'.format(m.cost_actual).replace(',','X').replace('.',',').replace('X','.')"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- RESUMO FINANCEIRO -->
+                        <div style="margin-top: 24px; border-top: 2px solid #1a3a5c; padding-top: 12px;">
+                            <h4 style="color:#1a3a5c; margin-bottom:10px;">Resumo do Período</h4>
+                            <table style="width:60%; margin-left:auto; border-collapse:collapse; font-size:10pt;">
+                                <tr style="background:#e8f4e8;">
+                                    <td style="padding:6px 10px;">Aluguéis Recebidos</td>
+                                    <td style="padding:6px 10px; text-align:right; font-weight:bold; color:#198754;">
+                                        + R$ <t t-out="'{:,.2f}'.format(s.rent_income).replace(',','X').replace('.',',').replace('X','.')"/>
+                                    </td>
+                                </tr>
+                                <t t-if="s.commission_total">
+                                    <tr>
+                                        <td style="padding:6px 10px;">Comissões Pagas</td>
+                                        <td style="padding:6px 10px; text-align:right; color:#dc3545;">
+                                            − R$ <t t-out="'{:,.2f}'.format(s.commission_total).replace(',','X').replace('.',',').replace('X','.')"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="s.maintenance_total">
+                                    <tr>
+                                        <td style="padding:6px 10px;">Manutenções</td>
+                                        <td style="padding:6px 10px; text-align:right; color:#dc3545;">
+                                            − R$ <t t-out="'{:,.2f}'.format(s.maintenance_total).replace(',','X').replace('.',',').replace('X','.')"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="s.fixed_costs_total">
+                                    <tr>
+                                        <td style="padding:6px 10px;">Custos Fixos (IPTU/Cond./Foro)</td>
+                                        <td style="padding:6px 10px; text-align:right; color:#dc3545;">
+                                            − R$ <t t-out="'{:,.2f}'.format(s.fixed_costs_total).replace(',','X').replace('.',',').replace('X','.')"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr style="border-top:2px solid #1a3a5c; font-weight:bold; font-size:11pt;">
+                                    <td style="padding:8px 10px;">RESULTADO LÍQUIDO</td>
+                                    <td t-attf-style="padding:8px 10px; text-align:right; color:{{ '#198754' if s.net_result >= 0 else '#dc3545' }};">
+                                        R$ <t t-out="'{:,.2f}'.format(s.net_result).replace(',','X').replace('.',',').replace('X','.')"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- RODAPÉ -->
+                        <div style="margin-top:30px; font-size:8pt; color:#999; text-align:center; border-top:1px solid #eee; padding-top:8px;">
+                            Documento gerado em <t t-out="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y às %H:%M')"/> —
+                            <t t-out="user.company_id.name"/>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

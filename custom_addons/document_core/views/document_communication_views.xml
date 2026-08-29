@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_document_communication_list" model="ir.ui.view">
+        <field name="name">document.communication.list</field>
+        <field name="model">document.communication</field>
+        <field name="arch" type="xml">
+            <list decoration-info="status == 'draft'" decoration-success="status == 'registered'">
+                <field name="communication_date"/>
+                <field name="name"/>
+                <field name="document_id"/>
+                <field name="partner_id"/>
+                <field name="responsible_id"/>
+                <field name="communication_event_type"/>
+                <field name="tracking_token" optional="hide"/>
+                <field name="status" widget="badge" decoration-info="status == 'draft'" decoration-success="status == 'registered'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_document_communication_form" model="ir.ui.view">
+        <field name="name">document.communication.form</field>
+        <field name="model">document.communication</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_done" type="object" string="Registrar Comunicação"
+                            invisible="status != 'draft'" class="btn-primary"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,registered"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Assunto..."/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Documento">
+                            <field name="document_id" readonly="1"/>
+                            <field name="communication_date" readonly="1"/>
+                            <field name="communication_event_type"/>
+                            <field name="channel_origin" readonly="1"/>
+                        </group>
+                        <group string="Participantes">
+                            <field name="partner_id"/>
+                            <field name="responsible_id"/>
+                        </group>
+                    </group>
+
+                    <group string="E-mail" invisible="channel_type != 'email'">
+                        <group>
+                            <field name="email_from" readonly="1"/>
+                            <field name="email_to" readonly="1"/>
+                            <field name="email_cc" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="external_message_id" readonly="1"/>
+                            <field name="email_message_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Rastreamento">
+                        <group>
+                            <field name="tracking_token" readonly="1" widget="CopyClipboardText" help="ID único para correlacionar com outras comunicações"/>
+                            <field name="sent_by_odoo" readonly="1"/>
+                            <field name="is_version_related"/>
+                        </group>
+                    </group>
+
+                    <group string="Descrição">
+                        <field name="description" nolabel="1" colspan="2"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Comunicações">
+                            <chatter/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_document_communication_search" model="ir.ui.view">
+        <field name="name">document.communication.search</field>
+        <field name="model">document.communication</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="document_id"/>
+                <field name="partner_id"/>
+                <field name="responsible_id"/>
+                <field name="tracking_token"/>
+                <filter string="Rascunhos" name="draft" domain="[('status','=','draft')]"/>
+                <filter string="Registradas" name="registered" domain="[('status','=','registered')]"/>
+                <filter string="Upload de Documento" name="upload" domain="[('communication_event_type','=','upload')]"/>
+                <separator/>
+                <filter string="Por Status" name="group_status" context="{'group_by':'status'}"/>
+                <filter string="Por Tipo de Evento" name="group_event" context="{'group_by':'communication_event_type'}"/>
+                <filter string="Por Documento" name="group_doc" context="{'group_by':'document_id'}"/>
+                <filter string="Por Responsável" name="group_resp" context="{'group_by':'responsible_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_document_communication" model="ir.actions.act_window">
+        <field name="name">Comunicações de Documento</field>
+        <field name="res_model">document.communication</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_registered": 1}</field>
+    </record>
+
+</odoo>

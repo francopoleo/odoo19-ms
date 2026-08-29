@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Categoria: Governance -->
+        <record id="help_category_governance" model="help.category">
+            <field name="name">Governance</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- ARTIGO 1: O que é Governance -->
+        <record id="help_article_governance_intro" model="help.article">
+            <field name="code">governance_intro</field>
+            <field name="name">O que é Governance? Guia de Introdução</field>
+            <field name="category_id" ref="help_category_governance"/>
+            <field name="module_name">governance</field>
+            <field name="article_type">user_manual</field>
+            <field name="content_scope">context</field>
+            <field name="audience">all</field>
+            <field name="show_in_context">True</field>
+            <field name="sequence">10</field>
+            <field name="markdown_source"><![CDATA[## O que é Governance?
+
+O módulo **Governance** é um sistema completo de gestão de casos, comunicações e pendências no Odoo 19.
+
+### Para que serve?
+
+- **Rastrear solicitações** de governança, compliance, RH, legal
+- **Gerenciar comunicações** com partes interessadas
+- **Controlar pendências** e checklists obrigatórios
+- **Registrar respostas** e documentação
+- **Agendar alertas** e follow-ups automáticos
+
+### Exemplo Real
+
+Uma empresa recebe uma solicitação de auditoria externa:
+
+1. E-mail chega em governance@empresa.com.br
+2. Sistema cria **Caso de Governança** automaticamente
+3. Gerente adiciona **Participantes** (auditor, gerente interno)
+4. Sistema cria **Pendências** automáticas do checklist
+5. Conforme progride, registra **Comunicações**
+6. E-mails com anexos viram **Documentos** automaticamente
+7. Sistema envia **Alertas** quando prazos se aproximam
+8. Quando 100% completo, caso vai a **Encerrado**
+
+### Estrutura
+
+Caso de Governança (governance.case)
+├─ Tipo (Auditoria, Legal, Compliance, etc.)
+├─ Etapa (Planejado, Aguardando, Feito, Encerrado)
+├─ Participantes (Contatos envolvidos)
+├─ Comunicações (E-mails, reuniões, etc.)
+├─ Pendências (Checklist de tarefas)
+├─ Respostas (Documentação formal)
+└─ Documentos (Anexos vinculados)
+
+### Próximos Passos
+
+- Ver Criar Caso de Governança
+- Ver Canais de E-mail
+- Ver Fluxos Práticos
+]]></field>
+        </record>
+
+        <!-- ARTIGO 2: Criar um Caso -->
+        <record id="help_article_governance_criar_caso" model="help.article">
+            <field name="code">governance_criar_caso</field>
+            <field name="name">Criar um Caso de Governança</field>
+            <field name="category_id" ref="help_category_governance"/>
+            <field name="module_name">governance</field>
+            <field name="model_name">governance.case</field>
+            <field name="article_type">user_manual</field>
+            <field name="content_scope">flow</field>
+            <field name="audience">all</field>
+            <field name="show_in_context">True</field>
+            <field name="sequence">20</field>
+            <field name="markdown_source"><![CDATA[## Criar um Caso de Governança - Passo a Passo
+
+### Acesso Rápido
+
+Menu → Governança → Casos → Novo
+
+### Passo 1: Informações Básicas
+
+Título: "Auditoria Interna Q2 2026"
+Tipo: "Auditoria" (auto-populado se via canal)
+Responsável: "Gerente de Compliance"
+
+### Passo 2: Configurar Canal (Opcional)
+
+Se o caso veio de e-mail automático, o canal já está selecionado.
+
+Se criar manualmente, você pode deixar em branco ou selecionar um canal para que regras de SLA se apliquem.
+
+Dica: Canais auto-populam tipo, prioridade e responsável!
+
+### Passo 3: Adicionar Participantes
+
+Clique em "Adicionar Linha" na aba Participantes:
+
+Participante 1:
+├─ Contato: João Silva (Auditor)
+├─ Papel: Other
+└─ É Primário: não marcado
+
+Participante 2:
+├─ Contato: Maria Santos (Gerente)
+├─ Papel: Claimant
+└─ É Primário: marcado como principal
+
+Importante: Marque pelo menos 1 como "Primário" para sistema não bloquear.
+
+### Passo 4: Criar Comunicações
+
+Clique em "Nova Comunicação" para registrar interações:
+
+Comunicação 1: E-mail recebido
+├─ Data: 2026-05-23
+├─ Tipo: E-mail
+├─ Direção: Entrada
+├─ Exige Resposta: sim
+├─ Nota: "Recebido relatório prelimiar de auditoria"
+└─ De: auditoria@empresa-externa.com
+
+Comunicação 2: Reunião de alinhamento
+├─ Data: 2026-05-24
+├─ Tipo: Reunião
+├─ Direção: Interna
+├─ Nota: "Alinhado cronograma com auditor"
+└─ Participantes: João, Maria, Gerente Geral
+
+### Passo 5: Criar Pendências (Checklist)
+
+Clique em "Nova Pendência" para itens que precisam ser feitos:
+
+Pendência 1: Fornecer extratos bancários
+├─ Vencimento: 2026-06-30
+├─ Obrigatório: sim
+├─ Prioridade: Alto
+├─ Responsável: Maria Santos
+└─ Descrição: "Auditor solicitou extratos dos últimos 3 meses"
+
+Pendência 2: Revisar políticas internas
+├─ Vencimento: 2026-06-20
+├─ Obrigatório: sim
+├─ Prioridade: Médio
+├─ Responsável: Gerente de Compliance
+└─ Descrição: "Validar se políticas estão alinhadas"
+
+### Passo 6: Salvar e Monitorar
+
+Clique "Salvar" (Ctrl+S)
+
+Sistema agora:
+- Criou caso com status "Planejado"
+- Configurou SLA baseado no tipo
+- Agendou follow-ups automáticos
+- Criou atividades para responsáveis
+
+### Dicas Práticas
+
+Para avisos: Sistema mostra alerta se fechar sem participante principal
+
+Para acompanhar: Dashboard mostra casos atrasados
+]]></field>
+        </record>
+
+        <!-- ARTIGO 3: Canais de E-mail -->
+        <record id="help_article_governance_canais" model="help.article">
+            <field name="code">governance_canais</field>
+            <field name="name">Configurar Canais de E-mail</field>
+            <field name="category_id" ref="help_category_governance"/>
+            <field name="module_name">governance</field>
+            <field name="model_name">governance.email.channel</field>
+            <field name="article_type">configuration</field>
+            <field name="content_scope">flow</field>
+            <field name="audience">admin</field>
+            <field name="show_in_context">True</field>
+            <field name="sequence">30</field>
+            <field name="markdown_source"><![CDATA[## Configurar Canais de E-mail
+
+### O que é um Canal?
+
+Um Canal de E-mail é uma caixa de entrada que cria casos automaticamente.
+
+Canal "Governance Geral"
+├─ E-mail: governance@empresa.com.br
+├─ Cria casos automaticamente
+├─ Tipo padrão: Operacional
+├─ Prioridade: Médio
+└─ Responsável: Gerente de Governança
+
+### Criar um Canal - Passo a Passo
+
+Menu → Governança → Canais de E-mail → Novo
+
+#### 1. Dados Básicos
+
+Nome: "Juridico"
+Alias: "juridico" (vira juridico@empresa.com.br)
+Empresa: "Sua Empresa LTDA"
+Ativo: sempre marcar
+
+#### 2. Roteamento para Tipo de Caso
+
+Tipo Padrão: Qual tipo de caso criar automaticamente
+Tipos Permitidos: Quais tipos este canal pode usar
+Auto-atribuir Tipo: Sim, atribui automaticamente
+
+Exemplo:
+Canal "Auditoria"
+├─ Tipo Padrão: Auditoria
+├─ Tipos Permitidos: [Auditoria, Auditoria Interna]
+└─ Auto-atribuir: marcado
+
+#### 3. Comportamento de Entrada
+
+Criar caso para e-mail novo: Ativa entrada - Sempre ativar
+Atualizar caso existente por resposta: Agrupa respostas - Ativar
+Adicionar remetente como participante: Auto-adiciona quem enviou - Ativar
+Entrada exige resposta por padrão: Marca se esperamos volta - Ativar
+
+#### 4. NEW - Identidade Institucional de Saída
+
+Novo Grupo Enterprise:
+
+Forçar Identidade Institucional: se marcado, usa campos abaixo
+
+Remetente Institucional: "Juridico &lt;juridico@empresa.com.br&gt;"
+
+Responder Para (Reply-To): "juridico-resp@empresa.com.br"
+(deixe vazio para usar mesmo do remetente)
+
+Domínio de Alias Customizado: "legal.empresa.com.br"
+(deixe vazio para usar domínio global)
+
+Importar Anexos Automaticamente: PDFs/imagens viram document.document
+
+Como funciona:
+- E-mails enviados usam "Juridico &lt;juridico@empresa.com.br&gt;"
+- Respostas vêm para juridico-resp@empresa.com.br
+- Alias usa juridico@legal.empresa.com.br (domínio customizado)
+- Anexos importados automaticamente como documentos
+
+### Depois de Criar
+
+1. Sistema cria botão "Criar/Atualizar Alias" - clique!
+2. Alias técnico é registrado em mail.alias
+3. E-mails para juridico@empresa.com.br criam casos automaticamente
+
+### Dicas Importantes
+
+Múltiplos Canais:
+- Um canal por fluxo/tipo de solicitação
+- Canais: Governance, Juridico, Auditoria, RH, Compliance
+- Cada um com seu tipo, responsável e SLA
+
+Não Faça:
+- Não use um canal para múltiplos tipos
+- Não ative auto_import_attachments se documentos são grandes
+- Não force identidade em canais genéricos
+
+### Testando o Canal
+
+1. Envie um e-mail para juridico@empresa.com.br
+2. Aguarde 1-2 minutos (Odoo processa)
+3. Vá em Menu → Governança → Casos
+4. Novo caso deve aparecer com tipo "Legal/Juridico"
+5. Se usar auto-import: verifique Documentos também
+]]></field>
+        </record>
+
+        <!-- ARTIGO 4: Integração com Documentos -->
+        <record id="help_article_governance_documentos" model="help.article">
+            <field name="code">governance_documentos</field>
+            <field name="name">Auto-importação de Documentos</field>
+            <field name="category_id" ref="help_category_governance"/>
+            <field name="module_name">document_governance_integration</field>
+            <field name="article_type">user_manual</field>
+            <field name="content_scope">flow</field>
+            <field name="audience">all</field>
+            <field name="show_in_context">True</field>
+            <field name="sequence">40</field>
+            <field name="markdown_source"><![CDATA[## Auto-importação de Documentos
+
+### O que é?
+
+Quando ativado no canal, anexos de e-mails automaticamente viram document.document.
+
+### Como Funciona
+
+ENTRADA:
+├─ Cliente envia e-mail com anexos:
+│  ├─ Contrato_2026.pdf
+│  ├─ Assinatura.jpg
+│  └─ Cronograma.xlsx
+│
+AUTOMÁTICO:
+├─ Sistema cria 3 documentos:
+│  ├─ document.document "Contrato_2026.pdf"
+│  ├─ document.document "Assinatura.jpg"
+│  └─ document.document "Cronograma.xlsx"
+│
+RESULTADO:
+├─ Todos vinculados ao caso
+├─ Com acesso "Governance"
+├─ Com responsável = responsável do caso
+└─ Prontos para download/visualização
+
+### Ativar Auto-import
+
+1. Menu → Governança → Canais de E-mail
+2. Abra o canal desejado
+3. Procure grupo "Identidade Institucional de Saída"
+4. Marque: Importar Anexos Automaticamente
+5. Salve
+
+### Tipos de Arquivo Suportados
+
+- Documentos: .pdf, .docx, .doc, .xlsx, .xls, .txt
+- Imagens: .jpg, .jpeg, .png, .gif, .bmp
+- Vídeo: .mp4, .avi, .mov
+- Áudio: .mp3, .wav, .m4a
+
+### O que NÃO é Importado?
+
+- Imagens inline (CID attachments) - assinaturas de e-mail
+- Arquivos de sistema - .tmp, .cache, etc.
+- Executáveis - .exe, .bat, etc. (bloqueado por segurança)
+
+### Dicas
+
+Faça:
+- Ative auto-import para reduzir trabalho manual
+- Configure apenas para canais que recebem documentação
+- Revise documentos após importação
+
+Evite:
+- Ativar se o canal recebe spam/muitos anexos
+- Deixar documentos desordenados sem categorização
+- Esquecer de revisar antes de usar documento oficialmente
+
+### Troubleshooting
+
+P: Por que meu anexo não foi importado?
+
+R: Verifique:
+1. auto_import_attachments está marcado no canal
+2. Módulo document_governance_integration está instalado
+3. Usuário tem permissão criar document.document
+4. Arquivo não é tipo bloqueado (.exe, .tmp, etc)
+
+P: Posso importar manualmente?
+
+R: Sim! Abra o Caso → Aba "Documentos" → "Novo" e faça upload.
+]]></field>
+        </record>
+
+        <!-- ARTIGO 5: Fluxos Práticos -->
+        <record id="help_article_governance_fluxos" model="help.article">
+            <field name="code">governance_fluxos</field>
+            <field name="name">Fluxos Práticos - Exemplos Reais</field>
+            <field name="category_id" ref="help_category_governance"/>
+            <field name="module_name">governance</field>
+            <field name="article_type">user_manual</field>
+            <field name="content_scope">flow</field>
+            <field name="audience">all</field>
+            <field name="show_in_context">True</field>
+            <field name="sequence">50</field>
+            <field name="markdown_source"><![CDATA[## Fluxos Práticos - Exemplos Reais
+
+### Fluxo 1: Auditoria Interna (30 dias, 11 itens)
+
+DIA 1 - E-mail "Iniciamos auditoria"
+   └─ Sistema cria Caso "Auditoria Interna 2026"
+   └─ Tipo: Auditoria (SLA: 30 dias)
+
+MESMO DIA - Anexos recebidos
+   ├─ formulario_auditoria.pdf → document.document criado
+   ├─ checklist_auditoria.xlsx → document.document criado
+   └─ escopo.docx → document.document criado
+
+DIA 2 - Gerente acessa caso
+   ├─ Vê 3 documentos já importados
+   ├─ Sistema criou automaticamente 11 pendências
+   └─ Cada com vencimento e responsável
+
+DIAS 3-20 - Progresso
+   ├─ Gerente marca pendências como "Feito"
+   ├─ Registra comunicações
+   └─ Dashboard mostra progresso (18%, 36%, 54%...)
+
+DIA 18 - Sistema alerta
+   ├─ Faltam 12 dias para vencer
+   ├─ Atividade criada: "Auditoria vence em 12 dias"
+   └─ Responsável recebe notificação
+
+DIA 26 - Encerramento
+   ├─ Todas 11 pendências marcadas como "Feito"
+   ├─ Clica "Encerrar Caso"
+   └─ Documentos arquivados com rastreabilidade total
+
+### Fluxo 2: Compliance Check - Resposta Urgente
+
+ENTRADA - Cliente: "Preciso de 2 documentos em 24h"
+   ├─ E-mail para juridico@empresa.com.br
+   └─ Caso criado com Prioridade: CRÍTICO, SLA: 1 dia
+
+AUTOMÁTICO - Sistema calcula:
+   ├─ Data de Resposta: hoje + 24h
+   ├─ Status: "Aguardando Resposta" (destaque vermelho)
+   ├─ Atividade: "Responder urgentemente"
+   └─ Gerente vê no topo da lista
+
+RESPOSTA - Gerente fornece documentos
+   ├─ Registra comunicação: "Documentos enviados"
+   ├─ Faz upload dos 2 PDFs
+   └─ Sistema marca comunicação como "Saída"
+
+RESULTADO:
+   ├─ Status muda para "Resposta Recebida"
+   ├─ Cor volta ao normal (urgência resolvida)
+   ├─ Documentos vinculados e rastreáveis
+   └─ Histórico completo para auditoria
+
+### Fluxo 3: Integração com Documentos
+
+SETUP - Canal "Propostas"
+   ├─ Tipo: Proposta Comercial
+   ├─ Auto-import: ATIVADO
+   └─ Identidade: "Comercial &lt;vendas@empresa.com.br&gt;"
+
+CLIENTE ENVIA
+   ├─ E-mail: "Vocês têm proposta para projeto X?"
+   ├─ Anexo: "Briefing_Projeto_X.pdf"
+   ├─ Anexo: "Orçamento_Referência.xlsx"
+   └─ Anexo: "Timeline_Esperada.docx"
+
+SISTEMA AUTOMÁTICO
+   ├─ Cria Caso "Vocês têm proposta para projeto X?"
+   ├─ Cria 3 documentos automaticamente
+   └─ Todos vinculados ao caso
+
+COMERCIAL ACESSA
+   ├─ Menu → Governança → Casos
+   ├─ Abre caso
+   ├─ Vê aba "Documentos" com 3 arquivos prontos
+   ├─ Cria pendências:
+   │  ├─ "Fazer proposta técnica"
+   │  ├─ "Fazer proposta comercial"
+   │  └─ "Validar com delivery"
+   └─ Atribui responsáveis e prazos
+
+RESULTADO
+   ├─ Cliente tem histórico completo
+   ├─ Interna: tudo documentado
+   ├─ Auditoria: rastreamento total
+   └─ Próximas propostas: mais rápidas
+
+### Dicas de Eficiência
+
+Crie Checklists Padrão: 11 pendências automáticas economiza 5 minutos por caso
+
+Use Canais para Organizar:
+- Um canal por fluxo/tipo de solicitação
+- Canais: Governance, Juridico, Auditoria, RH, Compliance
+- Cada um com seu tipo, responsável e SLA
+
+Ative Auto-import Seletivamente:
+- ATIVAR EM: Auditoria, Juridico, Propostas
+- NÃO ATIVAR EM: Canais com spam ou 1000s de e-mails/dia
+
+Monitore SLA Rules:
+- Tipo Crítico: 1-3 dias
+- Tipo Alto: 5-7 dias
+- Tipo Médio: 15-20 dias
+- Tipo Baixo: 30+ dias
+
+Além disso: ative cron de alertas! Sistema avisa automaticamente.
+]]></field>
+        </record>
+
+        <!-- ARTIGO 6: Troubleshooting -->
+        <record id="help_article_governance_troubleshooting" model="help.article">
+            <field name="code">governance_troubleshooting</field>
+            <field name="name">Troubleshooting - Resolução de Problemas</field>
+            <field name="category_id" ref="help_category_governance"/>
+            <field name="module_name">governance</field>
+            <field name="article_type">troubleshooting</field>
+            <field name="content_scope">context</field>
+            <field name="audience">user</field>
+            <field name="show_in_context">True</field>
+            <field name="sequence">60</field>
+            <field name="markdown_source"><![CDATA[## Troubleshooting - Problemas Comuns
+
+### Problema 1: Caso não foi criado ao enviar e-mail
+
+Sintoma: Enviei para governance@empresa.com.br mas nenhum caso foi criado.
+
+Causas Possíveis:
+- Canal inativo
+- Alias não criado
+- Create disabled
+- E-mail em spam
+- E-mail errado
+
+Solução Passo a Passo:
+1. Menu → Governança → Canais
+2. Procure o canal
+3. Verifique campo "Ativo": deve estar marcado
+4. Clique botão "Criar/Atualizar Alias"
+5. Verifique campo "Criar caso": deve estar marcado
+6. Salve alterações
+7. Envie e-mail de teste
+8. Aguarde 1-2 minutos
+
+### Problema 2: Identidade institucional não está sendo usada
+
+Sintoma: E-mail sai com outro remetente.
+
+Solução:
+1. Menu → Governança → Canais
+2. Abra o canal
+3. Procure grupo "Identidade Institucional de Saída"
+4. Marque: Forçar Identidade Institucional
+5. Preencha: Remetente = "Juridico &lt;juridico@empresa.com.br&gt;"
+6. Salve
+7. Hard Refresh browser: Ctrl+Shift+R (Windows) ou Cmd+Shift+R (Mac)
+8. Teste novo e-mail
+
+### Problema 3: Anexos não estão virando documentos
+
+Sintoma: Enviei e-mail com PDF, mas não apareceu em Documentos.
+
+Solução:
+1. Menu → Governança → Canais
+2. Abra o canal
+3. Marque: Importar Anexos Automaticamente
+4. Verifique se document_governance_integration está instalado
+5. Verifique permissões do usuário
+6. Salve
+7. Envie novo e-mail com PDF
+8. Aguarde 2-3 minutos
+9. Abra o caso criado
+10. Vá à aba "Documentos"
+
+### Problema 4: Erro 'force_institutional_identity undefined'
+
+Sintoma: Ao abrir formulário, erro no browser
+
+Causa: Browser cache com metadata antigos
+
+Solução Rápida (2 segundos):
+- Windows/Linux: Ctrl + Shift + R
+- Mac: Cmd + Shift + R
+
+### Problema 5: Cron de alertas não está funcionando
+
+Verificar:
+1. Menu → Configurações → Automatização → Crons Agendados
+2. Procure: "Governança: Alertas Operacionais"
+
+Se não existe: atualize módulo governance
+
+Se existe mas inativo: marque "Ativo"
+
+Se existe e ativo: verifique se casos estão vencidos
+
+### Problema 6: Pendência obrigatória não bloqueia encerramento
+
+Solução:
+1. Menu → Configuração → Tipos de Caso
+2. Abra o tipo
+3. Procure: "Exigir Pendências Obrigatórias Feitas"
+4. Marque se checkbox
+5. Salve
+
+---
+
+## Checklist de Setup Completo
+
+Use para verificar se tudo está configurado:
+
+Módulo governance instalado
+Módulo document_governance_integration instalado
+Canais de e-mail criados (pelo menos 1)
+Alias criados para cada canal
+Tipos de caso criados (pelo menos 1)
+SLA Rules configuradas para tipos
+Checklists padrão criados para tipos
+Cron "Alertas Operacionais" = Ativo
+Identidade institucional configurada (se aplicável)
+Auto-import ativado (se usar documentos)
+Permissões de usuários verificadas
+]]></field>
+        </record>
+
+    </data>
+</odoo>

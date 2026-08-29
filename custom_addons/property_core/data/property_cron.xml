@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="cron_property_check_late_contracts" model="ir.cron">
+            <field name="name">Imóveis: Verificar Contratos Vencidos</field>
+            <field name="model_id" ref="property_core.model_property_contract"/>
+            <field name="state">code</field>
+            <field name="code">model.action_cron_check_late()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_property_check_late_rents" model="ir.cron">
+            <field name="name">Imóveis: Régua de Inadimplência (Parcelas)</field>
+            <field name="model_id" ref="property_core.model_property_rent"/>
+            <field name="state">code</field>
+            <field name="code">model.action_cron_check_late_rents()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_property_check_assignment_expiry" model="ir.cron">
+            <field name="name">Imóveis: Verificar Mandatos de Corretores Expirados</field>
+            <field name="model_id" ref="property_core.model_property_broker_assignment"/>
+            <field name="state">code</field>
+            <field name="code">model.action_cron_check_expiry()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_property_commission_reminder" model="ir.cron">
+            <field name="name">Imóveis: Lembrete de Comissões Pendentes</field>
+            <field name="model_id" ref="property_core.model_property_commission"/>
+            <field name="state">code</field>
+            <field name="code">model.action_cron_commission_reminder()</field>
+            <field name="interval_number">7</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_property_check_adjustment_due" model="ir.cron">
+            <field name="name">Imóveis: Criar Reajustes de Aluguel Pendentes</field>
+            <field name="model_id" ref="property_core.model_property_contract"/>
+            <field name="state">code</field>
+            <field name="code">model.action_cron_check_adjustment_due()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_property_sync_indexes" model="ir.cron">
+            <field name="name">Imóveis: Sincronizar Índices de Reajuste (BCB)</field>
+            <field name="model_id" ref="property_core.model_property_index_value"/>
+            <field name="state">code</field>
+            <field name="code">model.action_cron_sync_all_indexes()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

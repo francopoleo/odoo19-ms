@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_property_lead_list" model="ir.ui.view">
+        <field name="name">property.lead.list</field>
+        <field name="model">property.lead</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'qualified'"
+                  decoration-muted="status == 'lost'"
+                  decoration-info="status == 'new'">
+                <field name="create_date" string="Recebido em"/>
+                <field name="name" string="Contato"/>
+                <field name="email"/>
+                <field name="phone"/>
+                            <field name="partner_id" readonly="1"/>
+                <field name="partner_id" optional="show"/>
+                <field name="asset_id"/>
+                <field name="interest_type"/>
+                <field name="broker_id"/>
+                <field name="source_channel"/>
+                <field name="status" widget="badge"
+                       decoration-info="status == 'new'"
+                       decoration-warning="status == 'contacted'"
+                       decoration-success="status == 'qualified'"
+                       decoration-muted="status == 'lost'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_lead_form" model="ir.ui.view">
+        <field name="name">property.lead.form</field>
+        <field name="model">property.lead</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_set_contacted" type="object" string="Contatado"
+                            invisible="status != 'new'" class="btn-primary"/>
+                    <button name="action_set_qualified" type="object" string="Qualificar"
+                            invisible="status not in ['new','contacted']" class="btn-success"/>
+                    <button name="action_set_lost" type="object" string="Perdido"
+                            invisible="status == 'lost'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="new,contacted,qualified"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Contato">
+                            <field name="name"/>
+                            <field name="email"/>
+                            <field name="phone"/>
+                        </group>
+                        <group string="Interesse">
+                            <field name="asset_id"/>
+                            <field name="interest_type"/>
+                            <field name="broker_id"/>
+                            <field name="source_channel"/>
+                            <field name="submitter_user_id"/>
+                            <field name="access_profile"/>
+                        </group>
+                    </group>
+                    <group string="Mensagem">
+                        <field name="message" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Comunicações">
+                            <chatter/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_lead_search" model="ir.ui.view">
+        <field name="name">property.lead.search</field>
+        <field name="model">property.lead</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="asset_id"/>
+                <field name="broker_id"/>
+                <field name="source_channel"/>
+                <filter string="Novos" name="new" domain="[('status','=','new')]"/>
+                <filter string="Qualificados" name="qualified" domain="[('status','=','qualified')]"/>
+                <separator/>
+                <filter string="Por Imóvel" name="group_asset" context="{'group_by':'asset_id'}"/>
+                <filter string="Por Status" name="group_status" context="{'group_by':'status'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_lead" model="ir.actions.act_window">
+        <field name="name">Leads do Website</field>
+        <field name="res_model">property.lead</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_new": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nenhum interesse recebido ainda.</p>
+        </field>
+    </record>
+
+</odoo>

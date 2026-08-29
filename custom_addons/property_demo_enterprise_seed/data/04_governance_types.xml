@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- GOVERNANCE CASE TYPES -->
+        <record id="demo_case_type_audit" model="governance.case.type">
+            <field name="name">Auditoria</field>
+            <field name="description">Casos de auditoria externa ou interna</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="demo_case_type_legal" model="governance.case.type">
+            <field name="name">Jurídico</field>
+            <field name="description">Assuntos jurídicos e demandas legais</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="demo_case_type_compliance" model="governance.case.type">
+            <field name="name">Compliance</field>
+            <field name="description">Conformidade regulatória e normativa</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="demo_case_type_operational" model="governance.case.type">
+            <field name="name">Operacional</field>
+            <field name="description">Questões operacionais gerais</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <!-- GOVERNANCE CASE STAGES -->
+        <record id="demo_case_stage_planned" model="governance.case.stage">
+            <field name="name">Planejado</field>
+            <field name="sequence">10</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_case_stage_in_progress" model="governance.case.stage">
+            <field name="name">Em Andamento</field>
+            <field name="sequence">20</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_case_stage_awaiting" model="governance.case.stage">
+            <field name="name">Aguardando</field>
+            <field name="sequence">30</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_case_stage_completed" model="governance.case.stage">
+            <field name="name">Concluído</field>
+            <field name="sequence">40</field>
+            <field name="fold">True</field>
+        </record>
+
+        <!-- GOVERNANCE EMAIL CHANNELS -->
+        <record id="demo_email_channel_general" model="governance.email.channel">
+            <field name="name">Governança Geral</field>
+            <field name="alias">governance</field>
+            <field name="type_id" ref="demo_case_type_operational"/>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_email_channel_legal" model="governance.email.channel">
+            <field name="name">Jurídico</field>
+            <field name="alias">juridico</field>
+            <field name="type_id" ref="demo_case_type_legal"/>
+            <field name="active">True</field>
+        </record>
+
+        <!-- GOVERNANCE SLA RULES -->
+        <record id="demo_sla_rule_audit" model="governance.sla.rule">
+            <field name="name">SLA Auditoria</field>
+            <field name="case_type_id" ref="demo_case_type_audit"/>
+            <field name="response_days">7</field>
+            <field name="resolution_days">30</field>
+        </record>
+
+        <record id="demo_sla_rule_legal" model="governance.sla.rule">
+            <field name="name">SLA Jurídico</field>
+            <field name="case_type_id" ref="demo_case_type_legal"/>
+            <field name="response_days">5</field>
+            <field name="resolution_days">20</field>
+        </record>
+
+        <record id="demo_sla_rule_compliance" model="governance.sla.rule">
+            <field name="name">SLA Compliance</field>
+            <field name="case_type_id" ref="demo_case_type_compliance"/>
+            <field name="response_days">3</field>
+            <field name="resolution_days">15</field>
+        </record>
+
+    </data>
+</odoo>

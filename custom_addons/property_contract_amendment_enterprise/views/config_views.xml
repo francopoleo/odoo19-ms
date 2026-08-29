@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_contract_amendment_reason_tree" model="ir.ui.view">
+        <field name="name">property.contract.amendment.reason.list</field>
+        <field name="model">property.contract.amendment.reason</field>
+        <field name="arch" type="xml"><list><field name="name"/><field name="code"/><field name="category"/><field name="active"/></list></field>
+    </record>
+    <record id="view_property_contract_amendment_reason_form" model="ir.ui.view">
+        <field name="name">property.contract.amendment.reason.form</field>
+        <field name="model">property.contract.amendment.reason</field>
+        <field name="arch" type="xml"><form><sheet><group><field name="name"/><field name="code"/><field name="category"/><field name="active"/></group><field name="description"/></sheet></form></field>
+    </record>
+    <record id="action_property_contract_amendment_reason" model="ir.actions.act_window">
+        <field name="name">Motivos de Aditivo</field>
+        <field name="res_model">property.contract.amendment.reason</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_property_contract_financial_reason_tree" model="ir.ui.view">
+        <field name="name">property.contract.financial.reason.list</field>
+        <field name="model">property.contract.financial.reason</field>
+        <field name="arch" type="xml"><list><field name="name"/><field name="code"/><field name="impact_type"/><field name="active"/></list></field>
+    </record>
+    <record id="view_property_contract_financial_reason_form" model="ir.ui.view">
+        <field name="name">property.contract.financial.reason.form</field>
+        <field name="model">property.contract.financial.reason</field>
+        <field name="arch" type="xml"><form><sheet><group><field name="name"/><field name="code"/><field name="impact_type"/><field name="active"/></group><field name="description"/></sheet></form></field>
+    </record>
+    <record id="action_property_contract_financial_reason" model="ir.actions.act_window">
+        <field name="name">Motivos Financeiros</field>
+        <field name="res_model">property.contract.financial.reason</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_property_contract_document_type_tree" model="ir.ui.view">
+        <field name="name">property.contract.document.type.list</field>
+        <field name="model">property.contract.document.type</field>
+        <field name="arch" type="xml"><list><field name="sequence"/><field name="name"/><field name="code"/><field name="active"/></list></field>
+    </record>
+    <record id="view_property_contract_document_type_form" model="ir.ui.view">
+        <field name="name">property.contract.document.type.form</field>
+        <field name="model">property.contract.document.type</field>
+        <field name="arch" type="xml"><form><sheet><group><field name="sequence"/><field name="name"/><field name="code"/><field name="active"/></group></sheet></form></field>
+    </record>
+    <record id="action_property_contract_document_type" model="ir.actions.act_window">
+        <field name="name">Tipos de Documento</field>
+        <field name="res_model">property.contract.document.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Access para Document Upload Wizard -->
+    <record id="model_document_upload_wizard" model="ir.model">
+        <field name="name">Document Upload Wizard</field>
+        <field name="model">document.upload.wizard</field>
+    </record>
+
+    <record id="access_document_upload_wizard_user" model="ir.model.access">
+        <field name="name">Document Upload Wizard - User</field>
+        <field name="model_id" ref="model_document_upload_wizard"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== FORM EXTENSION ==================== -->
+    <record id="view_document_document_form_portal_ext" model="ir.ui.view">
+        <field name="name">document.document.form.portal.ext</field>
+        <field name="model">document.document</field>
+        <field name="inherit_id">document_core.view_document_document_form</field>
+        <field name="arch" type="xml">
+            <group string="Segurança" position="after">
+                <group string="Compartilhamento no Portal">
+                    <field name="shared_partner_ids" widget="many2many_tags"/>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>

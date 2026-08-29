@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <!-- ==================== VISTORIAS: AGENDA ==================== -->
+    <record id="view_property_inspection_form_agenda_ext" model="ir.ui.view">
+        <field name="name">property.inspection.form.agenda.ext</field>
+        <field name="model">property.inspection</field>
+        <field name="inherit_id" ref="property_core.view_property_inspection_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Agenda e Atividades" name="agenda_activities">
+                    <div class="alert alert-info" role="alert">
+                        <p class="mb-0"><i class="fa fa-calendar" title="Agenda"/> Use atividade para cobrança interna e calendário para compromisso com data/hora.</p>
+                    </div>
+                    <group>
+                        <group string="Responsáveis">
+                            <field name="agenda_responsible_id"/>
+                            <field name="agenda_responsible_ids" widget="many2many_tags"/>
+                            <field name="agenda_partner_ids" widget="many2many_tags"/>
+                        <field name="agenda_visibility"/><field name="agenda_viewer_user_ids" widget="many2many_tags" invisible="agenda_visibility != 'custom'"/></group>
+                        <group string="Prazos e Calendário">
+                            <field name="agenda_deadline"/>
+                            <field name="agenda_start"/>
+                            <field name="agenda_stop"/>
+                            <field name="agenda_duration_hours"/>
+                            <field name="agenda_location"/>
+                            <field name="agenda_calendar_event_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notas de Agenda">
+                        <field name="agenda_notes" nolabel="1"/>
+                    </group>
+                    <div class="d-flex gap-2 mt-3">
+                        <button name="action_agenda_sync_activity_and_calendar" type="object" string="Sincronizar Agenda Completa" class="btn btn-primary" icon="fa-calendar-check-o"/>
+                        <button name="action_agenda_schedule_activity" type="object" string="Só Atividades" class="btn btn-secondary" icon="fa-tasks"/>
+                        <button name="action_agenda_sync_calendar" type="object" string="Só Agenda Geral" class="btn btn-secondary" icon="fa-calendar"/>
+                        <button name="action_agenda_open_calendar_event" type="object" string="Abrir Agenda" class="btn btn-link" icon="fa-external-link" invisible="not agenda_calendar_event_id"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_property_inspection_calendar" model="ir.ui.view">
+        <field name="name">property.inspection.calendar</field>
+        <field name="model">property.inspection</field>
+        <field name="arch" type="xml">
+            <calendar string="Agenda de Vistorias" date_start="agenda_start" date_stop="agenda_stop" color="agenda_responsible_id" event_limit="5">
+                <field name="name"/>
+                <field name="asset_id"/>
+                <field name="agenda_responsible_id"/>
+                <field name="status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_property_inspection" model="ir.actions.act_window">
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_property_inspection_calendar" model="ir.actions.act_window">
+        <field name="name">Agenda de Vistorias</field>
+        <field name="res_model">property.inspection</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[("agenda_start", "!=", False)]</field>
+        <field name="context">{"search_default_scheduled": 1}</field>
+    </record>
+
+    <!-- ==================== MANUTENÇÕES: AGENDA ==================== -->
+    <record id="view_property_maintenance_form_agenda_ext" model="ir.ui.view">
+        <field name="name">property.maintenance.form.agenda.ext</field>
+        <field name="model">property.maintenance</field>
+        <field name="inherit_id" ref="property_core.view_property_maintenance_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Agenda e Atividades" name="agenda_activities">
+                    <div class="alert alert-info" role="alert">
+                        <p class="mb-0"><i class="fa fa-calendar" title="Agenda"/> Use atividade para cobrar execução/acompanhamento e calendário para visitas técnicas, orçamentos e execução agendada.</p>
+                    </div>
+                    <group>
+                        <group string="Responsáveis">
+                            <field name="agenda_responsible_id"/>
+                            <field name="agenda_responsible_ids" widget="many2many_tags"/>
+                            <field name="agenda_partner_ids" widget="many2many_tags"/>
+                        <field name="agenda_visibility"/><field name="agenda_viewer_user_ids" widget="many2many_tags" invisible="agenda_visibility != 'custom'"/></group>
+                        <group string="Prazos e Calendário">
+                            <field name="agenda_deadline"/>
+                            <field name="agenda_start"/>
+                            <field name="agenda_stop"/>
+                            <field name="agenda_duration_hours"/>
+                            <field name="agenda_location"/>
+                            <field name="agenda_calendar_event_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notas de Agenda">
+                        <field name="agenda_notes" nolabel="1"/>
+                    </group>
+                    <div class="d-flex gap-2 mt-3">
+                        <button name="action_agenda_sync_activity_and_calendar" type="object" string="Sincronizar Agenda Completa" class="btn btn-primary" icon="fa-calendar-check-o"/>
+                        <button name="action_agenda_schedule_activity" type="object" string="Só Atividades" class="btn btn-secondary" icon="fa-tasks"/>
+                        <button name="action_agenda_sync_calendar" type="object" string="Só Agenda Geral" class="btn btn-secondary" icon="fa-calendar"/>
+                        <button name="action_agenda_open_calendar_event" type="object" string="Abrir Agenda" class="btn btn-link" icon="fa-external-link" invisible="not agenda_calendar_event_id"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_property_maintenance_calendar" model="ir.ui.view">
+        <field name="name">property.maintenance.calendar</field>
+        <field name="model">property.maintenance</field>
+        <field name="arch" type="xml">
+            <calendar string="Agenda de Manutenções" date_start="agenda_start" date_stop="agenda_stop" color="agenda_responsible_id" event_limit="5">
+                <field name="name"/>
+                <field name="asset_id"/>
+                <field name="vendor_id"/>
+                <field name="agenda_responsible_id"/>
+                <field name="status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_property_maintenance" model="ir.actions.act_window">
+        <field name="view_mode">list,form,pivot</field>
+    </record>
+
+    <record id="action_property_maintenance_calendar" model="ir.actions.act_window">
+        <field name="name">Agenda de Manutenções</field>
+        <field name="res_model">property.maintenance</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[("agenda_start", "!=", False)]</field>
+        <field name="context">{"search_default_open": 1}</field>
+    </record>
+
+
+    <!-- ==================== CONTRATOS / FINANCEIRO: ATIVIDADES ==================== -->
+    <record id="view_property_contract_form_agenda_ext" model="ir.ui.view">
+        <field name="name">property.contract.form.agenda.ext</field>
+        <field name="model">property.contract</field>
+        <field name="inherit_id" ref="property_core.view_property_contract_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Agenda e Atividades" name="agenda_activities">
+                    <group>
+                        <group string="Responsáveis">
+                            <field name="agenda_responsible_id"/>
+                            <field name="agenda_responsible_ids" widget="many2many_tags"/>
+                            <field name="agenda_partner_ids" widget="many2many_tags"/>
+                        <field name="agenda_visibility"/><field name="agenda_viewer_user_ids" widget="many2many_tags" invisible="agenda_visibility != 'custom'"/></group>
+                        <group string="Prazo / Compromisso">
+                            <field name="agenda_deadline" placeholder="Se vazio, usa reajuste ou fim do contrato"/>
+                            <field name="agenda_start"/>
+                            <field name="agenda_stop"/>
+                            <field name="agenda_duration_hours"/>
+                            <field name="agenda_location"/>
+                            <field name="agenda_calendar_event_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notas de Agenda"><field name="agenda_notes" nolabel="1"/></group>
+                    <div class="d-flex gap-2 mt-3">
+                        <button name="action_schedule_contract_activity" type="object" string="Criar/Atualizar Atividades" class="btn btn-primary" icon="fa-tasks"/>
+                        <button name="action_agenda_sync_calendar" type="object" string="Sincronizar Agenda Geral" class="btn btn-secondary" icon="fa-calendar"/>
+                        <button name="action_agenda_open_calendar_event" type="object" string="Abrir Agenda" class="btn btn-link" icon="fa-external-link" invisible="not agenda_calendar_event_id"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_property_rent_form_agenda_ext" model="ir.ui.view">
+        <field name="name">property.rent.form.agenda.ext</field>
+        <field name="model">property.rent</field>
+        <field name="inherit_id" ref="property_core.view_property_rent_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Agenda e Atividades" name="agenda_activities">
+                    <group>
+                        <group string="Responsáveis">
+                            <field name="agenda_responsible_id"/>
+                            <field name="agenda_responsible_ids" widget="many2many_tags"/>
+                            <field name="agenda_partner_ids" widget="many2many_tags"/>
+                        <field name="agenda_visibility"/><field name="agenda_viewer_user_ids" widget="many2many_tags" invisible="agenda_visibility != 'custom'"/></group>
+                        <group string="Prazo / Compromisso">
+                            <field name="agenda_deadline" placeholder="Se vazio, usa o vencimento da parcela"/>
+                            <field name="agenda_start"/>
+                            <field name="agenda_stop"/>
+                            <field name="agenda_duration_hours"/>
+                            <field name="agenda_location"/>
+                            <field name="agenda_calendar_event_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notas de Agenda"><field name="agenda_notes" nolabel="1"/></group>
+                    <div class="d-flex gap-2 mt-3">
+                        <button name="action_schedule_rent_activity" type="object" string="Criar/Atualizar Atividade" class="btn btn-primary" icon="fa-tasks"/>
+                        <button name="action_agenda_sync_calendar" type="object" string="Sincronizar Agenda Geral" class="btn btn-secondary" icon="fa-calendar"/>
+                        <button name="action_agenda_open_calendar_event" type="object" string="Abrir Agenda" class="btn btn-link" icon="fa-external-link" invisible="not agenda_calendar_event_id"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_property_rent_adjustment_form_agenda_ext" model="ir.ui.view">
+        <field name="name">property.rent.adjustment.form.agenda.ext</field>
+        <field name="model">property.rent.adjustment</field>
+        <field name="inherit_id" ref="property_core.view_property_rent_adjustment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Agenda e Atividades" name="agenda_activities">
+                    <group>
+                        <group string="Responsáveis">
+                            <field name="agenda_responsible_id"/>
+                            <field name="agenda_responsible_ids" widget="many2many_tags"/>
+                            <field name="agenda_partner_ids" widget="many2many_tags"/>
+                        <field name="agenda_visibility"/><field name="agenda_viewer_user_ids" widget="many2many_tags" invisible="agenda_visibility != 'custom'"/></group>
+                        <group string="Prazo / Compromisso">
+                            <field name="agenda_deadline" placeholder="Se vazio, usa a data efetiva ou data do reajuste"/>
+                            <field name="agenda_start"/>
+                            <field name="agenda_stop"/>
+                            <field name="agenda_duration_hours"/>
+                            <field name="agenda_location"/>
+                            <field name="agenda_calendar_event_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notas de Agenda"><field name="agenda_notes" nolabel="1"/></group>
+                    <div class="d-flex gap-2 mt-3">
+                        <button name="action_schedule_rent_adjustment_activity" type="object" string="Criar/Atualizar Atividade" class="btn btn-primary" icon="fa-tasks"/>
+                        <button name="action_agenda_sync_calendar" type="object" string="Sincronizar Agenda Geral" class="btn btn-secondary" icon="fa-calendar"/>
+                        <button name="action_agenda_open_calendar_event" type="object" string="Abrir Agenda" class="btn btn-link" icon="fa-external-link" invisible="not agenda_calendar_event_id"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

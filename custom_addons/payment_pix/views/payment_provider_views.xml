@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Estende o formulário base de payment.provider (priority=33, após payment_custom priority=32)
+        para exibir os campos de configuração PIX quando custom_mode == 'pix'.
+    -->
+    <record id="payment_provider_form_pix" model="ir.ui.view">
+        <field name="name">PIX Provider Form</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="priority">33</field>
+        <field name="arch" type="xml">
+
+            <!--
+                Oculta o toggle "Enable QR Codes" para o modo PIX:
+                o QR Code PIX é sempre gerado dinamicamente — o toggle é irrelevante.
+            -->
+            <field name="qr_code" position="attributes">
+                <attribute name="invisible">code != 'custom' or custom_mode == 'pix'</attribute>
+            </field>
+
+            <!-- Campos de configuração da conta PIX, exibidos somente quando custom_mode = 'pix' -->
+            <field name="qr_code" position="after">
+                <field name="pix_key_type"
+                       string="Tipo de Chave"
+                       invisible="custom_mode != 'pix'"/>
+                <field name="pix_key"
+                       invisible="custom_mode != 'pix'"
+                       required="custom_mode == 'pix'"/>
+                <field name="pix_merchant_name"
+                       invisible="custom_mode != 'pix'"
+                       required="custom_mode == 'pix'"/>
+                <field name="pix_merchant_city"
+                       invisible="custom_mode != 'pix'"
+                       required="custom_mode == 'pix'"/>
+            </field>
+
+            <!--
+                Botão "Recarregar Mensagem PIX" — recalcula o pending_msg com a chave PIX
+                atual, similar ao botão de reload do Wire Transfer.
+            -->
+            <field name="pending_msg" position="after">
+                <div class="o_row" colspan="2" invisible="custom_mode != 'pix'">
+                    <button string="Recarregar Mensagem PIX"
+                            type="object"
+                            name="action_recompute_pending_msg"
+                            class="oe_link ms-0 ps-0"
+                            icon="fa-refresh"
+                    />
+                </div>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>

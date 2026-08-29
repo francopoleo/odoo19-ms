@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================================
+         Extensão do formulário de account.payment com campos PIX
+         =================================================================== -->
+
+    <record id="view_account_payment_form_pix" model="ir.ui.view">
+        <field name="name">account.payment.form.pix</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+
+            <field name="memo" position="after">
+                <field name="pix_e2e_id"
+                       string="ID E2E BACEN"
+                       invisible="not is_pix"
+                       placeholder="E12345678202501011200ABCDE123456"/>
+                <field name="pix_partner_key_type"
+                       string="Tipo Chave PIX Parceiro"
+                       invisible="not is_pix"/>
+                <field name="pix_partner_key"
+                       string="Chave PIX do Parceiro"
+                       invisible="not is_pix"/>
+            </field>
+
+            <field name="payment_method_code" position="after">
+                <field name="is_pix" invisible="1"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="view_account_payment_pix_tree" model="ir.ui.view">
+        <field name="name">account.payment.pix.tree</field>
+        <field name="model">account.payment</field>
+        <field name="arch" type="xml">
+            <list string="Movimentos PIX"
+                  decoration-success="payment_type == 'inbound' and state == 'paid'"
+                  decoration-danger="state == 'canceled'"
+                  decoration-muted="state == 'draft'">
+                <field name="date"/>
+                <field name="name" string="Referência"/>
+                <field name="partner_id" string="Parceiro"/>
+                <field name="payment_type" string="Tipo"
+                       decoration-success="payment_type == 'inbound'"
+                       decoration-warning="payment_type == 'outbound'"/>
+                <field name="pix_conta_origem_id" string="Conta Origem (saiu de)"/>
+                <field name="pix_conta_destino_id" string="Conta Destino (foi para)"/>
+                <field name="amount" sum="Total"/>
+                <field name="currency_id" optional="hide"/>
+                <field name="pix_partner_key" string="Chave PIX Parceiro" optional="show"/>
+                <field name="pix_e2e_id" string="ID E2E" optional="show"/>
+                <field name="memo" string="Descrição" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'paid'"
+                       decoration-warning="state in ('draft', 'in_process')"
+                       decoration-danger="state in ('canceled', 'rejected')"/>
+                <field name="journal_id" column_invisible="1"/>
+                <field name="is_pix" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_account_payment_pix_search" model="ir.ui.view">
+        <field name="name">account.payment.pix.search</field>
+        <field name="model">account.payment</field>
+        <field name="arch" type="xml">
+            <search string="Movimentos PIX">
+                <field name="partner_id" string="Parceiro"/>
+                <field name="pix_e2e_id" string="ID E2E"/>
+                <field name="pix_partner_key" string="Chave PIX"/>
+                <field name="memo" string="Descrição"/>
+                <field name="date"/>
+                <separator/>
+                <filter name="entradas" string="Entradas"
+                        domain="[('payment_type', '=', 'inbound')]"/>
+                <filter name="saidas" string="Saídas"
+                        domain="[('payment_type', '=', 'outbound')]"/>
+                <separator/>
+                <filter name="draft" string="Rascunho" domain="[('state', '=', 'draft')]"/>
+                <filter name="paid" string="Pago" domain="[('state', '=', 'paid')]"/>
+                <group>
+                    <filter name="group_type" string="Tipo (Entrada/Saída)"
+                            domain="[]" context="{'group_by': 'payment_type'}"/>
+                    <filter name="group_partner" string="Parceiro"
+                            domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_date" string="Data"
+                            domain="[]" context="{'group_by': 'date:month'}"/>
+                    <filter name="group_state" string="Status"
+                            domain="[]" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_account_payment_pix" model="ir.actions.act_window">
+        <field name="name">Movimentos PIX</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_pix', '=', True)]</field>
+        <field name="context">{
+            'default_is_pix': True,
+            'search_default_entradas': 0,
+        }</field>
+        <field name="search_view_id" ref="view_account_payment_pix_search"/>
+    </record>
+
+    <record id="action_account_payment_pix_inbound" model="ir.actions.act_window">
+        <field name="name">Entradas PIX</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_pix', '=', True), ('payment_type', '=', 'inbound')]</field>
+        <field name="context">{'default_payment_type': 'inbound', 'default_partner_type': 'customer'}</field>
+        <field name="search_view_id" ref="view_account_payment_pix_search"/>
+    </record>
+
+    <record id="action_account_payment_pix_outbound" model="ir.actions.act_window">
+        <field name="name">Saídas PIX</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_pix', '=', True), ('payment_type', '=', 'outbound')]</field>
+        <field name="context">{'default_payment_type': 'outbound', 'default_partner_type': 'supplier'}</field>
+        <field name="search_view_id" ref="view_account_payment_pix_search"/>
+    </record>
+
+    <record id="view_account_journal_form_pix" model="ir.ui.view">
+        <field name="name">account.journal.form.pix</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <field name="restrict_mode_hash_table" position="after">
+                <field name="is_pix" invisible="type not in ('bank', 'cash')"/>
+            </field>
+        </field>
+    </record>
+
+    <menuitem id="menu_account_pix"
+              name="PIX"
+              parent="account.menu_finance"
+              sequence="25"
+              groups="account.group_account_user"/>
+
+    <menuitem id="menu_account_pix_all"
+              name="Todos os Movimentos"
+              parent="menu_account_pix"
+              action="action_account_payment_pix"
+              sequence="10"/>
+
+    <menuitem id="menu_account_pix_inbound"
+              name="Entradas (Recebimentos)"
+              parent="menu_account_pix"
+              action="action_account_payment_pix_inbound"
+              sequence="20"/>
+
+    <menuitem id="menu_account_pix_outbound"
+              name="Saídas (Pagamentos)"
+              parent="menu_account_pix"
+              action="action_account_payment_pix_outbound"
+              sequence="30"/>
+
+</odoo>

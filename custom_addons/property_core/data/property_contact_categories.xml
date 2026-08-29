@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== CATEGORIA: PROPRIETÁRIO ==================== -->
+    <record id="res_partner_category_property_owner" model="res.partner.category">
+        <field name="name">Proprietário</field>
+        <field name="color">1</field>
+    </record>
+
+    <!-- ==================== CATEGORIA: CORRETOR ==================== -->
+    <record id="res_partner_category_property_broker" model="res.partner.category">
+        <field name="name">Corretor</field>
+        <field name="color">2</field>
+    </record>
+
+    <!-- ==================== CATEGORIA: INQUILINO ==================== -->
+    <record id="res_partner_category_property_tenant" model="res.partner.category">
+        <field name="name">Inquilino</field>
+        <field name="color">3</field>
+    </record>
+
+    <!-- ==================== CATEGORIA: COMPRADOR ==================== -->
+    <record id="res_partner_category_property_buyer" model="res.partner.category">
+        <field name="name">Comprador</field>
+        <field name="color">4</field>
+    </record>
+
+    <!-- ==================== CATEGORIA: VENDEDOR ==================== -->
+    <record id="res_partner_category_property_seller" model="res.partner.category">
+        <field name="name">Vendedor</field>
+        <field name="color">5</field>
+    </record>
+
+    <!-- ==================== CATEGORIA: INVESTIDOR ==================== -->
+    <record id="res_partner_category_property_investor" model="res.partner.category">
+        <field name="name">Investidor</field>
+        <field name="color">6</field>
+    </record>
+
+    <!-- ==================== CATEGORIA: CORRETORA ==================== -->
+    <record id="res_partner_category_property_brokerage" model="res.partner.category">
+        <field name="name">Corretora</field>
+        <field name="color">7</field>
+    </record>
+
+    <!-- ==================== CATEGORIA: CONSTRUTORA ==================== -->
+    <record id="res_partner_category_property_developer" model="res.partner.category">
+        <field name="name">Construtora</field>
+        <field name="color">8</field>
+    </record>
+
+</odoo>

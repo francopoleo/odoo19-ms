@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- PROPERTY ASSETS (Imóveis) -->
+        <record id="demo_asset_sp_paulista" model="property.asset">
+            <field name="name">Apto 1001 - Av. Paulista, 1000</field>
+            <field name="reference">SP-AP-1001</field>
+            <field name="address">Avenida Paulista, 1000 - São Paulo - SP</field>
+            <field name="asset_type">residential</field>
+            <field name="bedrooms">2</field>
+            <field name="bathrooms">1</field>
+            <field name="total_area">85.00</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_asset_rj_flamengo" model="property.asset">
+            <field name="name">Apto 302 - Rua Marquês de Abrantes, 150</field>
+            <field name="reference">RJ-AP-302</field>
+            <field name="address">Rua Marquês de Abrantes, 150 - Rio de Janeiro - RJ</field>
+            <field name="asset_type">residential</field>
+            <field name="bedrooms">3</field>
+            <field name="bathrooms">2</field>
+            <field name="total_area">120.00</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_asset_sp_vila_mariana" model="property.asset">
+            <field name="name">Casa 45 - Rua Estados Unidos, 3000</field>
+            <field name="reference">SP-CASA-45</field>
+            <field name="address">Rua Estados Unidos, 3000 - São Paulo - SP</field>
+            <field name="asset_type">residential</field>
+            <field name="bedrooms">4</field>
+            <field name="bathrooms">3</field>
+            <field name="total_area">250.00</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_asset_mg_savassi" model="property.asset">
+            <field name="name">Sala Comercial 802 - Savassi</field>
+            <field name="reference">MG-SALA-802</field>
+            <field name="address">Avenida Getúlio Vargas, 1500 - Belo Horizonte - MG</field>
+            <field name="asset_type">commercial</field>
+            <field name="total_area">45.00</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- PROPERTY CONTRACTS -->
+        <record id="demo_contract_sp_paulista" model="property.contract">
+            <field name="name">Locação Apto Paulista - João Silva</field>
+            <field name="reference">CT-SP-001</field>
+            <field name="asset_id" ref="demo_asset_sp_paulista"/>
+            <field name="start_date">2024-01-15</field>
+            <field name="end_date">2025-01-14</field>
+            <field name="monthly_rent">2500.00</field>
+            <field name="contract_state">active</field>
+            <field name="status">running</field>
+        </record>
+
+        <record id="demo_contract_rj_flamengo" model="property.contract">
+            <field name="name">Locação Apto Flamengo - Maria Santos</field>
+            <field name="reference">CT-RJ-001</field>
+            <field name="asset_id" ref="demo_asset_rj_flamengo"/>
+            <field name="start_date">2024-03-20</field>
+            <field name="end_date">2025-03-19</field>
+            <field name="monthly_rent">3800.00</field>
+            <field name="contract_state">active</field>
+            <field name="status">running</field>
+        </record>
+
+        <record id="demo_contract_sp_vila_mariana" model="property.contract">
+            <field name="name">Locação Casa Vila Mariana - Empresa XYZ</field>
+            <field name="reference">CT-SP-002</field>
+            <field name="asset_id" ref="demo_asset_sp_vila_mariana"/>
+            <field name="start_date">2024-02-01</field>
+            <field name="end_date">2026-01-31</field>
+            <field name="monthly_rent">8500.00</field>
+            <field name="contract_state">active</field>
+            <field name="status">running</field>
+        </record>
+
+        <record id="demo_contract_mg_savassi" model="property.contract">
+            <field name="name">Aluguel Sala Comercial - Consultório</field>
+            <field name="reference">CT-MG-001</field>
+            <field name="asset_id" ref="demo_asset_mg_savassi"/>
+            <field name="start_date">2024-04-01</field>
+            <field name="end_date">2025-03-31</field>
+            <field name="monthly_rent">1500.00</field>
+            <field name="contract_state">active</field>
+            <field name="status">running</field>
+        </record>
+
+    </data>
+</odoo>

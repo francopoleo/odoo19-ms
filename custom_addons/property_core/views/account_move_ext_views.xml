@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <!-- ==================== ACCOUNT MOVE FORM EXTENSION ==================== -->
+    <record id="view_move_form_maintenance_ext" model="ir.ui.view">
+        <field name="name">account.move.form.maintenance</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="maintenance_id" invisible="move_type != 'in_invoice'" groups="property_core.group_property_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ==================== ACCOUNT MOVE LIST EXTENSION ==================== -->
+    <record id="view_move_list_maintenance_ext" model="ir.ui.view">
+        <field name="name">account.move.list.maintenance</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="maintenance_id" optional="show" invisible="move_type != 'in_invoice'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

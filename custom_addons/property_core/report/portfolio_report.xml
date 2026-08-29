@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_property_portfolio" model="ir.actions.report">
+        <field name="name">Carteira de Imóveis</field>
+        <field name="model">property.asset</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">property_core.report_portfolio_document</field>
+        <field name="report_file">property_core.report_portfolio_document</field>
+        <field name="binding_model_id" ref="model_property_asset"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_portfolio_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-family: Arial, sans-serif; font-size: 9pt; color: #1a1a1a;">
+
+                    <div style="border-bottom: 2px solid #1a3a5c; padding-bottom: 10px; margin-bottom: 16px;">
+                        <h2 style="color:#1a3a5c; margin:0; font-size:14pt;">CARTEIRA DE IMÓVEIS</h2>
+                        <div style="color:#555; font-size:8pt; margin-top:4px;">
+                            Gerado em <t t-out="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y às %H:%M')"/>
+                        </div>
+                    </div>
+
+                    <!-- RESUMO -->
+                    <table style="width:100%; margin-bottom:16px; border-collapse:collapse;">
+                        <tr>
+                            <td style="padding:8px; background:#f0f4f8; text-align:center; width:20%; border:1px solid #ddd;">
+                                <div style="font-size:18pt; font-weight:bold; color:#0d6efd;">
+                                    <t t-out="len(docs)"/>
+                                </div>
+                                <div style="font-size:8pt; color:#555;">Total</div>
+                            </td>
+                            <td style="padding:8px; background:#f0f4f8; text-align:center; width:20%; border:1px solid #ddd;">
+                                <div style="font-size:18pt; font-weight:bold; color:#198754;">
+                                    <t t-out="len(docs.filtered(lambda a: a.status == 'rented'))"/>
+                                </div>
+                                <div style="font-size:8pt; color:#555;">Alugados</div>
+                            </td>
+                            <td style="padding:8px; background:#f0f4f8; text-align:center; width:20%; border:1px solid #ddd;">
+                                <div style="font-size:18pt; font-weight:bold; color:#0dcaf0;">
+                                    <t t-out="len(docs.filtered(lambda a: a.status == 'available'))"/>
+                                </div>
+                                <div style="font-size:8pt; color:#555;">Disponíveis</div>
+                            </td>
+                            <td style="padding:8px; background:#f0f4f8; text-align:center; width:20%; border:1px solid #ddd;">
+                                <div style="font-size:18pt; font-weight:bold; color:#ffc107;">
+                                    <t t-out="len(docs.filtered(lambda a: a.status == 'maintenance'))"/>
+                                </div>
+                                <div style="font-size:8pt; color:#555;">Manutenção</div>
+                            </td>
+                            <td style="padding:8px; background:#f0f4f8; text-align:center; width:20%; border:1px solid #ddd;">
+                                <div style="font-size:18pt; font-weight:bold; color:#6f42c1;">
+                                    <t t-out="len(docs.filtered(lambda a: a.status == 'for_sale'))"/>
+                                </div>
+                                <div style="font-size:8pt; color:#555;">À Venda</div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- TABELA PRINCIPAL -->
+                    <table style="width:100%; border-collapse:collapse; font-size:8pt;">
+                        <thead>
+                            <tr style="background:#1a3a5c; color:white;">
+                                <th style="padding:5px; text-align:left;">Ref.</th>
+                                <th style="padding:5px; text-align:left;">Imóvel</th>
+                                <th style="padding:5px; text-align:left;">Tipo</th>
+                                <th style="padding:5px; text-align:left;">Cidade</th>
+                                <th style="padding:5px; text-align:left;">Proprietário</th>
+                                <th style="padding:5px; text-align:right;">Área Útil</th>
+                                <th style="padding:5px; text-align:right;">Aluguel Atual</th>
+                                <th style="padding:5px; text-align:right;">Custo Anual</th>
+                                <th style="padding:5px; text-align:center;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="a">
+                                <tr t-attf-style="background: {{ '#f8f9fa' if a_index % 2 == 0 else 'white' }};">
+                                    <td style="padding:4px; border-bottom:1px solid #eee;">
+                                        <t t-out="a.reference"/>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee; font-weight:bold;">
+                                        <t t-out="a.name"/>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee;">
+                                        <t t-out="dict(a._fields['asset_type'].selection).get(a.asset_type, '')"/>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee;">
+                                        <t t-out="a.city or ''"/>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee;">
+                                        <t t-out="a.owner_id.name if a.owner_id else '—'"/>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee; text-align:right;">
+                                        <t t-out="'{:,.0f}'.format(a.useful_area).replace(',','.')"/> m²
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee; text-align:right; color:#198754; font-weight:bold;">
+                                        <t t-if="a.current_monthly_rent">
+                                            R$ <t t-out="'{:,.2f}'.format(a.current_monthly_rent).replace(',','X').replace('.',',').replace('X','.')"/>
+                                        </t>
+                                        <t t-else="">—</t>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee; text-align:right; color:#dc3545;">
+                                        <t t-if="a.total_annual_costs">
+                                            R$ <t t-out="'{:,.2f}'.format(a.total_annual_costs).replace(',','X').replace('.',',').replace('X','.')"/>
+                                        </t>
+                                        <t t-else="">—</t>
+                                    </td>
+                                    <td style="padding:4px; border-bottom:1px solid #eee; text-align:center;">
+                                        <span t-attf-style="padding:2px 6px; border-radius:3px; font-size:7pt; font-weight:bold;
+                                            background:{{ '#d1e7dd' if a.status == 'rented' else '#cff4fc' if a.status == 'available' else '#fff3cd' if a.status == 'maintenance' else '#e2e3e5' }};
+                                            color:{{ '#0f5132' if a.status == 'rented' else '#055160' if a.status == 'available' else '#664d03' if a.status == 'maintenance' else '#41464b' }};">
+                                            <t t-out="dict(a._fields['status'].selection).get(a.status, a.status)"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr style="background:#f0f4f8; font-weight:bold;">
+                                <td colspan="6" style="padding:5px; border-top:2px solid #1a3a5c;">
+                                    TOTAIS (<t t-out="len(docs)"/> imóveis)
+                                </td>
+                                <td style="padding:5px; border-top:2px solid #1a3a5c; text-align:right; color:#198754;">
+                                    R$ <t t-out="'{:,.2f}'.format(sum(docs.mapped('current_monthly_rent'))).replace(',','X').replace('.',',').replace('X','.')"/>
+                                </td>
+                                <td style="padding:5px; border-top:2px solid #1a3a5c; text-align:right; color:#dc3545;">
+                                    R$ <t t-out="'{:,.2f}'.format(sum(docs.mapped('total_annual_costs'))).replace(',','X').replace('.',',').replace('X','.')"/>
+                                </td>
+                                <td style="border-top:2px solid #1a3a5c;"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

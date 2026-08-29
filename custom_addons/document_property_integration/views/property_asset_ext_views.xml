@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== OTHER MEDIA TAB ==================== -->
+    <record id="view_property_asset_form_media_ext" model="ir.ui.view">
+        <field name="name">property.asset.form.media.ext</field>
+        <field name="model">property.asset</field>
+        <field name="inherit_id">property_core.view_property_asset_form</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@id='tab_notes_comms']" position="before">
+                <page string="Outras Mídias" id="tab_other_media">
+                    <div class="alert alert-info" role="alert">
+                        <p class="mb-0"><i class="fa fa-picture-o" title="Outras Mídias"></i> Mídias complementares do imóvel: imagem técnica, scan, material comercial interno, croqui, referência e apoio operacional.</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Outras Mídias do Imóvel</h5>
+                        <button name="action_open_other_media_wizard" type="object" class="btn btn-secondary btn-sm" icon="fa-plus" string="Adicionar Outras Mídias"/>
+                    </div>
+                    <field name="other_media_ids" mode="kanban,list,form" context="{'default_asset_id': id, 'default_purpose': 'other'}">
+                        <kanban class="o_kanban_small">
+                            <field name="id"/>
+                            <field name="name"/>
+                            <field name="image_512"/>
+                            <field name="category_id"/>
+                            <field name="content_kind"/>
+                            <field name="file_name"/>
+                            <templates>
+                                <t t-name="card">
+                                    <div class="oe_kanban_global_click position-relative h-100">
+                                        <t t-if="record.image_512.raw_value">
+                                            <img t-attf-src="/web/image/property.media/#{record.id.raw_value}/image_512" alt="Mídia" style="width:100%; height:150px; object-fit:cover; display:block;"/>
+                                        </t>
+                                        <t t-else=""><div style="height:150px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;"><i class="fa fa-file" title="Arquivo" style="font-size:32px;color:#ccc;"/></div></t>
+                                        <div class="oe_kanban_details pt-2 px-2">
+                                            <h6 class="mb-1 text-truncate"><t t-out="record.name.value"/></h6>
+                                            <div class="small text-muted"><t t-out="record.category_id.value"/></div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="category_id"/>
+                            <field name="content_kind"/>
+                            <field name="file_name"/>
+                            <field name="file_size_human"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_rent_form_payment_proof" model="ir.ui.view">
+        <field name="name">property.rent.form.payment.proof</field>
+        <field name="model">property.rent</field>
+        <field name="inherit_id" ref="property_core.view_property_rent_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Smart button: comprovantes vinculados -->
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button name="action_view_payment_proofs" type="object"
+                        class="oe_stat_button" icon="fa-file-text-o">
+                    <field name="payment_proof_count" widget="statinfo" string="Comprovantes"/>
+                </button>
+            </xpath>
+
+            <!-- Substituir botão legado por: Registrar com Comprovante + Pagamento Manual -->
+            <xpath expr="//button[@name='action_register_payment']" position="replace">
+                <button name="action_register_via_proof" type="object"
+                        string="Registrar com Comprovante" class="btn-primary"
+                        invisible="status not in ['open','late','partial']"/>
+                <button name="action_open_manual_payment_wizard" type="object"
+                        string="Pagamento Manual"
+                        invisible="status not in ['open','late','partial']"/>
+            </xpath>
+
+            <!-- Campos de pagamento: somente leitura (gerenciados pelo sistema de comprovantes) -->
+            <xpath expr="//field[@name='amount_paid']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_date']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_method']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_notes']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+            <!-- fine e interest: somente leitura — gerenciados pela Composição Financeira (linha_ids) -->
+            <xpath expr="//field[@name='fine']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='interest']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

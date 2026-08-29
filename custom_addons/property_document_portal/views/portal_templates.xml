@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Home Portal Card -->
+    <template id="portal_my_home_property_documents" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="o_portal_category row g-2 mt-3" id="portal_documents_category">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/portal/static/src/img/portal-document.svg'"/>
+                    <t t-set="title">My Documents</t>
+                    <t t-set="text">View and download property documents</t>
+                    <t t-set="url" t-value="'/my/documents'"/>
+                    <t t-set="placeholder_count" t-value="'property_document_count'"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Breadcrumbs -->
+    <template id="portal_breadcrumbs_property_documents" inherit_id="portal.portal_breadcrumbs">
+        <xpath expr="//ol[hasclass('breadcrumb')]" position="inside">
+            <li class="breadcrumb-item" t-if="page_name == 'documents'">
+                <a href="/my/documents">My Documents</a>
+            </li>
+            <li class="breadcrumb-item active" t-if="page_name == 'documents'">Documents</li>
+
+            <li class="breadcrumb-item" t-if="page_name == 'document'">
+                <a href="/my/documents">My Documents</a>
+            </li>
+            <li class="breadcrumb-item active" t-if="page_name == 'document'" t-esc="document.name">Document</li>
+        </xpath>
+    </template>
+
+    <!-- Documents List Page -->
+    <template id="portal_my_documents">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <div class="container">
+                <h1 class="mb-4">
+                    <i class="fa fa-file-pdf text-primary"></i>
+                    Documentos
+                </h1>
+
+                <div t-if="not documents" class="alert alert-info">
+                    <p>Nenhum documento disponível.</p>
+                </div>
+
+                <div t-if="documents" class="card">
+                    <div class="card-body">
+                        <t t-foreach="grouped_documents.items()" t-as="group">
+                            <t t-set="property_code" t-value="group[0]"/>
+                            <t t-set="docs" t-value="group[1]"/>
+
+                            <div class="mb-4">
+                                <h5 class="card-title mb-3">
+                                    <i class="fa fa-building text-info"></i>
+                                    <span t-esc="property_code"/>
+                                </h5>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Documento</th>
+                                                <th>Versão</th>
+                                                <th>Tipo</th>
+                                                <th>Status</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="docs" t-as="doc">
+                                                <td>
+                                                    <i class="fa fa-file-pdf text-danger"></i>
+                                                    <span t-esc="doc.name">Documento</span>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">
+                                                        <span t-esc="doc.version or '1.0'"/>
+                                                        <t t-if="doc.parent_document_id">
+                                                            <span class="badge bg-info ms-1">versão</span>
+                                                        </t>
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted" t-esc="doc.document_type_id.name or 'Sem categoria'">Tipo</small>
+                                                </td>
+                                                <td>
+                                                    <t t-if="doc.status == 'valid'">
+                                                        <span class="badge bg-success">✓ Válido</span>
+                                                    </t>
+                                                    <t t-elif="doc.status == 'expiring'">
+                                                        <span class="badge bg-warning">⚠ Vencendo</span>
+                                                        <br/>
+                                                        <small t-if="doc.expiry_date" class="text-muted">
+                                                            Vence em: <t t-esc="doc.expiry_date.strftime('%d/%m/%Y')">data</t>
+                                                        </small>
+                                                    </t>
+                                                    <t t-elif="doc.status == 'expired'">
+                                                        <span class="badge bg-danger">✗ Vencido</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="badge bg-secondary">Sem vencimento</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <a t-attf-href="/my/documents/#{doc.id}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fa fa-eye"></i> Ver
+                                                    </a>
+                                                    <a t-if="doc.allow_download" t-attf-href="/my/documents/#{doc.id}/download" class="btn btn-sm btn-outline-success">
+                                                        <i class="fa fa-download"></i> Download
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div t-if="pager" class="o_portal_pager d-flex justify-content-center my-3">
+                    <t t-call="portal.pager"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Document Detail Page -->
+    <template id="portal_document_page">
+        <t t-call="portal.portal_layout">
+            <div class="container mb-5">
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-md-9">
+                        <h1 class="mb-3">
+                            <i class="fa fa-file-pdf text-danger"></i>
+                            <span t-esc="document.name">Document Name</span>
+                        </h1>
+
+                        <div class="mb-3">
+                            <t t-if="document.status == 'valid'">
+                                <span class="badge bg-success fs-6">✓ Valid</span>
+                            </t>
+                            <t t-elif="document.status == 'expiring'">
+                                <span class="badge bg-warning fs-6">⚠ Expiring Soon</span>
+                            </t>
+                            <t t-elif="document.status == 'expired'">
+                                <span class="badge bg-danger fs-6">✗ Expired</span>
+                            </t>
+                            <t t-else="">
+                                <span class="badge bg-secondary fs-6">No Expiry Date</span>
+                            </t>
+                        </div>
+
+                        <t t-if="document.expiry_date">
+                            <p class="text-muted">
+                                <strong>Expiry Date:</strong> <span t-esc="document.expiry_date.strftime('%d/%m/%Y')">01/01/2024</span>
+                            </p>
+                        </t>
+                    </div>
+
+                    <div class="col-md-3 text-end">
+                        <t t-if="document.allow_download">
+                            <a t-attf-href="/my/documents/#{document.id}/download" class="btn btn-lg btn-success">
+                                <i class="fa fa-download"></i> Download
+                            </a>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Metadata -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Document Information</h5>
+                                <dl class="row">
+                                    <dt class="col-sm-4">Type:</dt>
+                                    <dd class="col-sm-8">
+                                        <span t-esc="document.document_type_id.name or 'Uncategorized'">Type</span>
+                                    </dd>
+
+                                    <dt class="col-sm-4">Created:</dt>
+                                    <dd class="col-sm-8">
+                                        <span t-esc="document.create_date.strftime('%d/%m/%Y %H:%M')">01/01/2024</span>
+                                    </dd>
+
+                                    <t t-if="document.notes">
+                                        <dt class="col-sm-4">Description:</dt>
+                                        <dd class="col-sm-8">
+                                            <span t-esc="document.notes">Description</span>
+                                        </dd>
+                                    </t>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Related Information</h5>
+                                <dl class="row">
+                                    <t t-if="document.asset_id">
+                                        <dt class="col-sm-4">Property:</dt>
+                                        <dd class="col-sm-8">
+                                            <a t-attf-href="/my/properties/#{document.asset_id.id}" class="text-decoration-none" t-esc="document.asset_id.name">
+                                                Property
+                                            </a>
+                                        </dd>
+                                    </t>
+
+                                    <t t-if="document.property_contract_id">
+                                        <dt class="col-sm-4">Contract:</dt>
+                                        <dd class="col-sm-8">
+                                            <a t-attf-href="/my/contracts/#{document.property_contract_id.id}" class="text-decoration-none" t-esc="document.property_contract_id.name">
+                                                Contract
+                                            </a>
+                                        </dd>
+                                    </t>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Preview -->
+                <t t-if="document.attachment_ids">
+                    <t t-set="first_attachment" t-value="document.attachment_ids[0]"/>
+                    <t t-set="file_ext" t-value="first_attachment.name.split('.')[-1].lower()"/>
+
+                    <!-- PDF Viewer -->
+                    <t t-if="file_ext == 'pdf'">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-file-pdf text-danger"></i>
+                                    Preview
+                                </h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <iframe t-attf-src="/web/content/#{first_attachment.id}"
+                                        style="width: 100%; height: 600px; border: none;"></iframe>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Image Viewer -->
+                    <t t-if="file_ext in ('png', 'jpg', 'jpeg', 'gif', 'bmp', 'svg', 'webp')">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-image text-info"></i>
+                                    Preview
+                                </h5>
+                            </div>
+                            <div class="card-body text-center">
+                                <img t-attf-src="/web/content/#{first_attachment.id}"
+                                     style="max-width: 100%; max-height: 600px; border-radius: 4px;"/>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Code/Text Viewer -->
+                    <t t-if="file_ext in ('txt', 'csv', 'json', 'xml', 'html', 'js', 'css', 'py', 'java', 'sql', 'sh', 'log')">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-code text-success"></i>
+                                    Preview (First 5000 characters)
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <pre style="background: #f5f5f5; padding: 15px; border-radius: 4px; max-height: 400px; overflow-y: auto;">
+                                    <code t-esc="(first_attachment.datas and first_attachment.datas.decode('utf-8', errors='replace') or '')[:5000]"/>
+                                </pre>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Generic File Info -->
+                    <t t-if="file_ext not in ('pdf', 'png', 'jpg', 'jpeg', 'gif', 'bmp', 'svg', 'webp', 'txt', 'csv', 'json', 'xml', 'html', 'js', 'css', 'py', 'java', 'sql', 'sh', 'log')">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-file"></i>
+                                    File Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted">
+                                    <strong>File Type:</strong> <span t-esc="file_ext.upper()"/><br/>
+                                    <strong>Size:</strong> <span t-esc="'%.2f MB' % (first_attachment.file_size / 1024 / 1024)"/><br/>
+                                    <i class="fa fa-info-circle"></i> Click the download button below to view/download this file
+                                </p>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+
+                <!-- Attachments List & Download -->
+                <div t-if="document.attachment_ids" class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fa fa-paperclip"></i>
+                            Files <span class="badge bg-secondary" t-esc="len(document.attachment_ids)"/>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <a t-foreach="document.attachment_ids" t-as="attachment"
+                               t-attf-href="/web/content/#{attachment.id}"
+                               t-att-download="attachment.name"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fa fa-file"></i>
+                                    <span t-esc="attachment.name">file.pdf</span>
+                                </div>
+                                <small class="text-muted">
+                                    <span t-esc="'%.1f KB' % (attachment.file_size / 1024)">10.5 KB</span>
+                                </small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back Button -->
+                <div class="mb-4">
+                    <a href="/my/documents" class="btn btn-outline-secondary">
+                        <i class="fa fa-arrow-left"></i> Back to Documents
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Upload Form -->
+    <template id="portal_upload_form">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <div class="container">
+                <h1 class="mb-4">
+                    <i class="fa fa-cloud-upload text-primary"></i>
+                    Enviar Documento
+                </h1>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <form action="/my/documents/upload" method="post" enctype="multipart/form-data" class="needs-validation">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                    <div class="mb-3">
+                                        <label for="document_name" class="form-label">
+                                            <strong>Nome do Documento <span class="text-danger">*</span></strong>
+                                        </label>
+                                        <input type="text" class="form-control" id="document_name" name="document_name" required="required" placeholder="Ex: RG da Operadora"/>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="document_type_id" class="form-label">
+                                            <strong>Tipo de Documento <span class="text-danger">*</span></strong>
+                                        </label>
+                                        <select class="form-select" id="document_type_id" name="document_type_id" required="required">
+                                            <option value="">-- Selecione --</option>
+                                            <option t-foreach="document_types" t-as="dt" t-att-value="dt.id" t-esc="dt.name"/>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="asset_id" class="form-label">
+                                            <strong>Propriedade <span class="text-danger">*</span></strong>
+                                        </label>
+                                        <select class="form-select" id="asset_id" name="asset_id" required="required">
+                                            <option value="">-- Selecione a Propriedade --</option>
+                                            <option t-foreach="assets" t-as="asset" t-att-value="asset.id">
+                                                <t t-esc="asset.name"/>
+                                                <t t-if="asset.reference"> (<span t-esc="asset.reference"/>)</t>
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">Descrição (Opcional)</label>
+                                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Adicione detalhes sobre o documento..."></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="attachment_file" class="form-label">
+                                            <strong>Arquivo <span class="text-danger">*</span></strong>
+                                        </label>
+                                        <input type="file" class="form-control" id="attachment_file" name="attachment_file" required="required" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"/>
+                                        <small class="text-muted">Formatos aceitos: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG</small>
+                                    </div>
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a href="/my/documents" class="btn btn-secondary">Cancelar</a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-upload me-2"></i> Enviar Documento
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fa fa-info-circle"></i> Informações</h5>
+                                <p class="card-text"><small>
+                                    Os documentos enviados ficarão em rascunho até a aprovação de um gestor.
+                                    <br/><br/>
+                                    Você pode acompanhar o status em <a href="/my/documents/my_uploads">Meus Uploads</a>.
+                                </small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="/my/documents" class="btn btn-outline-secondary">
+                        <i class="fa fa-arrow-left"></i> Voltar para Documentos
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- My Uploads List -->
+    <template id="portal_my_uploads">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <div class="container">
+                <h1 class="mb-4">
+                    <i class="fa fa-list text-primary"></i>
+                    Meus Uploads
+                </h1>
+
+                <div t-if="not documents" class="alert alert-info">
+                    <p>Você ainda não enviou nenhum documento.</p>
+                    <a href="/my/documents/upload" class="btn btn-primary btn-sm">
+                        <i class="fa fa-cloud-upload"></i> Enviar Documento
+                    </a>
+                </div>
+
+                <div t-if="documents" class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Documento</th>
+                                        <th>Propriedade</th>
+                                        <th>Status</th>
+                                        <th>Data</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="documents" t-as="doc">
+                                        <td>
+                                            <i class="fa fa-file-pdf text-danger"></i>
+                                            <span t-esc="doc.name"/>
+                                        </td>
+                                        <td>
+                                            <small t-esc="doc.asset_reference_code or '-'"/>
+                                        </td>
+                                        <td>
+                                            <span t-if="doc.document_workflow_state == 'draft'" class="badge bg-secondary">Rascunho</span>
+                                            <span t-elif="doc.document_workflow_state == 'pending_approval'" class="badge bg-warning">Pendente</span>
+                                            <span t-elif="doc.document_workflow_state == 'validated'" class="badge bg-success">Validado</span>
+                                            <span t-elif="doc.document_workflow_state == 'rejected'" class="badge bg-danger">Rejeitado</span>
+                                        </td>
+                                        <td>
+                                            <small t-esc="doc.create_date.strftime('%d/%m/%Y %H:%M')"/>
+                                        </td>
+                                        <td>
+                                            <a t-attf-href="/my/documents/#{doc.id}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fa fa-eye"></i> Ver
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="/my/documents/upload" class="btn btn-primary">
+                        <i class="fa fa-cloud-upload"></i> Enviar Outro Documento
+                    </a>
+                    <a href="/my/documents" class="btn btn-outline-secondary">
+                        <i class="fa fa-arrow-left"></i> Voltar para Documentos
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Upload Disabled Message -->
+    <template id="portal_upload_disabled">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <div class="alert alert-warning mt-4">
+                    <h4>Upload Indisponível</h4>
+                    <p t-esc="message"/>
+                </div>
+                <a href="/my/documents" class="btn btn-secondary">Voltar para Documentos</a>
+            </div>
+        </t>
+    </template>
+
+    <!-- Property Documents Page -->
+    <template id="portal_property_documents">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-md-9">
+                        <h1 class="mb-2">
+                            <i class="fa fa-building text-primary"></i>
+                            <span t-esc="asset.name">Property Name</span>
+                        </h1>
+                        <p class="text-muted">
+                            <a href="/my/documents" class="text-decoration-none">My Documents</a>
+                            <i class="fa fa-chevron-right"></i>
+                            <span t-esc="asset.name">Property</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div t-if="not documents" class="alert alert-info">
+                    <p>No documents available for this property.</p>
+                </div>
+
+                <div t-if="documents" class="row">
+                    <t t-foreach="documents" t-as="doc">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fa fa-file-pdf text-danger"></i>
+                                        <span t-esc="doc.name">Document</span>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p t-if="doc.description" class="text-muted" t-esc="doc.description">
+                                        Description
+                                    </p>
+
+                                    <div class="mb-3">
+                                        <strong>Type:</strong>
+                                        <span t-esc="doc.document_type_id.name or 'Uncategorized'">Type</span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <strong>Status:</strong>
+                                        <t t-if="doc.status == 'valid'">
+                                            <span class="badge bg-success">Valid</span>
+                                        </t>
+                                        <t t-elif="doc.status == 'expiring'">
+                                            <span class="badge bg-warning">Expiring</span>
+                                        </t>
+                                        <t t-elif="doc.status == 'expired'">
+                                            <span class="badge bg-danger">Expired</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge bg-secondary">No expiry</span>
+                                        </t>
+                                    </div>
+
+                                    <t t-if="doc.expiry_date">
+                                        <div class="mb-3">
+                                            <strong>Expires:</strong>
+                                            <span t-esc="doc.expiry_date.strftime('%d/%m/%Y')">01/01/2024</span>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div class="card-footer bg-light">
+                                    <a t-attf-href="/my/documents/#{doc.id}" class="btn btn-sm btn-primary me-2">
+                                        <i class="fa fa-eye"></i> View
+                                    </a>
+                                    <a t-if="doc.allow_download" t-attf-href="/my/documents/#{doc.id}/download" class="btn btn-sm btn-success">
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Back Button -->
+                <div class="mt-4">
+                    <a href="/my/documents" class="btn btn-outline-secondary">
+                        <i class="fa fa-arrow-left"></i> Back to All Documents
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

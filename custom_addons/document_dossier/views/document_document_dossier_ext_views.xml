@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_document_document_list_dossier_ext" model="ir.ui.view">
+        <field name="name">document.document.list.dossier.ext</field>
+        <field name="model">document.document</field>
+        <field name="inherit_id" ref="document_core.view_document_document_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="dossier_count" string="Dossiês" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_document_document_form_dossier_ext" model="ir.ui.view">
+        <field name="name">document.document.form.dossier.ext</field>
+        <field name="model">document.document</field>
+        <field name="inherit_id" ref="document_core.view_document_document_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_dossiers" type="object" class="oe_stat_button" icon="fa-folder-open" invisible="not dossier_count" groups="document_dossier.group_dossier_operator">
+                    <field string="Dossiês" name="dossier_count" widget="statinfo"/>
+                </button>
+                <button name="action_add_to_dossier" type="object" class="oe_stat_button" icon="fa-link" groups="document_dossier.group_dossier_operator">
+                    <span>Vincular Dossiê</span>
+                </button>
+            </xpath>
+            <!-- Odoo 19 não permite usar @string como seletor em views herdadas.
+                 Ancoramos no campo técnico notes, que pertence ao bloco de observações. -->
+            <xpath expr="//field[@name='notes']" position="after">
+                <separator string="Dossiês" groups="document_dossier.group_dossier_operator"/>
+                <field name="dossier_ids" readonly="1" mode="list,kanban" nolabel="1" colspan="2" groups="document_dossier.group_dossier_operator">
+                    <list>
+                        <field name="name"/>
+                        <field name="process_id"/>
+                        <field name="state"/>
+                        <field name="completion_percent" widget="percentpie"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_document_document_search_dossier_ext" model="ir.ui.view">
+        <field name="name">document.document.search.dossier.ext</field>
+        <field name="model">document.document</field>
+        <field name="inherit_id" ref="document_core.view_document_document_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="filter_in_dossier" string="Em Dossiê" domain="[('dossier_ids','!=',False)]"/>
+                <filter name="filter_without_dossier" string="Avulsos" domain="[('dossier_ids','=',False)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

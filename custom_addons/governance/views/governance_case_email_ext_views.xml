@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_governance_case_list_email_ext" model="ir.ui.view">
+        <field name="name">governance.case.list.email.ext</field>
+        <field name="model">governance.case</field>
+        <field name="inherit_id" ref="governance.view_governance_case_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='case_type_id']" position="after">
+                <field name="message_origin" optional="hide"/>
+                <field name="email_channel_id" optional="hide"/>
+                <field name="requires_triage" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_governance_case_form_email_ext" model="ir.ui.view">
+        <field name="name">governance.case.form.email.ext</field>
+        <field name="model">governance.case</field>
+        <field name="inherit_id" ref="governance.view_governance_case_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='stage_id']" position="before">
+                <button name="action_mark_triage_done" type="object" string="Concluir Triagem" icon="fa-check" class="btn-secondary" invisible="id == False or not requires_triage or triage_done"/>
+            </xpath>
+            <xpath expr="//field[@name='communication_count']" position="after">
+                <field name="requires_triage" invisible="1"/>
+                <field name="triage_done" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='case_type_id']" position="after">
+                <field name="message_origin"/>
+                <field name="email_channel_id" options="{'no_create_edit': True}"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='description']" position="after">
+                <page name="email_governance" string="E-mail e Triagem">
+                    <group>
+                        <group string="Origem do E-mail">
+                            <field name="message_origin" readonly="1"/>
+                            <field name="email_channel_id" readonly="1"/>
+                            <field name="incoming_email_from" readonly="1"/>
+                            <field name="incoming_email_to" readonly="1"/>
+                            <field name="incoming_email_cc" readonly="1"/>
+                            <field name="last_inbound_email_datetime" readonly="1"/>
+                            <field name="last_outbound_email_datetime" readonly="1"/>
+                        </group>
+                        <group string="Triagem">
+                            <field name="requires_triage"/>
+                            <field name="triage_done" readonly="1"/>
+                            <field name="triage_notes" widget="html"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        O canal roteia o caso. O Tipo de Caso define SLA, etapas, checklist e regras de acompanhamento.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_governance_case_search_email_ext" model="ir.ui.view">
+        <field name="name">governance.case.search.email.ext</field>
+        <field name="model">governance.case</field>
+        <field name="inherit_id" ref="governance.view_governance_case_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='case_type_id']" position="after">
+                <field name="email_channel_id"/>
+                <field name="message_origin"/>
+            </xpath>
+            <xpath expr="//filter[@name='group_type']" position="after">
+                <filter string="Por Canal de E-mail" name="group_email_channel" context="{'group_by': 'email_channel_id'}"/>
+                <filter string="Por Origem" name="group_message_origin" context="{'group_by': 'message_origin'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_help_tip_search" model="ir.ui.view">
+        <field name="name">help.tip.search</field>
+        <field name="model">help.tip</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="module_name"/>
+                <field name="model_name"/>
+                <field name="field_name"/>
+                <filter name="active" string="Ativas" domain="[('active','=',True)]"/>
+                <filter name="group_model" string="Agrupar por Model" context="{'group_by':'model_name'}"/>
+                <filter name="group_audience" string="Agrupar por Público" context="{'group_by':'audience'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_help_tip_list" model="ir.ui.view">
+        <field name="name">help.tip.list</field>
+        <field name="model">help.tip</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="module_name"/>
+                <field name="model_name"/>
+                <field name="view_type"/>
+                <field name="field_name"/>
+                <field name="audience"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_help_tip_form" model="ir.ui.view">
+        <field name="name">help.tip.form</field>
+        <field name="model">help.tip</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="module_name"/>
+                            <field name="model_name"/>
+                            <field name="view_type"/>
+                            <field name="field_name"/>
+                        </group>
+                        <group>
+                            <field name="audience"/>
+                            <field name="article_id"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="content" placeholder="Dica curta que aparece no painel de ajuda contextual."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_help_tip" model="ir.actions.act_window">
+        <field name="name">Dicas por Tela</field>
+        <field name="res_model">help.tip</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_help_tip_search"/>
+    </record>
+</odoo>

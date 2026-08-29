@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extensão do form de governance.case com imóveis e contratos -->
+    <record id="view_governance_case_form_property_ext" model="ir.ui.view">
+        <field name="name">governance.case.form.property.ext</field>
+        <field name="model">governance.case</field>
+        <field name="inherit_id" ref="governance.view_governance_case_form"/>
+        <field name="arch" type="xml">
+            <!-- Smart buttons -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_assets" type="object"
+                        class="oe_stat_button" icon="fa-building-o"
+                        invisible="status == 'closed'">
+                    <field name="asset_count" widget="statinfo" string="Imóveis"/>
+                </button>
+                <button name="action_view_contracts" type="object"
+                        class="oe_stat_button" icon="fa-file-contract"
+                        invisible="status == 'closed'">
+                    <field name="contract_count" widget="statinfo" string="Contratos"/>
+                </button>
+                <button name="action_view_assignments" type="object"
+                        class="oe_stat_button" icon="fa-handshake-o"
+                        invisible="assignment_count == 0">
+                    <field name="assignment_count" widget="statinfo" string="Mandatos"/>
+                </button>
+            </xpath>
+            <!-- Adiciona tab Vínculos antes de Pessoas -->
+            <xpath expr="//page[@name='description']" position="before">
+                <page string="Vínculos" name="links">
+                    <!-- Imóveis -->
+                    <group string="Imóveis Relacionados">
+                        <field name="asset_ids" mode="list" nolabel="1">
+                            <list>
+                                <field name="reference"/>
+                                <field name="name"/>
+                                <field name="asset_type"/>
+                                <field name="city"/>
+                                <field name="status" widget="badge"/>
+                            </list>
+                        </field>
+                    </group>
+
+                    <!-- Contratos -->
+                    <separator string="Contratos Relacionados"/>
+                    <group>
+                        <field name="contract_ids" mode="list" nolabel="1">
+                            <list>
+                                <field name="reference"/>
+                                <field name="name"/>
+                                <field name="partner_id"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="status" widget="badge"/>
+                            </list>
+                        </field>
+                    </group>
+
+                    <!-- Mandatos em Disputa -->
+                    <separator string="Mandatos em Disputa"/>
+                    <field name="assignment_ids" mode="list" nolabel="1">
+                        <list>
+                            <field name="reference"/>
+                            <field name="broker_id"/>
+                            <field name="asset_id"/>
+                            <field name="assignment_type" widget="badge"
+                                   decoration-primary="assignment_type == 'sale'"
+                                   decoration-info="assignment_type == 'rental'"
+                                   decoration-warning="assignment_type == 'both'"/>
+                            <field name="exclusive" widget="boolean_toggle"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="status" widget="badge"
+                                   decoration-info="status == 'active'"
+                                   decoration-success="status == 'converted'"
+                                   decoration-muted="status in ('expired','cancelled')"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extensão da list view com colunas de contagem -->
+    <record id="view_governance_case_list_property_ext" model="ir.ui.view">
+        <field name="name">governance.case.list.property.ext</field>
+        <field name="model">governance.case</field>
+        <field name="inherit_id" ref="governance.view_governance_case_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="asset_count" optional="hide" string="Imóveis"/>
+                <field name="contract_count" optional="hide" string="Contratos"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extensão da kanban view com badges de imóveis -->
+    <record id="view_governance_case_kanban_property_ext" model="ir.ui.view">
+        <field name="name">governance.case.kanban.property.ext</field>
+        <field name="model">governance.case</field>
+        <field name="inherit_id" ref="governance.view_governance_case_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='response_ids']" position="after">
+                <field name="asset_count"/>
+                <field name="contract_count"/>
+            </xpath>
+            <xpath expr="//div[@class='mt-1 text-muted']" position="after">
+                <div class="mt-2">
+                    <t t-if="record.asset_count.raw_value">
+                        <span class="badge text-bg-warning me-1">
+                            <i class="fa fa-building-o"/> <t t-esc="record.asset_count.raw_value"/>
+                        </span>
+                    </t>
+                    <t t-if="record.contract_count.raw_value">
+                        <span class="badge text-bg-info">
+                            <i class="fa fa-file-contract"/> <t t-esc="record.contract_count.raw_value"/>
+                        </span>
+                    </t>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

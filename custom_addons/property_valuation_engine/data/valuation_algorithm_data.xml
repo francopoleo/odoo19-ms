@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="algorithm_simple_m2_v1" model="property.valuation.algorithm">
+        <field name="name">Regra simples por m²</field>
+        <field name="code">simple_m2</field>
+        <field name="version">1.0</field>
+        <field name="sequence">10</field>
+        <field name="formula">Valor = área × valor m² base × fatores de ajuste</field>
+        <field name="description">Modelo inicial baseado em referência de valor por m² e fatores configuráveis.</field>
+    </record>
+
+    <record id="algorithm_comparables_v1" model="property.valuation.algorithm">
+        <field name="name">Comparáveis ponderados</field>
+        <field name="code">comparables</field>
+        <field name="version">1.0</field>
+        <field name="sequence">20</field>
+        <field name="formula">Valor m² = média ponderada dos comparáveis mais similares</field>
+        <field name="description">Modelo comparativo com peso por bairro, cidade, padrão, tipo de uso, área e negócios internos fechados.</field>
+    </record>
+
+    <record id="algorithm_hybrid_v1" model="property.valuation.algorithm">
+        <field name="name">Híbrido m² + comparáveis</field>
+        <field name="code">hybrid</field>
+        <field name="version">1.0</field>
+        <field name="sequence">30</field>
+        <field name="formula">Valor m² selecionado = 55% referência m² + 45% comparáveis; depois aplica fatores</field>
+        <field name="description">Modelo padrão enterprise para combinar referência gerencial e dados comparativos.</field>
+    </record>
+</odoo>

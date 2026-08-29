@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_contract_billing_impact_tree" model="ir.ui.view">
+        <field name="name">property.contract.billing.impact.list</field>
+        <field name="model">property.contract.billing.impact</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'applied'" decoration-warning="status == 'simulated'" decoration-muted="status in ('reversed','ignored')" decoration-danger="delta_amount &lt; 0" decoration-info="delta_amount &gt; 0">
+                <field name="amendment_id"/>
+                <field name="contract_id"/>
+                <field name="billing_plan_id"/>
+                <field name="created_billing_plan_id"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="due_date"/>
+                <field name="billing_status"/>
+                <field name="impact_type"/>
+                <field name="application_rule"/>
+                <field name="original_amount"/>
+                <field name="new_amount"/>
+                <field name="delta_amount"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_contract_billing_impact_form" model="ir.ui.view">
+        <field name="name">property.contract.billing.impact.form</field>
+        <field name="model">property.contract.billing.impact</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_apply" type="object" string="Aplicar" class="oe_highlight" invisible="status not in ('draft','simulated')"/>
+                    <button name="action_reverse" type="object" string="Reverter" invisible="status != 'applied'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,simulated,applied,reversed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="amendment_id"/>
+                            <field name="contract_id"/>
+                            <field name="billing_plan_id"/>
+                            <field name="created_billing_plan_id" readonly="1"/>
+                            <field name="billing_status" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="impact_source_type"/>
+                            <field name="impact_type"/>
+                            <field name="application_rule"/>
+                            <field name="is_retroactive"/>
+                            <field name="applied_at" readonly="1"/>
+                            <field name="applied_by" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Competência e Valores">
+                        <field name="period_start"/>
+                        <field name="period_end"/>
+                        <field name="due_date"/>
+                        <field name="original_amount"/>
+                        <field name="new_amount"/>
+                        <field name="delta_amount"/>
+                    </group>
+                    <group string="Composição da Parcela">
+                        <field name="original_base_rent_amount"/>
+                        <field name="new_base_rent_amount"/>
+                        <field name="original_discount_amount"/>
+                        <field name="new_discount_amount"/>
+                        <field name="original_extra_charge_amount"/>
+                        <field name="new_extra_charge_amount"/>
+                    </group>
+                    <group string="Origem">
+                        <field name="rent_schedule_id"/>
+                        <field name="financial_adjustment_id"/>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_property_contract_billing_impact" model="ir.actions.act_window">
+        <field name="name">Parcelas Afetadas</field>
+        <field name="res_model">property.contract.billing.impact</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

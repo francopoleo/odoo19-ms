@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_rent_form_enterprise" model="ir.ui.view">
+        <field name="name">property.rent.form.enterprise.finance</field>
+        <field name="model">property.rent</field>
+        <field name="inherit_id" ref="property_core.view_property_rent_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_register_payment']" position="before">
+                <button name="action_recalculate_late_charges" type="object" string="Recalcular Encargos"
+                        invisible="status not in ['open','late','partial']"/>
+            </xpath>
+
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button name="action_view_payments" type="object" class="oe_stat_button" icon="fa-money">
+                    <field name="payment_count" widget="statinfo" string="Recebimentos"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//field[@name='days_late']" position="after">
+                <field name="installment_ref" readonly="1"/>
+                <field name="period_start" readonly="1"/>
+                <field name="period_end" readonly="1"/>
+                <field name="rent_type" readonly="1"/>
+                <field name="days_charged" readonly="1"/>
+                <field name="cycle_days" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='amount_due']" position="after">
+                <separator string="Totais Enterprise"/>
+                <field name="amount_rent" readonly="1"/>
+                <field name="amount_penalty" readonly="1"/>
+                <field name="amount_interest" readonly="1"/>
+                <field name="amount_discount" readonly="1"/>
+                <field name="residual_amount" readonly="1"/>
+                <field name="last_charge_calculation_date" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Composição Financeira">
+                    <field name="line_ids" context="{'default_rent_id': id}">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="charge_type"/>
+                            <field name="name"/>
+                            <field name="amount" sum="Total"/>
+                            <field name="account_id"/>
+                            <field name="origin"/>
+                            <field name="days"/>
+                        </list>
+                    </field>
+                </page>
+
+                <page string="Recebimentos">
+                    <field name="payment_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="payment_date"/>
+                            <field name="amount" sum="Total"/>
+                            <field name="payment_method"/>
+                            <field name="journal_id"/>
+                            <field name="account_move_id"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+
+                <page string="Memória de Cálculo">
+                    <field name="calculation_note" readonly="1"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Adiciona installment_ref na list de parcelas -->
+    <record id="view_property_rent_list_enterprise" model="ir.ui.view">
+        <field name="name">property.rent.list.enterprise</field>
+        <field name="model">property.rent</field>
+        <field name="inherit_id" ref="property_core.view_property_rent_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='reference']" position="after">
+                <field name="installment_ref" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_property_rent_payment_list" model="ir.ui.view">
+        <field name="name">property.rent.payment.list</field>
+        <field name="model">property.rent.payment</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'posted'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="rent_id"/>
+                <field name="contract_id"/>
+                <field name="partner_id"/>
+                <field name="payment_date"/>
+                <field name="amount" sum="Total"/>
+                <field name="payment_method"/>
+                <field name="account_move_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_rent_payment_form" model="ir.ui.view">
+        <field name="name">property.rent.payment.form</field>
+        <field name="model">property.rent.payment</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_account_move" type="object"
+                                class="oe_stat_button" icon="fa-university"
+                                invisible="not account_move_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Lançamento</span>
+                                <span class="o_stat_text">Contábil</span>
+                            </div>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="rent_id"/>
+                            <field name="contract_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="payment_date"/>
+                            <field name="amount"/>
+                            <field name="payment_method"/>
+                            <field name="journal_id"/>
+                            <field name="account_move_id" readonly="1"/>
+                            <field name="state" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_property_rent_payment" model="ir.actions.act_window">
+        <field name="name">Recebimentos de Aluguel</field>
+        <field name="res_model">property.rent.payment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

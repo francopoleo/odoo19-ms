@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_help_article_search" model="ir.ui.view">
+        <field name="name">help.article.search</field>
+        <field name="model">help.article</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="module_name"/>
+                <field name="model_name"/>
+                <field name="category_id"/>
+                <field name="content_scope"/>
+                <filter name="published" string="Publicado" domain="[('published','=',True)]"/>
+                <filter name="manual" string="Manual" domain="[('article_type','=','user_manual')]"/>
+                <filter name="technical" string="Técnico" domain="[('article_type','=','technical')]"/>
+                <filter name="troubleshooting" string="Troubleshooting" domain="[('article_type','=','troubleshooting')]"/>
+                <filter name="contextual" string="Exibe no contexto" domain="[('show_in_context','=',True)]"/>
+                <filter name="full_docs" string="Documentos completos" domain="[('content_scope','=','full_document')]"/>
+                <filter name="edited" string="Editado no Odoo" domain="[('edited_in_odoo','=',True)]"/>
+                <filter name="group_module" string="Agrupar por Módulo" context="{'group_by':'module_name'}"/>
+                <filter name="group_type" string="Agrupar por Tipo" context="{'group_by':'article_type'}"/>
+                <filter name="group_category" string="Agrupar por Categoria" context="{'group_by':'category_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_help_article_list" model="ir.ui.view">
+        <field name="name">help.article.list</field>
+        <field name="model">help.article</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="article_type"/>
+                <field name="content_scope"/>
+                <field name="show_in_context"/>
+                <field name="audience"/>
+                <field name="module_name"/>
+                <field name="model_name"/>
+                <field name="category_id"/>
+                <field name="published"/>
+                <field name="edited_in_odoo"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_help_article_form" model="ir.ui.view">
+        <field name="name">help.article.form</field>
+        <field name="model">help.article</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_render_markdown" type="object" string="Renderizar Markdown" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Título do artigo"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="category_id"/>
+                            <field name="tag_ids" widget="many2many_tags"/>
+                            <field name="article_type"/>
+                            <field name="content_scope"/>
+                            <field name="show_in_context"/>
+                            <field name="audience"/>
+                        </group>
+                        <group>
+                            <field name="module_name"/>
+                            <field name="model_name"/>
+                            <field name="view_type"/>
+                            <field name="field_name"/>
+                            <field name="published"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Conteúdo">
+                            <field name="content_html" widget="html" nolabel="1"/>
+                        </page>
+                        <page string="Markdown">
+                            <field name="markdown_source" nolabel="1"/>
+                        </page>
+                        <page string="Contexto">
+                            <group>
+                                <field name="menu_xmlid"/>
+                                <field name="action_xmlid"/>
+                                <field name="source_id" readonly="1"/>
+                                <field name="checksum" readonly="1"/>
+                                <field name="edited_in_odoo" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Resumo e Relacionados">
+                            <field name="summary"/>
+                            <field name="related_article_ids" widget="many2many_tags"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_help_article" model="ir.actions.act_window">
+        <field name="name">Todos os Artigos</field>
+        <field name="res_model">help.article</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_help_article_search"/>
+        <field name="context">{'search_default_published': 1}</field>
+    </record>
+
+    <record id="action_help_article_manual" model="ir.actions.act_window">
+        <field name="name">Manual do Usuário</field>
+        <field name="res_model">help.article</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('article_type','=','user_manual')]</field>
+    </record>
+
+    <record id="action_help_article_technical" model="ir.actions.act_window">
+        <field name="name">Documentação Técnica</field>
+        <field name="res_model">help.article</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('article_type','=','technical')]</field>
+    </record>
+
+    <record id="action_help_article_troubleshooting" model="ir.actions.act_window">
+        <field name="name">Troubleshooting</field>
+        <field name="res_model">help.article</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('article_type','=','troubleshooting')]</field>
+    </record>
+</odoo>

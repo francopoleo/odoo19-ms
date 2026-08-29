@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== GOVERNANCE.CASE VIEWS ==================== -->
+
+    <record id="view_governance_case_list" model="ir.ui.view">
+        <field name="name">governance.case.list</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="responsible_id"/>
+                <field name="case_type_color" column_invisible="1"/>
+                <field name="case_type_id" widget="badge" options="{'color_field': 'case_type_color'}"/>
+                <field name="priority" widget="priority"/>
+                <field name="participant_count" optional="show"/>
+                <field name="pending_open_count" optional="show"/>
+                <field name="open_required_pending_count" optional="show"/>
+                <field name="overdue_pending_count" optional="hide"/>
+                <field name="response_request_open_count" optional="hide"/>
+                <field name="work_queue_status" widget="badge" optional="show"/>
+                <field name="response_state" widget="badge" optional="show"/>
+                <field name="next_action_date" optional="show"/>
+                <field name="next_pending_due_date" optional="hide"/>
+                <field name="followup_count" optional="show"/>
+                <field name="stage_color" column_invisible="1"/>
+                <field name="stage_id" widget="badge" options="{'color_field': 'stage_color'}"/>
+                <field name="origin_date"/>
+                <field name="resolution_deadline"/>
+                <field name="days_without_response"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_governance_case_form" model="ir.ui.view">
+        <field name="name">governance.case.form</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!-- ── Em Aberto: registrar primeiro contato ── -->
+                    <button name="action_log_first_contact" type="object"
+                            string="Registrar Contato" class="btn-primary"
+                            invisible="status != 'planned' or id == False"/>
+                    <button name="action_set_waiting" type="object"
+                            string="Aguardar Resposta Formal"
+                            invisible="status != 'planned' or communication_count == 0"/>
+
+                    <!-- ── Em Contato: aguardar resposta ou concluir ── -->
+                    <button name="action_set_waiting" type="object"
+                            string="Aguardar Resposta Formal" class="btn-primary"
+                            invisible="status != 'sent'"/>
+                    <button name="action_set_done" type="object"
+                            string="Concluir (sem aguardar resposta)"
+                            invisible="status != 'sent'"/>
+
+                    <!-- ── Aguardando: registrar resposta ou sem resposta ── -->
+                    <button name="action_register_response" type="object"
+                            string="Registrar Resposta" class="btn-primary"
+                            invisible="status != 'waiting'"/>
+                    <button name="action_new_response" type="object"
+                            string="Nova Resposta Formal"
+                            invisible="status != 'waiting' or id == False"/>
+                    <button name="action_set_no_response" type="object"
+                            string="Marcar Sem Resposta"
+                            invisible="status != 'waiting'"/>
+
+                    <!-- ── Resposta Parcial: concluir ou seguir comunicando ── -->
+                    <button name="action_set_done" type="object"
+                            string="Concluir" class="btn-primary"
+                            invisible="status != 'partial'"/>
+                    <button name="action_set_waiting" type="object"
+                            string="Aguardar Nova Resposta"
+                            invisible="status != 'partial'"/>
+
+                    <!-- ── Sem Resposta: encerrar ou tentar nova comunicação ── -->
+                    <button name="action_close" type="object"
+                            string="Encerrar" class="btn-primary"
+                            invisible="status != 'no_response'"/>
+                    <button name="action_set_done" type="object"
+                            string="Concluir (resposta obtida posteriormente)"
+                            invisible="status != 'no_response'"/>
+
+                    <!-- ── Concluído: encerrar ── -->
+                    <button name="action_close" type="object"
+                            string="Encerrar"
+                            invisible="status != 'done'"/>
+
+                    <!-- ── Sempre disponíveis (quando salvo) ── -->
+                    <button name="action_new_communication" type="object"
+                            string="Comunicação" icon="fa-comment"
+                            invisible="id == False or status == 'closed'"/>
+                    <button name="action_new_pending" type="object"
+                            string="Pendência" icon="fa-check-square-o"
+                            invisible="id == False or status == 'closed'"/>
+                    <button name="action_send_followup_email" type="object"
+                            string="Follow-up por E-mail"
+                            invisible="status not in ['sent','waiting','partial'] or id == False"/>
+
+                    <field name="stage_id" widget="statusbar"
+                           statusbar_visible="planned,sent,waiting,partial,done,closed"/>
+                </header>
+
+                <sheet>
+                    <!-- ── Campos invisíveis para lógica de conditional ── -->
+                    <field name="is_overdue" invisible="1"/>
+                    <field name="work_queue_status" invisible="1"/>
+                    <field name="communication_count" invisible="1"/>
+
+                    <!-- ── Alerta: Urgente / Atrasado ── -->
+                    <div class="alert alert-danger mb-0" role="alert"
+                         invisible="work_queue_status != 'urgent'">
+                        <strong><i class="fa fa-exclamation-circle" title="Urgente"/> Caso Urgente:</strong>
+                        há pendências ou prazos vencidos que exigem ação imediata.
+                    </div>
+                    <div class="alert alert-warning mb-0" role="alert"
+                         invisible="work_queue_status != 'attention' or is_overdue">
+                        <strong><i class="fa fa-clock-o" title="Atenção"/> Atenção:</strong>
+                        este caso possui itens próximos do prazo ou aguardando retorno.
+                    </div>
+
+                    <!-- ── Smart buttons ── -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_participants" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="participant_count" widget="statinfo" string="Participantes"/>
+                        </button>
+                        <button name="action_view_communications" type="object" class="oe_stat_button" icon="fa-comments">
+                            <field name="communication_count" widget="statinfo" string="Comunicações"/>
+                        </button>
+                        <button name="action_view_pendings" type="object" class="oe_stat_button" icon="fa-check-square-o">
+                            <field name="pending_open_count" widget="statinfo" string="Pendências"/>
+                        </button>
+                        <button name="action_view_required_pendings" type="object" class="oe_stat_button" icon="fa-list-alt" invisible="open_required_pending_count == 0">
+                            <field name="open_required_pending_count" widget="statinfo" string="Obrigatórias"/>
+                        </button>
+                        <button name="action_view_overdue_pendings" type="object" class="oe_stat_button" icon="fa-exclamation-triangle" invisible="overdue_pending_count == 0">
+                            <field name="overdue_pending_count" widget="statinfo" string="Atrasadas"/>
+                        </button>
+                        <button name="action_view_response_requests" type="object" class="oe_stat_button" icon="fa-hourglass-half" invisible="response_request_open_count == 0">
+                            <field name="response_request_open_count" widget="statinfo" string="Aguard. Resposta"/>
+                        </button>
+                        <button name="action_view_responses" type="object" class="oe_stat_button" icon="fa-reply" invisible="response_count == 0">
+                            <field name="response_count" widget="statinfo" string="Respostas"/>
+                        </button>
+                        <button name="action_view_activities" type="object" class="oe_stat_button" icon="fa-tasks" invisible="followup_activity_count == 0">
+                            <field name="followup_activity_count" widget="statinfo" string="Atividades"/>
+                        </button>
+                    </div>
+
+                    <!-- ── Título ── -->
+                    <div class="oe_title">
+                        <label for="name" string="Assunto"/>
+                        <h1><field name="name" placeholder="Descreva brevemente o caso..."/></h1>
+                        <div class="d-flex gap-2 align-items-center">
+                            <field name="reference" readonly="1" style="font-size:12px;color:#6c757d;"/>
+                            <field name="tag_ids" widget="many2many_tags"
+                                   options="{'color_field': 'color', 'no_create_edit': False}"/>
+                        </div>
+                    </div>
+
+                    <!-- ── Campos principais ── -->
+                    <group>
+                        <group string="Identificação">
+                            <field name="case_type_id"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="responsible_id"/>
+                            <field name="primary_partner_id" readonly="1" string="Contato Principal"/>
+                            <field name="partner_ids" widget="many2many_tags" string="Envolvidos"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Prazos &amp; Situação">
+                            <field name="origin_date"/>
+                            <field name="sla_days" readonly="1" string="SLA (dias)"/>
+                            <field name="resolution_deadline" readonly="1" string="Prazo de Resolução"/>
+                            <field name="response_deadline" readonly="response_date != False"
+                                   string="Prazo p/ Resposta"/>
+                            <field name="response_date" string="Data de Resposta"/>
+                            <field name="response_state" widget="badge" readonly="1" string="Situação"/>
+                            <field name="next_pending_due_date" readonly="1"
+                                   string="Próxima Pendência"
+                                   invisible="not next_pending_due_date"/>
+                            <field name="last_followup_date" readonly="1"
+                                   invisible="not last_followup_date"/>
+                            <field name="days_without_response" readonly="1"
+                                   invisible="status in ['done','closed'] or not days_without_response"/>
+                        </group>
+                    </group>
+
+                    <!-- ── Checklist progress (só quando relevante) ── -->
+                    <div invisible="not checklist_generated" style="margin-bottom:12px;">
+                        <label for="checklist_progress" string="Progresso do Checklist"/>
+                        <field name="checklist_generated" invisible="1"/>
+                        <field name="checklist_progress" widget="progressbar" readonly="1" nolabel="1"/>
+                    </div>
+
+                    <!-- ── Notebook ── -->
+                    <notebook>
+                        <page string="Fluxo" name="flow">
+                            <!-- Comunicações -->
+                            <group string="Comunicações">
+                                <div class="text-muted mb-2" style="font-size:12px;"
+                                     invisible="communication_count != 0">
+                                    Registre aqui todos os contatos: e-mails enviados e recebidos, ligações,
+                                    reuniões, notificações, tentativas sem retorno. O sistema avança a etapa
+                                    automaticamente ao registrar o primeiro contato de saída.
+                                </div>
+                                <field name="communication_ids" context="{'default_case_id': id}" nolabel="1">
+                                    <list editable="bottom"
+                                          decoration-info="direction == 'out'"
+                                          decoration-success="response_received == True"
+                                          decoration-danger="requires_response == True and response_received == False">
+                                        <field name="communication_datetime" string="Data/Hora"/>
+                                        <field name="communication_type" widget="badge"/>
+                                        <field name="direction" widget="badge"/>
+                                        <field name="name" string="Assunto/Descrição"/>
+                                        <field name="partner_id" string="Contato" optional="show"/>
+                                        <field name="requires_response" string="Exige Resp." optional="show"/>
+                                        <field name="response_received" string="Resp. Receb." optional="show"/>
+                                        <field name="responsible_id" optional="hide"/>
+                                        <button name="action_register_response" type="object"
+                                                string="Registrar Resposta" icon="fa-reply"
+                                                invisible="not requires_response or response_received"/>
+                                    </list>
+                                </field>
+                            </group>
+
+                            <!-- Respostas Formais -->
+                            <separator string="Respostas Formais"/>
+                            <group>
+                                <div class="text-muted mb-2" style="font-size:12px;"
+                                     invisible="response_count != 0">
+                                    Registre aqui respostas formais recebidas: documentos, manifestações,
+                                    acordos, notificações da outra parte.
+                                </div>
+                                <field name="response_ids" context="{'default_case_id': id, 'default_partner_id': primary_partner_id, 'default_responsible_id': responsible_id}" nolabel="1">
+                                    <list editable="bottom"
+                                          decoration-success="outcome == 'accepted'"
+                                          decoration-warning="outcome == 'partial'"
+                                          decoration-danger="outcome == 'rejected'">
+                                        <field name="response_date" string="Data"/>
+                                        <field name="name" string="Descrição"/>
+                                        <field name="response_type" widget="badge"/>
+                                        <field name="outcome" widget="badge" optional="show"/>
+                                        <field name="partner_id" optional="show"/>
+                                        <field name="close_open_pendings" optional="show"/>
+                                    </list>
+                                </field>
+                            </group>
+
+                            <!-- Pendências -->
+                            <separator string="Pendências"/>
+                            <group>
+                                <field name="pending_ids" context="{'default_case_id': id}" nolabel="1">
+                                    <list editable="bottom"
+                                          decoration-danger="is_overdue == True"
+                                          decoration-warning="deadline_bucket == 'today'"
+                                          decoration-success="state == 'done'">
+                                        <field name="name" string="Pendência"/>
+                                        <field name="responsible_id" optional="show"/>
+                                        <field name="priority" widget="priority"/>
+                                        <field name="due_date" string="Prazo"/>
+                                        <field name="state" widget="badge"/>
+                                        <field name="required" optional="show"/>
+                                        <field name="is_overdue" column_invisible="1"/>
+                                        <field name="deadline_bucket" column_invisible="1"/>
+                                        <button name="action_mark_done" type="object"
+                                                string="Concluir" icon="fa-check"
+                                                invisible="state != 'open'"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+
+                        <page string="Pessoas" name="participants">
+                            <field name="participant_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="partner_id"/>
+                                    <field name="role" widget="badge"/>
+                                    <field name="is_primary" widget="boolean_toggle"/>
+                                    <field name="email" optional="show"/>
+                                    <field name="phone" optional="hide"/>
+                                    <field name="note" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Detalhes" name="description">
+                            <field name="description" placeholder="Descreva o contexto, histórico e objetivo deste caso..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_governance_case_search" model="ir.ui.view">
+        <field name="name">governance.case.search</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="responsible_id"/>
+                <field name="tag_ids"/>
+                <field name="primary_partner_id"/>
+                <field name="communication_ids"/>
+                <field name="pending_ids"/>
+                <field name="response_ids"/>
+                <filter string="Com Participantes" name="with_participants" domain="[('participant_ids', '!=', False)]"/>
+                <filter string="Com Comunicações" name="with_communications" domain="[('communication_ids', '!=', False)]"/>
+                <filter string="Com Pendências" name="with_pendings" domain="[('has_open_pendings', '=', True)]"/>
+                <filter string="Pendências Obrigatórias" name="with_required_pendings" domain="[('open_required_pending_count', '>', 0)]"/>
+                <filter string="Pendências Atrasadas" name="with_overdue_pendings" domain="[('overdue_pending_count', '>', 0)]"/>
+                <filter string="Solicitações sem Resposta" name="open_response_requests" domain="[('response_request_open_count', '>', 0)]"/>
+                <filter string="Com Respostas" name="with_responses" domain="[('response_ids', '!=', False)]"/>
+                <filter string="Resposta Atrasada" name="response_overdue" domain="[('response_state', '=', 'overdue')]"/>
+                <filter string="Sem Comunicação" name="no_communication" domain="[('communication_ids', '=', False)]"/>
+                <filter string="Exige Atenção" name="needs_attention" domain="['|', ('work_queue_status', '=', 'urgent'), ('work_queue_status', '=', 'attention')]"/>
+                <filter string="Resposta Pendente" name="response_attention" domain="[('requires_response_attention', '=', True)]"/>
+                <filter string="Sem Resposta" name="no_response" domain="[('stage_id.status', '=', 'no_response')]"/>
+                <filter string="Meus Casos" name="my_cases" domain="[('responsible_id', '=', uid)]"/>
+                <!-- Filtro removido por incompatibilidade de validação com user.partner_id em search view; a visibilidade equivalente permanece nas record rules. -->
+                <filter string="Sem Responsável" name="unassigned" domain="[('responsible_id', '=', False)]"/>
+                <filter string="Atrasados" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                <filter string="Crítico" name="critical" domain="[('priority', '=', '3')]"/>
+                <filter string="SLA Atrasado" name="sla_overdue" domain="[('sla_status', '=', 'overdue')]"/>
+                <filter string="SLA Próximo" name="sla_due_soon" domain="[('sla_status', '=', 'due_soon')]"/>
+                <separator/>
+                <field name="case_type_id"/>
+                <filter string="Por Tipo" name="group_type" context="{'group_by':'case_type_id'}"/>
+                <filter string="Por Prioridade" name="group_priority" context="{'group_by':'priority'}"/>
+                <filter string="Por Responsável" name="group_responsible" context="{'group_by':'responsible_id'}"/>
+                <filter string="Por Etapa" name="group_stage" context="{'group_by':'stage_id'}"/>
+                <filter string="Por Situação de Resposta" name="group_response_state" context="{'group_by':'response_state'}"/>
+                <filter string="Por Tags" name="group_tags" context="{'group_by':'tag_ids'}"/>
+                <filter string="Por SLA" name="group_sla" context="{'group_by':'sla_status'}"/>
+                <filter string="Por Antiguidade" name="group_aging" context="{'group_by':'aging_bucket'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_governance_case" model="ir.actions.act_window">
+        <field name="name">Casos de Governança</field>
+        <field name="res_model">governance.case</field>
+        <field name="view_mode">list,kanban,form,pivot,graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Crie seu primeiro caso de governança!</p>
+        </field>
+    </record>
+
+    <!-- ==================== KANBAN ==================== -->
+    <record id="view_governance_case_kanban" model="ir.ui.view">
+        <field name="name">governance.case.kanban</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" quick_create="false">
+                <progressbar field="status"
+                             colors='{"done":"success","closed":"success","no_response":"danger","planned":"info"}'/>
+                <field name="name"/>
+                <field name="responsible_id"/>
+                <field name="days_without_response"/>
+                <field name="is_overdue"/>
+                <field name="tag_ids"/>
+                <field name="primary_partner_id"/>
+                <field name="communication_ids"/>
+                <field name="pending_ids"/>
+                <field name="response_ids"/>
+                <filter string="Com Participantes" name="with_participants" domain="[('participant_ids', '!=', False)]"/>
+                <filter string="Com Comunicações" name="with_communications" domain="[('communication_ids', '!=', False)]"/>
+                <filter string="Com Pendências" name="with_pendings" domain="[('pending_ids', '!=', False)]"/>
+                <filter string="Com Respostas" name="with_responses" domain="[('response_ids', '!=', False)]"/>
+                <field name="case_type_id"/>
+                <field name="case_type_color"/>
+                <field name="priority"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <field name="name" class="fw-bolder"/>
+                            <field name="priority" widget="priority"/>
+                        </div>
+                        <field name="case_type_id" widget="badge" class="mt-1"
+                               options="{'color_field': 'case_type_color'}"/>
+                        <field name="responsible_id" class="text-muted"/>
+                        <div t-if="record.is_overdue.raw_value" class="badge text-bg-danger mt-1">
+                            Atrasado
+                        </div>
+                        <div class="mt-1 text-muted">
+                            <field name="days_without_response"/> dias sem resposta
+                        </div>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" class="mt-1"/>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ==================== PIVOT ==================== -->
+    <record id="view_governance_case_pivot" model="ir.ui.view">
+        <field name="name">governance.case.pivot</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="responsible_id" type="row"/>
+                <field name="stage_id" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ==================== GRAPH ==================== -->
+    <record id="view_governance_case_graph" model="ir.ui.view">
+        <field name="name">governance.case.graph</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="stage_id" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ==================== GOVERNANCE.STAGE VIEWS ==================== -->
+
+    <record id="view_governance_stage_list" model="ir.ui.view">
+        <field name="name">governance.stage.list</field>
+        <field name="model">governance.stage</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+                <field name="status"/>
+                <field name="fold"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_governance_stage" model="ir.actions.act_window">
+        <field name="name">Etapas</field>
+        <field name="res_model">governance.stage</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- ==================== COMMON.TAG (GOVERNANCE) VIEW ==================== -->
+
+    <record id="view_governance_tag_list" model="ir.ui.view">
+        <field name="name">governance.tag.list</field>
+        <field name="model">common.tag</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="category" optional="show"/>
+                <field name="usage_count" optional="show"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_governance_tag_form" model="ir.ui.view">
+        <field name="name">governance.tag.form</field>
+        <field name="model">common.tag</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="category"/>
+                            <field name="description"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="usage_count" readonly="1"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_governance_tag" model="ir.actions.act_window">
+        <field name="name">Tags de Governança</field>
+        <field name="res_model">common.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('category', '=', 'governance')]</field>
+        <field name="context">{'default_category': 'governance'}</field>
+    </record>
+
+    <!-- ==================== GOVERNANCE.CASE.TYPE VIEWS ==================== -->
+
+    <record id="view_governance_case_type_list" model="ir.ui.view">
+        <field name="name">governance.case.type.list</field>
+        <field name="model">governance.case.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="default_priority" widget="priority" optional="show"/>
+                <field name="sla_days" optional="show"/>
+                <field name="auto_followup_days" optional="show"/>
+                <field name="auto_create_followup_activity" optional="show"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_governance_case_type_form" model="ir.ui.view">
+        <field name="name">governance.case.type.form</field>
+        <field name="model">governance.case.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="action" name="%(action_governance_case_type_pending_template)d" class="oe_stat_button" icon="fa-list-check">
+                            <div class="o_stat_info">
+                                <field name="pending_template_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Modelos de Pendência</span>
+                            </div>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="description"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
+                        <group>
+                            <field name="default_priority" widget="priority"/>
+                            <field name="sla_days"/>
+                            <field name="require_primary_participant"/>
+                            <field name="auto_followup_days"/>
+                            <field name="auto_create_followup_activity"/>
+                            <field name="require_response_before_done"/>
+                            <field name="require_required_pendings_done"/>
+                            <field name="require_no_open_pendings_to_close"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Fluxo">
+                            <group>
+                                <group>
+                                    <field name="initial_stage_id"/>
+                                    <field name="waiting_stage_id"/>
+                                    <field name="no_response_stage_id"/>
+                                </group>
+                                <group>
+                                    <field name="done_stage_id"/>
+                                    <field name="closed_stage_id"/>
+                                    <field name="allowed_stage_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Checklist Padrão">
+                            <field name="pending_template_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="default_deadline_days"/>
+                                    <field name="priority" widget="priority"/>
+                                    <field name="assign_to_responsible" widget="boolean_toggle"/>
+                                    <field name="required" widget="boolean_toggle"/>
+                                    <field name="active"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="name"/>
+                                            <field name="description"/>
+                                            <field name="default_deadline_days"/>
+                                        </group>
+                                        <group>
+                                            <field name="priority" widget="priority"/>
+                                            <field name="assign_to_responsible"/>
+                                            <field name="required"/>
+                                            <field name="active"/>
+                                            <field name="sequence"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_governance_case_type" model="ir.actions.act_window">
+        <field name="name">Tipos de Caso</field>
+        <field name="res_model">governance.case.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+</odoo>

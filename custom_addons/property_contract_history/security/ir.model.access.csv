@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_property_contract_history_all,property.contract.history all,model_property_contract_history,,1,0,0,0
+access_property_contract_history_manager,property.contract.history manager,model_property_contract_history,property_core.group_property_manager,1,1,1,1
+access_property_contract_history_line_manager,property.contract.history.line manager,model_property_contract_history_line,property_core.group_property_manager,1,1,1,1
+access_bulk_upload_wizard,property.contract.history.bulk.upload,model_property_contract_history_bulk_upload,property_core.group_property_manager,1,1,1,1

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_help_import_wizard_form" model="ir.ui.view">
+        <field name="name">help.import.wizard.form</field>
+        <field name="model">help.import.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Este assistente pode ser executado sempre. Ele descobre arquivos docs/*.md, reimporta conteúdo alterado e gera o mapa de contextos, sem duplicar artigos ou contextos já existentes.
+                    </div>
+                    <group>
+                        <field name="reset_before_import"/>
+                        <field name="discover_modules"/>
+                        <field name="import_sources"/>
+                        <field name="normalize_context"/>
+                        <field name="generate_context_map"/>
+                        <field name="only_modules_with_docs" invisible="not generate_context_map"/>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="not reset_before_import">
+                        Atenção: a opção de zerar remove artigos, contextos, fontes e mapa de cobertura da Central antes da importação. Use para limpar bases de teste ou homologação com duplicidades.
+                    </div>
+                    <field name="result_message" readonly="1" nolabel="1"/>
+                </sheet>
+                <footer>
+                    <button name="action_execute" type="object" string="Executar" class="btn-primary"/>
+                    <button string="Fechar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_help_import_wizard" model="ir.actions.act_window">
+        <field name="name">Importar Documentação</field>
+        <field name="res_model">help.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

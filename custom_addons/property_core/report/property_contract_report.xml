@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_property_contract" model="ir.actions.report">
+        <field name="name">Contrato de Locação</field>
+        <field name="model">property.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">property_core.report_property_contract_document</field>
+        <field name="report_file">property_core.report_property_contract_document</field>
+        <field name="binding_model_id" ref="model_property_contract"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_property_contract_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="c">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.6; color: #1a1a1a;">
+
+                        <!-- ===== TÍTULO ===== -->
+                        <div style="text-align: center; margin-bottom: 28px; border-bottom: 2px solid #1a1a1a; padding-bottom: 16px;">
+                            <p style="font-size: 9pt; letter-spacing: 2px; color: #555; margin: 0;">INSTRUMENTO PARTICULAR DE</p>
+                            <h2 style="font-size: 14pt; font-weight: bold; letter-spacing: 1px; margin: 4px 0;">
+                                CONTRATO DE LOCAÇÃO
+                                <t t-if="c.contract_type == 'residential'"> RESIDENCIAL</t>
+                                <t t-elif="c.contract_type == 'commercial'"> NÃO RESIDENCIAL</t>
+                                <t t-elif="c.contract_type == 'comodato'"> – COMODATO</t>
+                                <t t-elif="c.contract_type == 'arrendamento'"> – ARRENDAMENTO RURAL</t>
+                            </h2>
+                            <p style="font-size: 9pt; color: #555; margin: 4px 0;">
+                                Ref.: <strong t-esc="c.reference"/> &#160;|&#160;
+                                Celebrado em <t t-esc="c.sign_date" t-options='{"widget":"date"}'/>
+                            </p>
+                        </div>
+
+                        <!-- ===== QUALIFICAÇÃO DAS PARTES ===== -->
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="font-size: 10pt; font-weight: bold; letter-spacing: 2px; border-bottom: 1px solid #aaa; padding-bottom: 4px; margin-bottom: 10px;">I — LOCADOR(A)</h4>
+                            <p style="text-align: justify; margin: 0;">
+                                <strong t-esc="c.company_id.name"/>,
+                                <t t-if="c.company_id.street">
+                                    com sede em <t t-esc="c.company_id.city or ''"/>,
+                                    Estado de <t t-esc="c.company_id.state_id.name or ''"/>,
+                                    na <t t-esc="c.company_id.street"/><t t-if="c.company_id.street2">, <t t-esc="c.company_id.street2"/></t>,
+                                </t>
+                                <t t-if="c.company_id.vat">
+                                    inscrita no CNPJ/MF sob nº <strong t-esc="c.company_id.vat"/>,
+                                </t>
+                                doravante denominada simplesmente <strong>LOCADOR(A)</strong>.
+                            </p>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="font-size: 10pt; font-weight: bold; letter-spacing: 2px; border-bottom: 1px solid #aaa; padding-bottom: 4px; margin-bottom: 10px;">II — LOCATÁRIO(A)</h4>
+                            <p style="text-align: justify; margin: 0;">
+                                <strong t-esc="c.partner_id.name"/>,
+                                <t t-if="c.partner_id.vat">
+                                    inscrito(a) no CPF/CNPJ sob nº <strong t-esc="c.partner_id.vat"/>,
+                                </t>
+                                <t t-if="c.partner_id.street">
+                                    residente e domiciliado(a) na <t t-esc="c.partner_id.street"/>
+                                    <t t-if="c.partner_id.street2">, <t t-esc="c.partner_id.street2"/></t>,
+                                    <t t-esc="c.partner_id.city or ''"/>/<t t-esc="c.partner_id.state_id.name or ''"/>,
+                                    <t t-if="c.partner_id.zip">CEP <t t-esc="c.partner_id.zip"/>,</t>
+                                </t>
+                                doravante denominado(a) simplesmente <strong>LOCATÁRIO(A)</strong>.
+                            </p>
+                        </div>
+
+                        <t t-if="c.guarantor_ids">
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="font-size: 10pt; font-weight: bold; letter-spacing: 2px; border-bottom: 1px solid #aaa; padding-bottom: 4px; margin-bottom: 10px;">III — FIADOR(ES)</h4>
+                                <t t-foreach="c.guarantor_ids" t-as="g">
+                                    <p style="text-align: justify; margin: 0 0 6px 0;">
+                                        <strong t-esc="g.name"/>
+                                        <t t-if="g.vat">, CPF/CNPJ nº <t t-esc="g.vat"/></t>
+                                        <t t-if="g.street">, residente na <t t-esc="g.street"/>, <t t-esc="g.city or ''"/>/<t t-esc="g.state_id.name or ''" /></t>.
+                                    </p>
+                                </t>
+                            </div>
+                        </t>
+
+                        <p style="text-align: center; font-weight: bold; font-size: 10pt; margin: 20px 0;">
+                            PELO PRESENTE INSTRUMENTO PARTICULAR, AS PARTES ACIMA QUALIFICADAS TÊM
+                            ENTRE SI JUSTO E CONTRATADO O SEGUINTE:
+                        </p>
+
+                        <!-- ===== CLÁUSULA PRIMEIRA — OBJETO ===== -->
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-weight: bold; margin-bottom: 4px;">CLÁUSULA PRIMEIRA — DO OBJETO</p>
+                            <p style="text-align: justify; margin: 0;">
+                                O(A) LOCADOR(A) dá em locação ao(à) LOCATÁRIO(A) o imóvel denominado
+                                <strong t-esc="c.asset_id.name"/>
+                                <t t-if="c.asset_id.address">,
+                                    situado na <t t-esc="c.asset_id.address"/>
+                                    <t t-if="c.asset_id.address_number">, nº <t t-esc="c.asset_id.address_number"/></t>
+                                    <t t-if="c.asset_id.address_complement">, <t t-esc="c.asset_id.address_complement"/></t>
+                                    <t t-if="c.asset_id.neighborhood">, <t t-esc="c.asset_id.neighborhood"/></t>,
+                                    <t t-esc="c.asset_id.city or ''"/>/<t t-esc="c.asset_id.state_name or ''"/>
+                                    <t t-if="c.asset_id.zip_code">, CEP <t t-esc="c.asset_id.zip_code"/></t>
+                                </t>
+                                <t t-if="c.asset_id.registration">
+                                    , com matrícula nº <strong t-esc="c.asset_id.registration"/>
+                                </t>,
+                                para fins
+                                <t t-if="c.contract_type == 'residential'">exclusivamente residenciais</t>
+                                <t t-elif="c.contract_type == 'commercial'">comerciais e não residenciais</t>
+                                <t t-elif="c.contract_type == 'comodato'">de comodato, a título gratuito</t>
+                                <t t-else="">de arrendamento</t>.
+                            </p>
+                        </div>
+
+                        <!-- ===== CLÁUSULA SEGUNDA — PRAZO ===== -->
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-weight: bold; margin-bottom: 4px;">CLÁUSULA SEGUNDA — DO PRAZO</p>
+                            <p style="text-align: justify; margin: 0;">
+                                A locação ora contratada terá prazo determinado de
+                                <strong><t t-esc="c.duration_months"/> (<t t-esc="c.duration_months"/>) meses</strong>,
+                                com início em <strong><t t-esc="c.start_date" t-options='{"widget":"date"}'/></strong>
+                                e término em <strong><t t-esc="c.end_date" t-options='{"widget":"date"}'/></strong>,
+                                ressalvada a prorrogação por prazo indeterminado na forma da Lei nº 8.245/91,
+                                caso nenhuma das partes manifeste interesse na rescisão nos prazos legais.
+                            </p>
+                        </div>
+
+                        <!-- ===== CLÁUSULA TERCEIRA — VALOR ===== -->
+                        <t t-if="c.contract_type != 'comodato'">
+                            <div style="margin-bottom: 16px;">
+                                <p style="font-weight: bold; margin-bottom: 4px;">CLÁUSULA TERCEIRA — DO VALOR E FORMA DE PAGAMENTO</p>
+                                <p style="text-align: justify; margin: 0;">
+                                    O aluguel mensal fica estipulado em
+                                    <strong>
+                                        <t t-esc="c.monthly_rent" t-options='{"widget":"monetary","display_currency":c.currency_id}'/>
+                                    </strong>
+                                    (<t t-esc="c.monthly_rent"/>),
+                                    a ser pago até o 5º (quinto) dia útil de cada mês subsequente ao vencido,
+                                    mediante depósito ou transferência bancária em conta a ser informada pelo(a) LOCADOR(A).
+                                    O valor total estimado do contrato é de
+                                    <strong>
+                                        <t t-esc="c.total_value" t-options='{"widget":"monetary","display_currency":c.currency_id}'/>
+                                    </strong>.
+                                    <t t-if="c.deposit_value">
+                                        O depósito caução corresponde a
+                                        <strong>
+                                            <t t-esc="c.deposit_value" t-options='{"widget":"monetary","display_currency":c.currency_id}'/>
+                                        </strong>,
+                                        a ser devolvido ao término da locação, deduzidas eventuais pendências.
+                                    </t>
+                                </p>
+                            </div>
+
+                            <!-- ===== CLÁUSULA QUARTA — REAJUSTE ===== -->
+                            <t t-if="c.adjustment_index != 'none'">
+                                <div style="margin-bottom: 16px;">
+                                    <p style="font-weight: bold; margin-bottom: 4px;">CLÁUSULA QUARTA — DO REAJUSTE</p>
+                                    <p style="text-align: justify; margin: 0;">
+                                        O valor do aluguel será reajustado a cada
+                                        <strong><t t-esc="c.adjustment_period_months"/> meses</strong>,
+                                        tendo como base o índice
+                                        <strong>
+                                            <t t-if="c.adjustment_index == 'igpm'">IGP-M (FGV)</t>
+                                            <t t-elif="c.adjustment_index == 'ipca'">IPCA (IBGE)</t>
+                                            <t t-elif="c.adjustment_index == 'incc'">INCC (FGV)</t>
+                                            <t t-elif="c.adjustment_index == 'fixed'">
+                                                percentual fixo de <t t-esc="c.adjustment_rate"/>% ao período
+                                            </t>
+                                        </strong>,
+                                        sendo o primeiro reajuste previsto para
+                                        <strong><t t-esc="c.next_adjustment_date" t-options='{"widget":"date"}'/></strong>.
+                                        Na hipótese de extinção do índice, as partes acordarão substituto de comum acordo.
+                                    </p>
+                                </div>
+                            </t>
+                        </t>
+
+                        <!-- ===== CLÁUSULA — OBRIGAÇÕES ===== -->
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-weight: bold; margin-bottom: 4px;">
+                                <t t-if="c.contract_type != 'comodato'">CLÁUSULA QUINTA</t>
+                                <t t-else="">CLÁUSULA TERCEIRA</t>
+                                — DAS OBRIGAÇÕES DO(A) LOCATÁRIO(A)
+                            </p>
+                            <p style="text-align: justify; margin: 0;">
+                                São obrigações do(a) LOCATÁRIO(A), além das previstas em lei:
+                                (i) usar o imóvel somente para a finalidade contratada;
+                                (ii) conservar o imóvel em perfeito estado, responsabilizando-se por danos causados pelo seu uso;
+                                (iii) não realizar benfeitorias sem prévia autorização escrita do(a) LOCADOR(A);
+                                (iv) devolver o imóvel no estado em que o recebeu, salvo deteriorações naturais do uso.
+                            </p>
+                        </div>
+
+                        <!-- ===== CLÁUSULA ADICIONAL (se houver) ===== -->
+                        <t t-if="c.additional_clauses">
+                            <div style="margin-bottom: 16px;" t-out="c.additional_clauses"/>
+                        </t>
+
+                        <!-- ===== CLÁUSULA — RESCISÃO ===== -->
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-weight: bold; margin-bottom: 4px;">CLÁUSULA — DA RESCISÃO</p>
+                            <p style="text-align: justify; margin: 0;">
+                                O descumprimento de qualquer cláusula contratual ou legal por qualquer das partes
+                                implicará rescisão deste instrumento, respondendo a parte infratora pelas perdas e
+                                danos causados, sem prejuízo das sanções legais cabíveis.
+                                A multa rescisória corresponderá a 03 (três) aluguéis vigentes à época da rescisão,
+                                proporcional ao período restante, nos termos do artigo 413 do Código Civil.
+                            </p>
+                        </div>
+
+                        <!-- ===== CLÁUSULA — FORO ===== -->
+                        <div style="margin-bottom: 24px;">
+                            <p style="font-weight: bold; margin-bottom: 4px;">CLÁUSULA — DO FORO</p>
+                            <p style="text-align: justify; margin: 0;">
+                                Com renúncia a qualquer outro, por mais privilegiado que seja,
+                                as partes elegem o Foro da Comarca de
+                                <strong><t t-esc="c.jurisdiction or 'Barueri'"/></strong>
+                                para dirimir quaisquer questões resultantes do presente contrato.
+                            </p>
+                        </div>
+
+                        <!-- ===== ASSINATURA ===== -->
+                        <p style="text-align: center; font-weight: bold; margin: 24px 0 20px 0; font-size: 10pt;">
+                            E, POR ESTAREM ASSIM ACORDADAS, AS PARTES ASSINAM O PRESENTE INSTRUMENTO
+                            EM DUAS VIAS DE IGUAL TEOR E FORMA, NA PRESENÇA DAS TESTEMUNHAS ABAIXO.
+                        </p>
+
+                        <p style="text-align: right; margin-bottom: 28px;">
+                            <t t-esc="c.asset_id.city or c.company_id.city or ''"/>,
+                            <t t-esc="c.sign_date" t-options='{"widget":"date"}'/>
+                        </p>
+
+                        <!-- Assinaturas principais -->
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
+                            <div style="width: 45%; text-align: center;">
+                                <div style="border-top: 1px solid #333; padding-top: 8px; margin-top: 50px;">
+                                    <strong t-esc="c.company_id.name"/>
+                                    <br/><span style="font-size: 9pt; color: #555;">LOCADOR(A)</span>
+                                    <t t-if="c.company_id.vat">
+                                        <br/><span style="font-size: 9pt;">CNPJ: <t t-esc="c.company_id.vat"/></span>
+                                    </t>
+                                </div>
+                            </div>
+                            <div style="width: 45%; text-align: center;">
+                                <div style="border-top: 1px solid #333; padding-top: 8px; margin-top: 50px;">
+                                    <strong t-esc="c.partner_id.name"/>
+                                    <br/><span style="font-size: 9pt; color: #555;">LOCATÁRIO(A)</span>
+                                    <t t-if="c.partner_id.vat">
+                                        <br/><span style="font-size: 9pt;">CPF/CNPJ: <t t-esc="c.partner_id.vat"/></span>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fiadores -->
+                        <t t-if="c.guarantor_ids">
+                            <t t-foreach="c.guarantor_ids" t-as="g">
+                                <div style="width: 45%; text-align: center; display: inline-block; margin-bottom: 30px;">
+                                    <div style="border-top: 1px solid #333; padding-top: 8px; margin-top: 50px;">
+                                        <strong t-esc="g.name"/>
+                                        <br/><span style="font-size: 9pt; color: #555;">FIADOR(A)</span>
+                                        <t t-if="g.vat">
+                                            <br/><span style="font-size: 9pt;">CPF/CNPJ: <t t-esc="g.vat"/></span>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+
+                        <!-- Testemunhas -->
+                        <div style="margin-top: 20px; border-top: 1px dashed #aaa; padding-top: 16px;">
+                            <p style="font-weight: bold; font-size: 10pt; letter-spacing: 1px; margin-bottom: 12px;">TESTEMUNHAS:</p>
+                            <t t-if="c.witness_ids">
+                                <t t-foreach="c.witness_ids" t-as="w">
+                                    <div style="margin-bottom: 30px;">
+                                        <div style="border-top: 1px solid #333; padding-top: 6px; margin-top: 40px; width: 45%; display: inline-block; margin-right: 8%;">
+                                            <t t-esc="w.name"/>
+                                            <t t-if="w.vat"><br/><span style="font-size: 9pt;">CPF: <t t-esc="w.vat"/></span></t>
+                                        </div>
+                                    </div>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div style="width: 42%;">
+                                        <div style="border-top: 1px solid #333; padding-top: 6px; margin-top: 50px;">
+                                            <span style="font-size: 9pt;">Nome: ___________________________</span><br/>
+                                            <span style="font-size: 9pt;">RG: ____________________________</span>
+                                        </div>
+                                    </div>
+                                    <div style="width: 42%;">
+                                        <div style="border-top: 1px solid #333; padding-top: 6px; margin-top: 50px;">
+                                            <span style="font-size: 9pt;">Nome: ___________________________</span><br/>
+                                            <span style="font-size: 9pt;">RG: ____________________________</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

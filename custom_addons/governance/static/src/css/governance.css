@@ -1,0 +1,10 @@
+/* Badge "Encerrado" — text-bg-muted tem baixo contraste, sobrescreve */
+.badge.text-bg-muted,
+span.badge.text-bg-muted,
+.o_list_view .badge.text-bg-muted,
+.o_form_view .badge.text-bg-muted,
+.o_kanban_view .badge.text-bg-muted {
+    background-color: #6c757d !important;
+    color: #fff !important;
+    --bs-badge-color: #fff !important;
+}

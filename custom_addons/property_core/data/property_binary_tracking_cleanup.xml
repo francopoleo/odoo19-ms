@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Idempotent cleanup: Odoo mail tracking does not support binary/image fields. -->
+    <function model="property.media" name="action_disable_binary_tracking"/>
+</odoo>

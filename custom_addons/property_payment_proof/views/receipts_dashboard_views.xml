@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_receipts_dashboard_form" model="ir.ui.view">
+        <field name="name">property.receipts.dashboard.form</field>
+        <field name="model">property.receipts.dashboard</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false" class="o_form_nosheet">
+                <sheet>
+                    <field name="currency_id" invisible="1"/>
+
+                    <!-- ===== TOOLBAR ===== -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <h4 class="mb-0 fw-bold" style="color:#212529;">
+                            <i class="fa fa-file-text-o me-2" title="Recebimentos" style="color:#0d6efd;"/>
+                            Dashboard Operacional de Recebimentos
+                        </h4>
+                        <div class="d-flex gap-2">
+                            <button name="action_bulk_confirm_high_score" type="object"
+                                    class="btn btn-success btn-sm"
+                                    invisible="not proof_matched_count">
+                                <i class="fa fa-check-double me-1"/> Confirmar Todos ≥ 80
+                                (<field name="proof_matched_count" nolabel="1"/>)
+                            </button>
+                            <button name="action_bulk_upload" type="object"
+                                    class="btn btn-primary btn-sm">
+                                <i class="fa fa-upload me-1"/> Upload em Lote
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ===== ALERTA: atrasos sem tratamento ===== -->
+                    <div invisible="not proof_late_no_handling"
+                         style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:10px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                        <span style="font-size:13px;color:#856404;">
+                            <i class="fa fa-exclamation-triangle me-1" title="Atraso"/>
+                            <strong><field name="proof_late_no_handling"/> comprovante(s)</strong> com pagamento em atraso aguardando definição de tratamento (juros, dispensa ou diferimento).
+                        </span>
+                        <button name="action_view_late_no_handling" type="object"
+                                class="btn btn-warning btn-sm">
+                            Tratar Atrasos →
+                        </button>
+                    </div>
+
+                    <!-- ===== HERO KPIs ===== -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Prontos para confirmar -->
+                        <div class="col-12 col-md-3">
+                            <div class="card border-0 shadow-sm h-100"
+                                 style="border-top:4px solid #0d6efd !important;cursor:pointer;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="text-muted fw-semibold" style="font-size:10px;text-transform:uppercase;letter-spacing:1px;">
+                                            Prontos p/ Confirmar
+                                        </span>
+                                        <i class="fa fa-check-circle" title="Confirmar" style="color:#0d6efd;font-size:1.2rem;"/>
+                                    </div>
+                                    <div class="fw-bold mb-1" style="font-size:2.4rem;color:#0d6efd;line-height:1;">
+                                        <field name="proof_ready_count"/>
+                                    </div>
+                                    <div class="text-muted mb-3" style="font-size:12px;">
+                                        <field name="proof_ready_amount" widget="monetary"/> pendente
+                                    </div>
+                                    <button name="action_view_ready" type="object"
+                                            class="btn btn-primary btn-sm w-100">
+                                        Confirmar Agora →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Conciliados no mês -->
+                        <div class="col-12 col-md-3">
+                            <div class="card border-0 shadow-sm h-100"
+                                 style="border-top:4px solid #198754 !important;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="text-muted fw-semibold" style="font-size:10px;text-transform:uppercase;letter-spacing:1px;">
+                                            Conciliados no Mês
+                                        </span>
+                                        <i class="fa fa-thumbs-up" title="Conciliados" style="color:#198754;font-size:1.2rem;"/>
+                                    </div>
+                                    <div class="fw-bold mb-1" style="font-size:2.4rem;color:#198754;line-height:1;">
+                                        <field name="proof_reconciled_month_count"/>
+                                    </div>
+                                    <div class="text-muted mb-3" style="font-size:12px;">
+                                        <field name="proof_reconciled_month_amount" widget="monetary"/> confirmado
+                                    </div>
+                                    <button name="action_view_reconciled_month" type="object"
+                                            class="btn btn-success btn-sm w-100">
+                                        Ver Conciliados →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Requer atenção -->
+                        <div class="col-12 col-md-3">
+                            <div class="card border-0 shadow-sm h-100"
+                                 style="border-top:4px solid #ffc107 !important;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="text-muted fw-semibold" style="font-size:10px;text-transform:uppercase;letter-spacing:1px;">
+                                            Requer Atenção
+                                        </span>
+                                        <i class="fa fa-exclamation-triangle" title="Atenção" style="color:#ffc107;font-size:1.2rem;"/>
+                                    </div>
+                                    <div class="fw-bold mb-1" style="font-size:2.4rem;color:#e6a800;line-height:1;">
+                                        <field name="proof_attention_count"/>
+                                    </div>
+                                    <div class="text-muted mb-3" style="font-size:12px;">
+                                        rascunho, sem sugestão ou falha OCR
+                                    </div>
+                                    <button name="action_view_failed" type="object"
+                                            class="btn btn-warning btn-sm w-100">
+                                        Ver Falhas OCR →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Atrasos -->
+                        <div class="col-12 col-md-3">
+                            <div class="card border-0 shadow-sm h-100"
+                                 style="border-top:4px solid #dc3545 !important;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="text-muted fw-semibold" style="font-size:10px;text-transform:uppercase;letter-spacing:1px;">
+                                            Pagamentos com Atraso
+                                        </span>
+                                        <i class="fa fa-clock-o" title="Atrasos" style="color:#dc3545;font-size:1.2rem;"/>
+                                    </div>
+                                    <div class="fw-bold mb-1" style="font-size:2.4rem;color:#dc3545;line-height:1;">
+                                        <field name="proof_late_count"/>
+                                    </div>
+                                    <div class="text-muted mb-3" style="font-size:12px;">
+                                        <field name="proof_late_amount" widget="monetary"/> em atraso
+                                    </div>
+                                    <button name="action_view_late_no_handling" type="object"
+                                            class="btn btn-danger btn-sm w-100">
+                                        Ver Atrasos →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ===== TABS ===== -->
+                    <notebook>
+
+                        <!-- ============================================================
+                             ABA 1 — FILA DE TRABALHO
+                        ============================================================ -->
+                        <page string="Fila de Trabalho" name="fila">
+                            <div class="row g-4">
+
+                                <!-- Coluna esquerda: fila por estado -->
+                                <div class="col-lg-7">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-header bg-white border-bottom py-3">
+                                            <span class="fw-bold" style="font-size:13px;">
+                                                <i class="fa fa-list-ul me-2" title="Fila"/>
+                                                Fila por Estado — clique para abrir
+                                            </span>
+                                        </div>
+                                        <div class="card-body p-0">
+
+                                            <!-- Linha: Sugestão Automática (≥80) — PRIORIDADE 1 -->
+                                            <div class="d-flex align-items-center px-4 py-3 border-bottom"
+                                                 style="background:#f0fff4;">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#198754;display:inline-block;margin-right:12px;flex-shrink:0;"/>
+                                                <span class="flex-grow-1 fw-semibold" style="font-size:13px;">Sugestão Automática (score ≥ 80)</span>
+                                                <span class="fw-bold me-3" style="font-size:1.1rem;color:#198754;">
+                                                    <field name="proof_matched_count"/>
+                                                </span>
+                                                <span class="text-muted me-4" style="font-size:12px;">
+                                                    <field name="proof_matched_amount" widget="monetary"/>
+                                                </span>
+                                                <button name="action_view_matched" type="object"
+                                                        class="btn btn-sm btn-success">
+                                                    Confirmar →
+                                                </button>
+                                            </div>
+
+                                            <!-- Linha: Revisão Manual — PRIORIDADE 2 -->
+                                            <div class="d-flex align-items-center px-4 py-3 border-bottom"
+                                                 style="background:#fffdf0;">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#ffc107;display:inline-block;margin-right:12px;flex-shrink:0;"/>
+                                                <span class="flex-grow-1 fw-semibold" style="font-size:13px;">Em Revisão Manual (score 50–79)</span>
+                                                <span class="fw-bold me-3" style="font-size:1.1rem;color:#e6a800;">
+                                                    <field name="proof_review_count"/>
+                                                </span>
+                                                <span class="text-muted me-4" style="font-size:12px;">
+                                                    <field name="proof_review_amount" widget="monetary"/>
+                                                </span>
+                                                <button name="action_view_review" type="object"
+                                                        class="btn btn-sm btn-warning">
+                                                    Revisar →
+                                                </button>
+                                            </div>
+
+                                            <!-- Linha: Extraído sem sugestão -->
+                                            <div class="d-flex align-items-center px-4 py-3 border-bottom">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#0dcaf0;display:inline-block;margin-right:12px;flex-shrink:0;"/>
+                                                <span class="flex-grow-1" style="font-size:13px;">Extraído — sem sugestão</span>
+                                                <span class="fw-bold me-3" style="font-size:1.1rem;color:#0dcaf0;">
+                                                    <field name="proof_extracted_count"/>
+                                                </span>
+                                                <span class="text-muted me-4" style="font-size:12px;">
+                                                    <field name="proof_extracted_amount" widget="monetary"/>
+                                                </span>
+                                                <button name="action_view_extracted" type="object"
+                                                        class="btn btn-sm btn-info">
+                                                    Ver →
+                                                </button>
+                                            </div>
+
+                                            <!-- Linha: Rascunho / Upload Pendente -->
+                                            <div class="d-flex align-items-center px-4 py-3 border-bottom">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#6c757d;display:inline-block;margin-right:12px;flex-shrink:0;"/>
+                                                <span class="flex-grow-1" style="font-size:13px;">Rascunho / Upload Pendente</span>
+                                                <span class="fw-bold me-3" style="font-size:1.1rem;color:#6c757d;">
+                                                    <field name="proof_draft_count"/>
+                                                </span>
+                                                <span class="text-muted me-4" style="font-size:12px;">
+                                                    <field name="proof_draft_amount" widget="monetary"/>
+                                                </span>
+                                                <button name="action_view_draft" type="object"
+                                                        class="btn btn-sm btn-secondary">
+                                                    Ver →
+                                                </button>
+                                            </div>
+
+                                            <!-- Linha: Falha OCR -->
+                                            <div class="d-flex align-items-center px-4 py-3 border-bottom"
+                                                 style="background:#fff5f5;">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#dc3545;display:inline-block;margin-right:12px;flex-shrink:0;"/>
+                                                <span class="flex-grow-1" style="font-size:13px;">Falha no OCR — requer correção</span>
+                                                <span class="fw-bold me-3" style="font-size:1.1rem;color:#dc3545;">
+                                                    <field name="proof_failed_count"/>
+                                                </span>
+                                                <span class="text-muted me-4" style="font-size:12px;"> </span>
+                                                <button name="action_view_failed" type="object"
+                                                        class="btn btn-sm btn-danger">
+                                                    Corrigir →
+                                                </button>
+                                            </div>
+
+                                            <!-- Linha: Rejeitados -->
+                                            <div class="d-flex align-items-center px-4 py-3">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#adb5bd;display:inline-block;margin-right:12px;flex-shrink:0;"/>
+                                                <span class="flex-grow-1 text-muted" style="font-size:13px;">Rejeitados</span>
+                                                <span class="fw-bold me-3" style="font-size:1.1rem;color:#adb5bd;">
+                                                    <field name="proof_rejected_count"/>
+                                                </span>
+                                                <span class="text-muted me-4" style="font-size:12px;"> </span>
+                                                <button name="action_view_rejected" type="object"
+                                                        class="btn btn-sm btn-outline-secondary">
+                                                    Ver →
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Coluna direita: qualidade + funil -->
+                                <div class="col-lg-5">
+
+                                    <!-- KPIs de qualidade -->
+                                    <div class="card border-0 shadow-sm mb-3">
+                                        <div class="card-header bg-white border-bottom py-3">
+                                            <span class="fw-bold" style="font-size:13px;">
+                                                <i class="fa fa-bar-chart me-2" title="Qualidade"/>
+                                                Qualidade da Conciliação
+                                            </span>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row text-center g-3 mb-3">
+                                                <div class="col-6">
+                                                    <div class="fw-bold" style="font-size:1.8rem;color:#0d6efd;">
+                                                        <field name="auto_match_rate" digits="[4,1]"/>%
+                                                    </div>
+                                                    <div class="text-muted" style="font-size:11px;">Auto-Conciliação</div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="fw-bold" style="font-size:1.8rem;color:#198754;">
+                                                        <field name="avg_score" digits="[4,1]"/>
+                                                    </div>
+                                                    <div class="text-muted" style="font-size:11px;">Score Médio</div>
+                                                </div>
+                                            </div>
+                                            <field name="chart_score_html"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Funil -->
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-header bg-white border-bottom py-3">
+                                            <span class="fw-bold" style="font-size:13px;">
+                                                <i class="fa fa-filter me-2" title="Funil"/>
+                                                Funil de Conciliação
+                                            </span>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="chart_funnel_html"/>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </page>
+
+                        <!-- ============================================================
+                             ABA 2 — ANÁLISE E TENDÊNCIAS
+                        ============================================================ -->
+                        <page string="Análise" name="analise">
+                            <div class="row g-4">
+
+                                <!-- Trend semanal -->
+                                <div class="col-lg-8">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-header bg-white border-bottom py-3">
+                                            <span class="fw-bold" style="font-size:13px;">
+                                                <i class="fa fa-line-chart me-2" title="Trend"/>
+                                                Comprovantes Recebidos vs Conciliados — Últimas 8 Semanas
+                                            </span>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="chart_weekly_html"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Por método -->
+                                <div class="col-lg-4">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-header bg-white border-bottom py-3">
+                                            <span class="fw-bold" style="font-size:13px;">
+                                                <i class="fa fa-credit-card me-2" title="Método"/>
+                                                Por Método de Pagamento
+                                            </span>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="chart_method_html"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </page>
+
+                        <!-- ============================================================
+                             ABA 3 — ATRASOS
+                        ============================================================ -->
+                        <page string="Atrasos" name="atrasos">
+                            <div class="row g-4">
+
+                                <!-- Resumo de atrasos -->
+                                <div class="col-lg-6">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-header bg-white border-bottom py-3">
+                                            <span class="fw-bold" style="font-size:13px;">
+                                                <i class="fa fa-clock-o me-2" title="Atrasos"/>
+                                                Situação dos Atrasos
+                                            </span>
+                                        </div>
+                                        <div class="card-body p-0">
+
+                                            <div class="d-flex align-items-center px-4 py-3 border-bottom"
+                                                 style="background:#fff5f5;">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#dc3545;display:inline-block;margin-right:12px;"/>
+                                                <span class="flex-grow-1 fw-semibold" style="font-size:13px;">Sem Tratamento Definido</span>
+                                                <span class="fw-bold me-3" style="font-size:1.1rem;color:#dc3545;">
+                                                    <field name="proof_late_no_handling"/>
+                                                </span>
+                                                <button name="action_view_late_no_handling" type="object"
+                                                        class="btn btn-sm btn-danger">
+                                                    Tratar →
+                                                </button>
+                                            </div>
+
+                                            <div class="d-flex align-items-center px-4 py-3 border-bottom">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#fd7e14;display:inline-block;margin-right:12px;"/>
+                                                <span class="flex-grow-1" style="font-size:13px;">Solicitando Comprovante de Juros</span>
+                                                <span class="fw-bold me-3" style="font-size:1.1rem;color:#fd7e14;">
+                                                    <field name="proof_late_fee_count"/>
+                                                </span>
+                                            </div>
+
+                                            <div class="d-flex align-items-center px-4 py-3 border-bottom"
+                                                 invisible="not proof_late_fee_pending_count"
+                                                 style="background:#fff8f0;">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#fd7e14;border:2px solid #dc3545;display:inline-block;margin-right:12px;flex-shrink:0;"/>
+                                                <span class="flex-grow-1 fw-semibold" style="font-size:13px;color:#b45309;">
+                                                    ↳ Aguardando Envio pelo Locatário
+                                                </span>
+                                                <span class="fw-bold me-3" style="font-size:1.1rem;color:#fd7e14;">
+                                                    <field name="proof_late_fee_pending_count"/>
+                                                </span>
+                                                <button name="action_view_late_fee_pending" type="object"
+                                                        class="btn btn-sm btn-outline-warning">
+                                                    Ver →
+                                                </button>
+                                            </div>
+
+                                            <div class="d-flex align-items-center px-4 py-3 border-bottom">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#0dcaf0;display:inline-block;margin-right:12px;"/>
+                                                <span class="flex-grow-1" style="font-size:13px;">Diferido para Próximo Mês</span>
+                                                <span class="fw-bold" style="font-size:1.1rem;color:#0dcaf0;">
+                                                    <field name="proof_late_defer_count"/>
+                                                </span>
+                                            </div>
+
+                                            <div class="d-flex align-items-center px-4 py-3">
+                                                <span style="width:14px;height:14px;border-radius:50%;background:#198754;display:inline-block;margin-right:12px;"/>
+                                                <span class="flex-grow-1" style="font-size:13px;">Juros Dispensados (encerrado)</span>
+                                                <span class="fw-bold" style="font-size:1.1rem;color:#198754;">
+                                                    <field name="proof_late_waive_count"/>
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="card-footer bg-white border-top py-2 d-flex justify-content-between align-items-center">
+                                            <span class="text-muted" style="font-size:12px;">
+                                                Total: <strong><field name="proof_late_count"/></strong> comprovante(s) com atraso —
+                                                <field name="proof_late_amount" widget="monetary"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Orientações -->
+                                <div class="col-lg-6">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-header bg-white border-bottom py-3">
+                                            <span class="fw-bold" style="font-size:13px;">
+                                                <i class="fa fa-info-circle me-2" title="Orientação"/>
+                                                Ações Disponíveis por Tipo de Atraso
+                                            </span>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3 pb-3 border-bottom">
+                                                <div class="fw-semibold mb-1" style="color:#dc3545;">
+                                                    <i class="fa fa-file-text-o me-1"/> Solicitar Comprovante de Juros/Mora
+                                                </div>
+                                                <div class="text-muted" style="font-size:12px;">
+                                                    O sistema calcula multa e juros automaticamente usando as taxas do contrato e cria um segundo comprovante do tipo <em>Juros/Mora</em> em aberto. O locatário deverá enviar o comprovante de pagamento desse valor. O cálculo completo fica registrado no chatter.
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 pb-3 border-bottom">
+                                                <div class="fw-semibold mb-1" style="color:#0dcaf0;">
+                                                    <i class="fa fa-calendar me-1"/> Diferir para o Próximo Mês
+                                                </div>
+                                                <div class="text-muted" style="font-size:12px;">
+                                                    Calcula multa e juros e lança linhas de <em>Multa Diferida</em> e <em>Juros Diferidos</em> diretamente na próxima parcela aberta do mesmo contrato. O valor da próxima parcela é atualizado automaticamente.
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold mb-1" style="color:#198754;">
+                                                    <i class="fa fa-check me-1"/> Dispensar Juros
+                                                </div>
+                                                <div class="text-muted" style="font-size:12px;">
+                                                    Encerra o atraso sem cobrança adicional. Recomendado para atrasos menores ou como gesto comercial. Ficará registrado no histórico do comprovante.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </page>
+
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_property_receipts_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard de Recebimentos</field>
+        <field name="res_model">property.receipts.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'form_view_initial_mode': 'readonly'}</field>
+    </record>
+
+</odoo>

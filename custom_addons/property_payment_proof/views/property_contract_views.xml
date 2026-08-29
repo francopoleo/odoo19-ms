@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_contract_form_payment_proof" model="ir.ui.view">
+        <field name="name">property.contract.form.payment.proof</field>
+        <field name="model">property.contract</field>
+        <field name="inherit_id" ref="property_core.view_property_contract_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Pagadores Autorizados">
+                    <field name="authorized_payer_ids">
+                        <list editable="bottom" string="Pagadores Autorizados">
+                            <field name="active"/>
+                            <field name="priority"/>
+                            <field name="partner_id"/>
+                            <field name="name"/>
+                            <field name="vat"/>
+                            <field name="pix_key"/>
+                            <field name="relation_type"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

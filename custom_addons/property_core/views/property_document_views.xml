@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_property_document_list" model="ir.ui.view">
+        <field name="name">document.document.list</field>
+        <field name="model">document.document</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="status == 'expired'"
+                  decoration-warning="status == 'expiring'"
+                  decoration-muted="status == 'no_expiry'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="document_context_type" widget="badge"
+                       decoration-info="document_context_type == 'governance'"
+                       decoration-success="document_context_type == 'property'"
+                       decoration-muted="document_context_type == 'generic'"
+                       optional="show" string="Contexto"/>
+                <field name="document_type_id"/>
+                <field name="category_id" optional="hide"/>
+                <field name="asset_count" optional="show" string="Imóveis"/>
+                <field name="case_count" optional="show" string="Casos"/>
+                <field name="contract_id" optional="hide"/>
+                <field name="issue_date" optional="hide"/>
+                <field name="expiry_date"/>
+                <field name="physical_location_id" optional="hide"/>
+                <field name="attachment_count" string="Arquivos"/>
+                <field name="access_level" widget="badge" optional="hide"/>
+                <field name="website_published" widget="boolean_toggle" optional="hide"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'valid'"
+                       decoration-warning="status == 'expiring'"
+                       decoration-danger="status == 'expired'"
+                       decoration-muted="status == 'no_expiry'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_document_form" model="ir.ui.view">
+        <field name="name">document.document.form</field>
+        <field name="model">document.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Título do documento..."/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="reference" readonly="1" class="text-muted"/>
+                            <field name="document_number" placeholder="Número / protocolo"/>
+                            <field name="version" class="oe_inline"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Classificação">
+                            <field name="document_type_id" options="{'no_create_edit': False}"/>
+                            <field name="category_id" readonly="1"/>
+                            <field name="document_state"/>
+                            <field name="source"/>
+                            <field name="is_sensitive"/>
+                            <field name="access_summary" readonly="1"/>
+                            <field name="doc_type" invisible="1"/>
+                        </group>
+                        <group string="Contexto e Tipo" name="context">
+                            <field name="document_context_type"/>
+                            <field name="created_context_type" readonly="1"/>
+                        </group>
+
+                        <group string="Vínculos com Imóveis" name="property_links" invisible="document_context_type not in ('property', 'generic')">
+                            <field name="complex_id"/>
+                            <field name="asset_ids" widget="many2many_tags" placeholder="Selecione imóveis..."/>
+                            <field name="contract_id"/>
+                            <field name="owner_id"/>
+                            <field name="broker_id"/>
+                        </group>
+
+                        <group string="Vínculos com Governança" name="governance_links" invisible="document_context_type not in ('governance', 'generic')">
+                            <field name="case_ids" widget="many2many_tags" placeholder="Selecione casos..."/>
+                        </group>
+
+                        <group string="Resumo de Vínculos" name="links_summary">
+                            <field name="linked_entities_summary" readonly="1"/>
+                            <field name="context_type_display" readonly="1"/>
+                        </group>
+
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Controle">
+                            <group>
+                                <group string="Datas">
+                                    <field name="issue_date"/>
+                                    <field name="effective_date"/>
+                                    <field name="received_date"/>
+                                    <field name="review_date"/>
+                                    <field name="expiry_date"/>
+                                    <field name="alert_days"/>
+                                    <field name="status" readonly="1" widget="badge"/>
+                                </group>
+                                <group string="Validação">
+                                    <field name="issuer"/>
+                                    <field name="validated_by"/>
+                                    <field name="validation_date"/>
+                                    <field name="superseded_by_id"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Visibilidade e Site">
+                            <group>
+                                <group string="Acesso Interno">
+                                    <field name="access_level"/>
+                                    <field name="allowed_group_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Website / Portal">
+                                    <field name="website_published"/>
+                                    <field name="website_visibility" invisible="not website_published"/>
+                                    <field name="allow_download" invisible="not website_published"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Guarda Física">
+                            <group>
+                                <group>
+                                    <field name="has_physical_original"/>
+                                    <field name="requires_physical_original" readonly="1"/>
+                                    <field name="physical_location_id" invisible="not has_physical_original"/>
+                                    <field name="physical_reference" invisible="not has_physical_original"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Arquivos">
+                            <group string="Anexos">
+                                <field name="attachment_ids" widget="many2many_binary" nolabel="1" colspan="2"/>
+                            </group>
+                        </page>
+
+                        <page string="Observações">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+
+                        <page string="Mídias / Evidências" invisible="media_count == 0">
+                            <group string="Mídias Associadas">
+                                <field name="media_ids" nolabel="1" colspan="2">
+                                    <kanban class="o_kanban_small">
+                                        <field name="name"/>
+                                        <field name="image_512"/>
+                                        <field name="is_cover"/>
+                                        <field name="category_id"/>
+                                        <field name="website_published"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div class="oe_kanban_global_click position-relative">
+                                                    <div class="o_kanban_image">
+                                                        <img t-attf-src="data:image/*;base64,{record.image_512.raw_value}" alt="Media" style="width:100%;height:120px;object-fit:cover;"/>
+                                                    </div>
+                                                    <div class="oe_kanban_details mt-2">
+                                                        <h6>
+                                                            <span t-esc="record.name.value" class="text-truncate"/>
+                                                        </h6>
+                                                        <div class="small text-muted">
+                                                            <span t-esc="record.category_id.value"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_document_search" model="ir.ui.view">
+        <field name="name">document.document.search</field>
+        <field name="model">document.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="document_type_id"/>
+                <field name="category_id"/>
+                <field name="asset_id"/>
+                <field name="contract_id"/>
+                <field name="issuer"/>
+                <field name="physical_location_id"/>
+                <filter string="Imóvel" name="origin_property" domain="[('origin_type','=','property')]"/>
+                <filter string="Governança" name="origin_governance" domain="[('origin_type','=','governance')]"/>
+                <filter string="Geral" name="origin_generic" domain="[('origin_type','=','generic')]"/>
+                <separator/>
+                <filter string="Válidos" name="valid" domain="[('status','=','valid')]"/>
+                <filter string="A Vencer" name="expiring" domain="[('status','=','expiring')]"/>
+                <filter string="Vencidos" name="expired" domain="[('status','=','expired')]"/>
+                <filter string="No Site" name="website_published" domain="[('website_published','=',True)]"/>
+                <filter string="Sensíveis" name="sensitive" domain="[('is_sensitive','=',True)]"/>
+                <separator/>
+                <filter string="Por Origem" name="group_origin" context="{'group_by':'origin_type'}"/>
+                <filter string="Por Imóvel" name="group_asset" context="{'group_by':'asset_id'}"/>
+                <filter string="Por Tipo" name="group_type" context="{'group_by':'document_type_id'}"/>
+                <filter string="Por Categoria" name="group_category" context="{'group_by':'category_id'}"/>
+                <filter string="Por Status" name="group_status" context="{'group_by':'status'}"/>
+                <filter string="Por Local Físico" name="group_physical_location" context="{'group_by':'physical_location_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_document" model="ir.actions.act_window">
+        <field name="name">Documentos</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_expiring': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Cadastre o primeiro documento!</p>
+            <p>Controle documentos por categoria, tipo, vínculo, validade, acesso e localização física.</p>
+        </field>
+    </record>
+
+</odoo>

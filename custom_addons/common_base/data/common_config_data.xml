@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Configurações para a empresa principal (cada empresa terá o seu via get_config()) -->
+    <record id="common_config_singleton" model="common.config">
+        <field name="name">Configurações Gerais</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="governance_followup_days">3</field>
+        <field name="governance_reminder_days">7</field>
+        <field name="governance_silence_days">15</field>
+        <field name="default_late_fee">2.0</field>
+        <field name="default_interest_per_day">0.033</field>
+        <field name="enable_auto_followup" eval="True"/>
+        <field name="enable_email_notifications" eval="True"/>
+    </record>
+
+    <!-- Tags padrão -->
+    <record id="tag_priority_high" model="common.tag">
+        <field name="name">Alta Prioridade</field>
+        <field name="category">governance</field>
+        <field name="color">1</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="tag_priority_medium" model="common.tag">
+        <field name="name">Média Prioridade</field>
+        <field name="category">governance</field>
+        <field name="color">2</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="tag_priority_low" model="common.tag">
+        <field name="name">Baixa Prioridade</field>
+        <field name="category">governance</field>
+        <field name="color">3</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="tag_financial" model="common.tag">
+        <field name="name">Financeiro</field>
+        <field name="category">financial</field>
+        <field name="color">4</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="tag_legal" model="common.tag">
+        <field name="name">Jurídico</field>
+        <field name="category">contract</field>
+        <field name="color">5</field>
+        <field name="sequence">20</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_payment_proof_manual_form" model="ir.ui.view">
+        <field name="name">property.payment.proof.manual.form</field>
+        <field name="model">property.payment.proof.manual</field>
+        <field name="arch" type="xml">
+            <form string="Registrar Pagamento Manual">
+                <sheet>
+                    <div class="alert alert-warning mb-3" role="alert">
+                        <strong>Pagamento sem comprovante físico.</strong>
+                        Este registro fica vinculado à parcela e aparece no dashboard como pagamento manual.
+                        Preencha o motivo com detalhes suficientes para auditoria.
+                    </div>
+
+                    <group string="Parcela">
+                        <field name="rent_id" readonly="1"/>
+                        <field name="contract_id" readonly="1"/>
+                        <field name="partner_id" readonly="1"/>
+                        <field name="due_date" readonly="1"/>
+                        <field name="amount_due" readonly="1"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+
+                    <group string="Pagamento">
+                        <field name="amount"/>
+                        <field name="payment_date"/>
+                        <field name="payment_method"/>
+                    </group>
+
+                    <group string="Auditoria">
+                        <field name="notes" nolabel="1" placeholder="Descreva o motivo: Ex: Depósito em espécie recebido em 28/04/2026, conferido com extrato bancário da conta 1234-5. Locatário presente no ato."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_register" type="object" string="Registrar Pagamento" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_valuation_algorithm_list" model="ir.ui.view">
+        <field name="name">property.valuation.algorithm.list</field>
+        <field name="model">property.valuation.algorithm</field>
+        <field name="arch" type="xml">
+            <list string="Algoritmos de Valuation">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="version"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_valuation_algorithm_form" model="ir.ui.view">
+        <field name="name">property.valuation.algorithm.form</field>
+        <field name="model">property.valuation.algorithm</field>
+        <field name="arch" type="xml">
+            <form string="Algoritmo de Valuation">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="version"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Fórmula">
+                            <field name="formula"/>
+                        </page>
+                        <page string="Descrição">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_property_valuation_algorithm" model="ir.actions.act_window">
+        <field name="name">Algoritmos</field>
+        <field name="res_model">property.valuation.algorithm</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

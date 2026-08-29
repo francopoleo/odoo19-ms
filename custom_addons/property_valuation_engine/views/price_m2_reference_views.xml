@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_price_m2_reference_list" model="ir.ui.view">
+        <field name="name">property.price.m2.reference.list</field>
+        <field name="model">property.price.m2.reference</field>
+        <field name="arch" type="xml">
+            <list string="Referências de Valor m²" decoration-muted="active == False">
+                <field name="name"/>
+                <field name="valuation_type"/>
+                <field name="asset_use_type"/>
+                <field name="standard"/>
+                <field name="city"/>
+                <field name="neighborhood"/>
+                <field name="price_m2"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="valid_from"/>
+                <field name="confidence_score"/>
+                <field name="source_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_price_m2_reference_form" model="ir.ui.view">
+        <field name="name">property.price.m2.reference.form</field>
+        <field name="model">property.price.m2.reference</field>
+        <field name="arch" type="xml">
+            <form string="Referência de Valor m²">
+                <sheet>
+                    <group>
+                        <group string="Segmentação">
+                            <field name="valuation_type"/>
+                            <field name="asset_use_type"/>
+                            <field name="standard"/>
+                            <field name="city"/>
+                            <field name="neighborhood"/>
+                        </group>
+                        <group string="Valor e vigência">
+                            <field name="currency_id"/>
+                            <field name="price_m2"/>
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                            <field name="confidence_score"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="source_id"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="active"/>
+                    </group>
+                    <notebook>
+                        <page string="Observações">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_price_m2_reference_search" model="ir.ui.view">
+        <field name="name">property.price.m2.reference.search</field>
+        <field name="model">property.price.m2.reference</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Referências m²">
+                <field name="city"/>
+                <field name="neighborhood"/>
+                <field name="valuation_type"/>
+                <field name="standard"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_price_m2_reference" model="ir.actions.act_window">
+        <field name="name">Referências m²</field>
+        <field name="res_model">property.price.m2.reference</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_property_price_m2_reference_search"/>
+    </record>
+</odoo>

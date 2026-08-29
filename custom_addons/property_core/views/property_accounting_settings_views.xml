@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_property_accounting" model="ir.ui.view">
+        <field name="name">res.config.settings.property.accounting</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block title="Imóveis" name="property_rent_settings">
+                    <setting string="Diário de Recebimento de Aluguéis"
+                             help="Diário contábil padrão para lançamentos de recebimento de aluguel">
+                        <field name="property_rent_journal_id"
+                               placeholder="Ex: Banco, Caixa…"/>
+                    </setting>
+                    <setting string="Conta de Receita de Aluguel"
+                             help="Conta contábil creditada ao registrar pagamento de parcela">
+                        <field name="property_rent_income_account_id"
+                               placeholder="Ex: 3.1.1 Receita de Aluguéis"/>
+                    </setting>
+                    <setting string="Conta de Receita de Multa por Atraso"
+                             help="Conta contábil creditada para multas por atraso nos aluguéis">
+                        <field name="property_rent_penalty_account_id"
+                               placeholder="Ex: Multas e Outras Vantagens Recebidas"/>
+                    </setting>
+                    <setting string="Conta de Receita de Juros de Mora"
+                             help="Conta contábil creditada para juros de mora dos aluguéis">
+                        <field name="property_rent_interest_account_id"
+                               placeholder="Ex: Outras Receitas Financeiras"/>
+                    </setting>
+                    <setting string="Conta de Descontos Concedidos"
+                             help="Conta debitada quando houver desconto/abatimento no aluguel">
+                        <field name="property_rent_discount_account_id"
+                               placeholder="Ex: Descontos Concedidos"/>
+                    </setting>
+                    <setting string="Diário de Repasse ao Proprietário"
+                             help="Diário bancário usado nos pagamentos de repasse mensal ao proprietário">
+                        <field name="property_repasse_journal_id"
+                               placeholder="Ex: Banco Principal"/>
+                    </setting>
+                    <setting string="Conta de Repasse (Obrigação com Proprietário)"
+                             help="Conta de passivo debitada ao registrar o repasse ao proprietário">
+                        <field name="property_repasse_account_id"
+                               placeholder="Ex: 2.1.3 Repasses a Proprietários"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

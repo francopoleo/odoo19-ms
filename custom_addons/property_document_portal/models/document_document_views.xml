@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== DOCUMENT FORM EXTENSION ==================== -->
+    <record id="view_document_document_form_property_ext" model="ir.ui.view">
+        <field name="name">document.document.form.property.ext</field>
+        <field name="model">document.document</field>
+        <field name="inherit_id">document_core.view_document_document_form</field>
+        <field name="arch" type="xml">
+            <group string="Segurança" position="after">
+                <group string="Vinculação com Propriedade">
+                    <field name="asset_id"/>
+                    <field name="property_contract_id"/>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>

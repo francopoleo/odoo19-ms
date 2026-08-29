@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Padrão enterprise:
+        - Categoria = área funcional/módulo/tema.
+        - Tipo do conteúdo = campo article_type do artigo.
+        Assim evitamos duplicidade como "Manual do Usuário - Document Core" dentro da categoria "Manual do Usuário".
+    -->
+    <record id="help_category_overview" model="help.category">
+        <field name="name">Visão Geral</field>
+        <field name="code">overview</field>
+        <field name="sequence">1</field>
+        <field name="description">Conteúdos gerais aplicáveis ao sistema como um todo.</field>
+    </record>
+    <record id="help_category_system_help" model="help.category">
+        <field name="name">Central de Ajuda</field>
+        <field name="code">module.common_help_center</field>
+        <field name="sequence">2</field>
+        <field name="description">Como usar, configurar e manter a Central de Ajuda.</field>
+    </record>
+    <record id="help_category_agenda" model="help.category">
+        <field name="name">Agenda Geral</field>
+        <field name="code">module.common_base</field>
+        <field name="sequence">3</field>
+        <field name="description">Agenda operacional, atividades, prazos e responsabilidades.</field>
+    </record>
+    <record id="help_category_document_core" model="help.category">
+        <field name="name">Documentos</field>
+        <field name="code">module.document_core</field>
+        <field name="sequence">10</field>
+        <field name="description">Documentos, tipos, categorias, vencimentos, revisão e validação documental.</field>
+    </record>
+    <record id="help_category_property_core" model="help.category">
+        <field name="name">Imóveis</field>
+        <field name="code">module.property_core</field>
+        <field name="sequence">20</field>
+        <field name="description">Imóveis, contratos, galeria, vistorias, manutenções, mídias e agenda imobiliária.</field>
+    </record>
+    <record id="help_category_governance" model="help.category">
+        <field name="name">Governança</field>
+        <field name="code">module.governance</field>
+        <field name="sequence">30</field>
+        <field name="description">Casos, pendências, comunicações, prazos, SLAs e marcos de governança.</field>
+    </record>
+    <record id="help_category_document_dossier" model="help.category">
+        <field name="name">Dossiês</field>
+        <field name="code">module.document_dossier</field>
+        <field name="sequence">40</field>
+        <field name="description">Agrupamento documental, dossiês, vínculo com imóveis e governança.</field>
+    </record>
+    <record id="help_category_finance" model="help.category">
+        <field name="name">Financeiro Imobiliário</field>
+        <field name="code">area.finance</field>
+        <field name="sequence">50</field>
+        <field name="description">Parcelas, comprovantes, conciliação, Pix e aditivos com impacto financeiro.</field>
+    </record>
+    <record id="help_category_admin" model="help.category">
+        <field name="name">Administração e Configuração</field>
+        <field name="code">area.admin</field>
+        <field name="sequence">80</field>
+        <field name="description">Configuração inicial, permissões, importação de documentação e manutenção do sistema.</field>
+    </record>
+    <record id="help_category_troubleshooting" model="help.category">
+        <field name="name">Troubleshooting</field>
+        <field name="code">area.troubleshooting</field>
+        <field name="sequence">90</field>
+        <field name="description">Erros comuns, diagnóstico e soluções operacionais/técnicas.</field>
+    </record>
+</odoo>

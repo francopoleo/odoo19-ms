@@ -1,0 +1,1434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- ============================================================
+         Portfólio KMS - todos os registros da listagem
+         Fonte: KMS.txt
+         Gerado para carga em property.asset
+    ============================================================ -->
+
+    <record id="asset_kms_100_100_177_av_marcos_pent_ulhoa_3520_10922_m2_vazio" model="property.asset">
+        <field name="name">100 - (177) - AV. MARCOS PENT. ULHOA, 3520 (10922 M²) - VAZIO</field>
+        <field name="asset_type">land</field>
+        <field name="permitted_use">mixed</field>
+        <field name="status">available</field>
+        <field name="address">(177) - Av. MARCOS PENT. ULHOA, 3520 (10922 M²)</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="land_area">10922</field>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 100 - (177) - AV. MARCOS PENT. ULHOA, 3520 (10922 M²) - VAZIO</p>
+            <p><strong>Complexo / Edifício:</strong> 100 - (177) - AV. MARCOS PENT. ULHOA, 3520 (10922 M²)</p>
+            <p><strong>Ocupante/status extraído:</strong> VAZIO</p>
+            <p><strong>Status no KMS:</strong> Vazio</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_100_100_av_marcos_ulhoa_3212_centro_autom_rede_alpha" model="property.asset">
+        <field name="name">100 - AV. MARCOS ULHOA, 3212 - CENTRO AUTOM REDE ALPHA</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. MARCOS ULHOA, 3212</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 100 - AV. MARCOS ULHOA, 3212 - CENTRO AUTOM REDE ALPHA</p>
+            <p><strong>Complexo / Edifício:</strong> 100 - AV. MARCOS ULHOA, 3212</p>
+            <p><strong>Ocupante/status extraído:</strong> CENTRO AUTOM REDE ALPHA</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_complexo" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – Complexo</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - AV. MARCOS ULHOA, 3272 (MALL)</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_1" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 1</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 1</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 1 - PET&#x27;S HOUSE</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 1</p>
+            <p><strong>Ocupante/status extraído:</strong> PET&#x27;S HOUSE</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_11_e_12" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 11 e 12</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 11 e 12</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 11 e 12 - DROGARIA SP</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 11 e 12</p>
+            <p><strong>Ocupante/status extraído:</strong> DROGARIA SP</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_13" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 13</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 13</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 13 - SFS IDIOMAS</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 13</p>
+            <p><strong>Ocupante/status extraído:</strong> SFS IDIOMAS</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_14" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 14</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 14</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 14 - MARCIA (Kaza)</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 14</p>
+            <p><strong>Ocupante/status extraído:</strong> MARCIA (Kaza)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_15_e_16" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 15 e 16</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 15 e 16</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 15 e 16 - SNF (Buffet)</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 15 e 16</p>
+            <p><strong>Ocupante/status extraído:</strong> SNF (Buffet)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_17" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 17</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 17</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 17 - Shirley (Veterinário)</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 17</p>
+            <p><strong>Ocupante/status extraído:</strong> Shirley (Veterinário)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_18" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 18</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 18</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 18 - BRF</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 18</p>
+            <p><strong>Ocupante/status extraído:</strong> BRF</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_2" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 2</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 2</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 2 - SMART LAUNDRY LAVANDERIA</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 2</p>
+            <p><strong>Ocupante/status extraído:</strong> SMART LAUNDRY LAVANDERIA</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_3" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 3</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 3</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 3 - SANDRA (Fina Estampa)</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 3</p>
+            <p><strong>Ocupante/status extraído:</strong> SANDRA (Fina Estampa)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_4" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 4</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 4</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 4 - MARCIA (Jardim Concept)</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 4</p>
+            <p><strong>Ocupante/status extraído:</strong> MARCIA (Jardim Concept)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_5" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 5</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 5</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 5 - SEARA (SWIFT)</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 5</p>
+            <p><strong>Ocupante/status extraído:</strong> SEARA (SWIFT)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_6" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 6</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 6</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 6 - JARDIM CONCEPT</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 6</p>
+            <p><strong>Ocupante/status extraído:</strong> JARDIM CONCEPT</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_101_mall_reserva_do_tambore_loja_7_8_9_10" model="property.asset">
+        <field name="name">Mall Reserva do Tamboré – LOJA 7.8.9.10</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. Marcos Penteado de Ulhôa Rodrigues, 3272</field>
+        <field name="address_complement">LOJA 7.8.9.10</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 101 - MALL - LOJA 7.8.9.10 - R&amp;L PARTICIPAÇÕES</p>
+            <p><strong>Complexo / Edifício:</strong> 101 - MALL - AV. MARCOS ULHOA, 3272</p>
+            <p><strong>Unidade:</strong> LOJA 7.8.9.10</p>
+            <p><strong>Ocupante/status extraído:</strong> R&amp;L PARTICIPAÇÕES</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_102_102_av_marcos_ulhoa_3_330_raia_drogasil" model="property.asset">
+        <field name="name">102 - AV. MARCOS ULHOA 3.330 - RAIA DROGASIL</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. MARCOS ULHOA 3.330 - RAIA DROGASIL</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 102 - AV. MARCOS ULHOA 3.330 - RAIA DROGASIL</p>
+            <p><strong>Complexo / Edifício:</strong> 102 - AV. MARCOS ULHOA 3.330</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_103_103_av_marcos_ulhoa_3436_pao_de_acucar" model="property.asset">
+        <field name="name">103 - AV. MARCOS ULHOA, 3436 - PÃO DE AÇUCAR</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. MARCOS ULHOA, 3436</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 103 - AV. MARCOS ULHOA, 3436 - PÃO DE AÇUCAR</p>
+            <p><strong>Complexo / Edifício:</strong> 103 - AV. MARCOS ULHOA, 3436</p>
+            <p><strong>Ocupante/status extraído:</strong> PÃO DE AÇUCAR</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_104_104_av_marcos_ulhoa_3482_inspira_anglo_1" model="property.asset">
+        <field name="name">104 - AV. MARCOS ULHOA, 3482 - INSPIRA (ANGLO 1)</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. MARCOS ULHOA, 3482</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 104 - AV. MARCOS ULHOA, 3482 - INSPIRA (ANGLO 1)</p>
+            <p><strong>Complexo / Edifício:</strong> 104 - AV. MARCOS ULHOA, 3482</p>
+            <p><strong>Ocupante/status extraído:</strong> INSPIRA (ANGLO 1)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_loja_florense" model="property.asset">
+        <field name="name">Edifício Quebec – Loja Florense</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">LOJA</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - LOJA - FLORENSE</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> LOJA</p>
+            <p><strong>Ocupante/status extraído:</strong> FLORENSE</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_1001" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 1001</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 1001</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 1001 - ADECCO</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 1001</p>
+            <p><strong>Ocupante/status extraído:</strong> ADECCO</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_1002" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 1002</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 1002</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 1002 - (ESCRITORIO)</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 1002</p>
+            <p><strong>Ocupante/status extraído:</strong> (ESCRITORIO)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_1003" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 1003</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 1003</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 1003 - RS4</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 1003</p>
+            <p><strong>Ocupante/status extraído:</strong> RS4</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_1004" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 1004</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 1004</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 1004 - VAZIA</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 1004</p>
+            <p><strong>Ocupante/status extraído:</strong> VAZIA</p>
+            <p><strong>Status no KMS:</strong> Vazio</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_601" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 601</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 601</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 601 - KANAL</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 601</p>
+            <p><strong>Ocupante/status extraído:</strong> KANAL</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_602" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 602</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 602</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 602 - ESTETIC CENTER</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 602</p>
+            <p><strong>Ocupante/status extraído:</strong> ESTETIC CENTER</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_603" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 603</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 603</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 603 - VCRP BRASIL</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 603</p>
+            <p><strong>Ocupante/status extraído:</strong> VCRP BRASIL</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_604" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 604</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 604</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 604 - MENDES SALGE</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 604</p>
+            <p><strong>Ocupante/status extraído:</strong> MENDES SALGE</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_701" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 701</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 701</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 701 - SELECKTPARK</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 701</p>
+            <p><strong>Ocupante/status extraído:</strong> SELECKTPARK</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_702" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 702</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 702</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 702 - TRACKNME</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 702</p>
+            <p><strong>Ocupante/status extraído:</strong> TRACKNME</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_703" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 703</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 703</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 703 - C. MUNHOZ</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 703</p>
+            <p><strong>Ocupante/status extraído:</strong> C. MUNHOZ</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_704" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 704</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 704</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 704 - VENTURA ERM</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 704</p>
+            <p><strong>Ocupante/status extraído:</strong> VENTURA ERM</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_801" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 801</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 801</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 801 - MAXIMA APPAREL</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 801</p>
+            <p><strong>Ocupante/status extraído:</strong> MAXIMA APPAREL</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_802" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 802</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 802</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 802 - ENTERPRISE</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 802</p>
+            <p><strong>Ocupante/status extraído:</strong> ENTERPRISE</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_803_804" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 803, 804</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 803, 804</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 803, 804 - ON TIME</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 803, 804</p>
+            <p><strong>Ocupante/status extraído:</strong> ON TIME</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_901" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 901</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 901</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 901 - CARLOS FREDDY</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 901</p>
+            <p><strong>Ocupante/status extraído:</strong> CARLOS FREDDY</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_sala_904" model="property.asset">
+        <field name="name">Edifício Quebec – SALA 904</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="address_complement">SALA 904</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC - SALA 904 - PROFIRMA</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Unidade:</strong> SALA 904</p>
+            <p><strong>Ocupante/status extraído:</strong> PROFIRMA</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_105_edificio_quebec_salas_vazias" model="property.asset">
+        <field name="name">Edifício Quebec – Salas Vazias</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Madeira, 162</field>
+        <field name="neighborhood">Alphaville Industrial</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 105 - QUEBEC SALAS VAZIAS</p>
+            <p><strong>Complexo / Edifício:</strong> 105 - QUEBEC</p>
+            <p><strong>Status no KMS:</strong> Vazio</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_107_107_av_honorio_alvares_penteado_2300_gyotoku_vazio" model="property.asset">
+        <field name="name">107 -AV. HONORIO ALVARES PENTEADO, 2300 (GYOTOKU) - VAZIO</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. HONORIO ALVARES PENTEADO, 2300 (GYOTOKU)</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 107 -AV. HONORIO ALVARES PENTEADO, 2300 (GYOTOKU) - VAZIO</p>
+            <p><strong>Complexo / Edifício:</strong> 107 - AV. HONORIO ALVARES PENTEADO, 2300 (GYOTOKU)</p>
+            <p><strong>Ocupante/status extraído:</strong> VAZIO</p>
+            <p><strong>Status no KMS:</strong> Vazio</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_108_108_r_marechal_deodoro_1078_c_e_a_e_aleco" model="property.asset">
+        <field name="name">108 - R MARECHAL DEODORO 1078 - C&amp;A e ALECO</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. MARECHAL DEODORO 1078</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 108 - R MARECHAL DEODORO 1078 - C&amp;A e ALECO</p>
+            <p><strong>Complexo / Edifício:</strong> 108 - R MARECHAL DEODORO 1078</p>
+            <p><strong>Ocupante/status extraído:</strong> C&amp;A e ALECO</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_109_109_av_franc_morato_1447_bco_itau" model="property.asset">
+        <field name="name">109 - AV. FRANC. MORATO 1447 - BCO ITAÚ</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. FRANC. MORATO 1447</field>
+        <field name="city">São Paulo</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 109 - AV. FRANC. MORATO 1447 - BCO ITAÚ</p>
+            <p><strong>Complexo / Edifício:</strong> 109 - AV. FRANC. MORATO 1447</p>
+            <p><strong>Ocupante/status extraído:</strong> BCO ITAÚ</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_110_110_av_prof_francisco_morato_3365_af_academia" model="property.asset">
+        <field name="name">110 - AV. PROF. FRANCISCO MORATO 3365 - AF ACADEMIA</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. PROF. FRANCISCO MORATO 3365</field>
+        <field name="city">São Paulo</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 110 - AV. PROF. FRANCISCO MORATO 3365 - AF ACADEMIA</p>
+            <p><strong>Complexo / Edifício:</strong> 110 - AV. PROF. FRANCISCO MORATO 3365</p>
+            <p><strong>Ocupante/status extraído:</strong> AF ACADEMIA</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_111_111_av_prof_francisco_morato_1445_madero" model="property.asset">
+        <field name="name">111 - AV. PROF. FRANCISCO MORATO 1445 - MADERO</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. PROF. FRANCISCO MORATO 1445</field>
+        <field name="city">São Paulo</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 111 - AV. PROF. FRANCISCO MORATO 1445 - MADERO</p>
+            <p><strong>Complexo / Edifício:</strong> 111 - AV. PROF. FRANCISCO MORATO 1445</p>
+            <p><strong>Ocupante/status extraído:</strong> MADERO</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_112_112_av_yojiro_takaoka_4738_vazio" model="property.asset">
+        <field name="name">112 - AV. YOJIRO TAKAOKA 4738 - VAZIO</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. YOJIRO TAKAOKA 4738</field>
+        <field name="neighborhood">Alphaville</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 112 - AV. YOJIRO TAKAOKA 4738 - VAZIO</p>
+            <p><strong>Complexo / Edifício:</strong> 112 - AV. YOJIRO TAKAOKA 4738</p>
+            <p><strong>Ocupante/status extraído:</strong> VAZIO</p>
+            <p><strong>Status no KMS:</strong> Vazio</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_113_113_al_grajau_99_estac_fabio" model="property.asset">
+        <field name="name">113 - AL GRAJAÚ 99 - ESTAC FABIO</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. GRAJAÚ 99</field>
+        <field name="neighborhood">Alphaville</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 113 - AL GRAJAÚ 99 - ESTAC FABIO</p>
+            <p><strong>Complexo / Edifício:</strong> 113 - AL GRAJAÚ 99</p>
+            <p><strong>Ocupante/status extraído:</strong> ESTAC FABIO</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_114_114_tambore_74_igreja_lagoinha" model="property.asset">
+        <field name="name">114 - TAMBORE 74 - IGREJA LAGOINHA</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">TAMBORE 74</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 114 - TAMBORE 74 - IGREJA LAGOINHA</p>
+            <p><strong>Complexo / Edifício:</strong> 114 - TAMBORE 74</p>
+            <p><strong>Ocupante/status extraído:</strong> IGREJA LAGOINHA</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_115_115_av_tambore_1603_igreja_batista_memorial_de_alphaville" model="property.asset">
+        <field name="name">115 - AV. TAMBORE 1603 - IGREJA BATISTA MEMORIAL DE ALPHAVILLE</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. TAMBORE 1603</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 115 - AV. TAMBORE 1603 - IGREJA BATISTA MEMORIAL DE ALPHAVILLE</p>
+            <p><strong>Complexo / Edifício:</strong> 115 - AV. TAMBORE 1603</p>
+            <p><strong>Ocupante/status extraído:</strong> IGREJA BATISTA MEMORIAL DE ALPHAVILLE</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_116_116_al_araguaia_2_299_g_a_estacionamentos_gilberto" model="property.asset">
+        <field name="name">116 - AL. ARAGUAIA 2.299 - G.A ESTACIONAMENTOS (Gilberto)</field>
+        <field name="asset_type">land</field>
+        <field name="permitted_use">mixed</field>
+        <field name="status">available</field>
+        <field name="address">Al. ARAGUAIA 2.299</field>
+        <field name="neighborhood">Alphaville</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 116 - AL. ARAGUAIA 2.299 - G.A ESTACIONAMENTOS (Gilberto)</p>
+            <p><strong>Complexo / Edifício:</strong> 116 - AL. ARAGUAIA 2.299</p>
+            <p><strong>Ocupante/status extraído:</strong> G.A ESTACIONAMENTOS (Gilberto)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_117_117_al_dos_maracatins_431_pneus_lopes" model="property.asset">
+        <field name="name">117 - AL. DOS MARACATINS, 431 - PNEUS LOPES</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. DOS MARACATINS, 431</field>
+        <field name="city">São Paulo</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 117 - AL. DOS MARACATINS, 431 - PNEUS LOPES</p>
+            <p><strong>Complexo / Edifício:</strong> 117 - AL. DOS MARACATINS, 431</p>
+            <p><strong>Ocupante/status extraído:</strong> PNEUS LOPES</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_118_118_r_tutoia_892_bradesco" model="property.asset">
+        <field name="name">118 - R. TUTÓIA 892 - BRADESCO</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. TUTÓIA 892</field>
+        <field name="neighborhood">Paraíso</field>
+        <field name="city">São Paulo</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 118 - R. TUTÓIA 892 - BRADESCO</p>
+            <p><strong>Complexo / Edifício:</strong> 118 - R. TUTÓIA 892</p>
+            <p><strong>Ocupante/status extraído:</strong> BRADESCO</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_119_119_r_sao_bento_233_sorocaba_bradesco" model="property.asset">
+        <field name="name">119 - R. SÃO BENTO 233 - SOROCABA - BRADESCO</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. SÃO BENTO 233 - SOROCABA</field>
+        <field name="city">Sorocaba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 119 - R. SÃO BENTO 233 - SOROCABA - BRADESCO</p>
+            <p><strong>Complexo / Edifício:</strong> 119 - R. SÃO BENTO 233 - SOROCABA</p>
+            <p><strong>Ocupante/status extraído:</strong> BRADESCO</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_120_r_do_tesouro_464_droga_raia" model="property.asset">
+        <field name="name">R. do Tesouro, 464 – DROGA RAIA</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. do Tesouro, 464</field>
+        <field name="city">Taboão da Serra</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 120 - R. DO TESOURO 464 TABOÃO - DROGA RAIA</p>
+            <p><strong>Complexo / Edifício:</strong> 120 - R. DO TESOURO, 464 TABOÃO</p>
+            <p><strong>Ocupante/status extraído:</strong> DROGA RAIA</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_120_r_do_tesouro_464_lanatnap" model="property.asset">
+        <field name="name">R. do Tesouro, 464 – LANATNAP</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. do Tesouro, 464</field>
+        <field name="city">Taboão da Serra</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 120 - R. DO TESOURO 464 TABOÃO - LANATNAP</p>
+            <p><strong>Complexo / Edifício:</strong> 120 - R. DO TESOURO, 464 TABOÃO</p>
+            <p><strong>Ocupante/status extraído:</strong> LANATNAP</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_120_r_do_tesouro_464_lojas" model="property.asset">
+        <field name="name">R. do Tesouro, 464 – LOJAS</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. do Tesouro, 464</field>
+        <field name="city">Taboão da Serra</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 120 - R. DO TESOURO, 464 TABOÃO - LOJAS</p>
+            <p><strong>Complexo / Edifício:</strong> 120 - R. DO TESOURO, 464 TABOÃO</p>
+            <p><strong>Ocupante/status extraído:</strong> LOJAS</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_121_121_r_do_tesouro_arcos_dourados_mc" model="property.asset">
+        <field name="name">121- R. DO TESOURO - ARCOS DOURADOS (MC)</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. DO TESOURO</field>
+        <field name="city">Taboão da Serra</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 121- R. DO TESOURO - ARCOS DOURADOS (MC)</p>
+            <p><strong>Complexo / Edifício:</strong> 121 - R. DO TESOURO</p>
+            <p><strong>Ocupante/status extraído:</strong> ARCOS DOURADOS (MC)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_123_123_embu_das_artes_estacionamento_jenniffer" model="property.asset">
+        <field name="name">123 - EMBU DAS ARTES - Estacionamento - JENNIFFER</field>
+        <field name="asset_type">land</field>
+        <field name="permitted_use">mixed</field>
+        <field name="status">available</field>
+        <field name="address">Estacionamento</field>
+        <field name="city">Embu das Artes</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 123 - EMBU DAS ARTES - Estacionamento - JENNIFFER</p>
+            <p><strong>Complexo / Edifício:</strong> 123 - EMBU DAS ARTES - Estacionamento</p>
+            <p><strong>Ocupante/status extraído:</strong> JENNIFFER</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_124_124_raposo_tavares_km_26_5_cotia_g_a_estacionamentos_gilberto" model="property.asset">
+        <field name="name">124 - RAPOSO TAVARES KM 26,5 COTIA - G.A ESTACIONAMENTOS (Gilberto)</field>
+        <field name="asset_type">land</field>
+        <field name="permitted_use">mixed</field>
+        <field name="status">available</field>
+        <field name="address">RAPOSO TAVARES KM 26,5 COTIA</field>
+        <field name="city">Cotia</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 124 - RAPOSO TAVARES KM 26,5 COTIA - G.A ESTACIONAMENTOS (Gilberto)</p>
+            <p><strong>Complexo / Edifício:</strong> 124 - RAPOSO TAVARES KM 26,5 COTIA</p>
+            <p><strong>Ocupante/status extraído:</strong> G.A ESTACIONAMENTOS (Gilberto)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_125_125_r_quintana_719_caio_cabral" model="property.asset">
+        <field name="name">125 - R. QUINTANA 719 - CAIO CABRAL</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. QUINTANA 719</field>
+        <field name="city">São Paulo</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 125 - R. QUINTANA 719 - CAIO CABRAL</p>
+            <p><strong>Complexo / Edifício:</strong> 125 - R. QUINTANA 719</p>
+            <p><strong>Ocupante/status extraído:</strong> CAIO CABRAL</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_132_132_av_dos_autonomistas_2175_estancia_alimentos" model="property.asset">
+        <field name="name">132 - AV. DOS AUTONOMISTAS 2175 - ESTANCIA ALIMENTOS</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. DOS AUTONOMISTAS 2175</field>
+        <field name="city">Osasco</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 132 - AV. DOS AUTONOMISTAS 2175 - ESTANCIA ALIMENTOS</p>
+            <p><strong>Complexo / Edifício:</strong> 132 - AV. DOS AUTONOMISTAS 2175</p>
+            <p><strong>Ocupante/status extraído:</strong> ESTANCIA ALIMENTOS</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_133_133_av_miro_vetorazzo_1833_autometal" model="property.asset">
+        <field name="name">133 - AV. MIRO VETORAZZO, 1833 - AUTOMETAL</field>
+        <field name="asset_type">industrial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. MIRO VETORAZZO, 1833</field>
+        <field name="city">São Bernardo do Campo</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 133 - AV. MIRO VETORAZZO, 1833 - AUTOMETAL</p>
+            <p><strong>Complexo / Edifício:</strong> 133 - AV. MIRO VETORAZZO, 1833</p>
+            <p><strong>Ocupante/status extraído:</strong> AUTOMETAL</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_134_134_al_rio_negro_650_nacoes_eventos_antigo_bingo" model="property.asset">
+        <field name="name">134 - AL. RIO NEGRO 650 - NAÇOES EVENTOS (ANTIGO BINGO)</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. RIO NEGRO 650</field>
+        <field name="neighborhood">Alphaville</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 134 - AL. RIO NEGRO 650 - NAÇOES EVENTOS (ANTIGO BINGO)</p>
+            <p><strong>Complexo / Edifício:</strong> 134 - AL. RIO NEGRO 650</p>
+            <p><strong>Ocupante/status extraído:</strong> NAÇOES EVENTOS (ANTIGO BINGO)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_135_135_al_araguaia_180_paparicos" model="property.asset">
+        <field name="name">135 - AL. ARAGUAIA 180 - PAPARICOS</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. ARAGUAIA 180</field>
+        <field name="neighborhood">Alphaville</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 135 - AL. ARAGUAIA 180 - PAPARICOS</p>
+            <p><strong>Complexo / Edifício:</strong> 135 - AL. ARAGUAIA 180</p>
+            <p><strong>Ocupante/status extraído:</strong> PAPARICOS</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_136_136_av_tambore_200_igreja_lagoinha" model="property.asset">
+        <field name="name">136 - AV. TAMBORÉ 200 - IGREJA LAGOINHA</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. TAMBORÉ 200</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 136 - AV. TAMBORÉ 200 - IGREJA LAGOINHA</p>
+            <p><strong>Complexo / Edifício:</strong> 136 - AV. TAMBORÉ 200</p>
+            <p><strong>Ocupante/status extraído:</strong> IGREJA LAGOINHA</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_141_141_r_quintana_765_mat_castanheiras" model="property.asset">
+        <field name="name">141 - R. QUINTANA 765 - MAT. CASTANHEIRAS</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. QUINTANA 765</field>
+        <field name="city">São Paulo</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 141 - R. QUINTANA 765 - MAT. CASTANHEIRAS</p>
+            <p><strong>Complexo / Edifício:</strong> 141 - R. QUINTANA 765</p>
+            <p><strong>Ocupante/status extraído:</strong> MAT. CASTANHEIRAS</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_143_143_al_casa_branca_910_mitchelly_academia_gavioes" model="property.asset">
+        <field name="name">143 - AL CASA BRANCA 910 - MITCHELLY (ACADEMIA GAVIOES)</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">mixed</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. CASA BRANCA 910</field>
+        <field name="city">São Paulo</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 143 - AL CASA BRANCA 910 - MITCHELLY (ACADEMIA GAVIOES)</p>
+            <p><strong>Complexo / Edifício:</strong> 143 - AL CASA BRANCA 910</p>
+            <p><strong>Ocupante/status extraído:</strong> MITCHELLY (ACADEMIA GAVIOES)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><strong>Tipo sugerido pela leitura:</strong> Residencial. Mantido com valores seguros de seleção para carga inicial.</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_144_144_al_nicaragua_110_res_2_casa_marcela" model="property.asset">
+        <field name="name">144 - AL NICARÁGUA 110 - RES 2 - CASA MARCELA</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">mixed</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. NICARÁGUA 110 - RES 2</field>
+        <field name="neighborhood">Residencial 2</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 144 - AL NICARÁGUA 110 - RES 2 - CASA MARCELA</p>
+            <p><strong>Complexo / Edifício:</strong> 144 - AL NICARÁGUA 110 - RES 2</p>
+            <p><strong>Ocupante/status extraído:</strong> CASA MARCELA</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><strong>Tipo sugerido pela leitura:</strong> Residencial. Mantido com valores seguros de seleção para carga inicial.</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_145_145_av_dr_dib_sauaia_neto_802_sorvetes_jundia" model="property.asset">
+        <field name="name">145 - AV. DR. DIB SAUAIA NETO, 802 - SORVETES JUNDIÁ</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. DR. DIB SAUAIA NETO, 802</field>
+        <field name="neighborhood">Alphaville</field>
+        <field name="city">Jundiaí</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 145 - AV. DR. DIB SAUAIA NETO, 802 - SORVETES JUNDIÁ</p>
+            <p><strong>Complexo / Edifício:</strong> 145 - AV. DR. DIB SAUAIA NETO, 802</p>
+            <p><strong>Ocupante/status extraído:</strong> SORVETES JUNDIÁ</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_148_148_r_antonio_forster_205_dorival_gatti" model="property.asset">
+        <field name="name">148 - R. ANTONIO FORSTER 205 - DORIVAL GATTI</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. ANTONIO FORSTER 205</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 148 - R. ANTONIO FORSTER 205 - DORIVAL GATTI</p>
+            <p><strong>Complexo / Edifício:</strong> 148 - R. ANTONIO FORSTER 205</p>
+            <p><strong>Ocupante/status extraído:</strong> DORIVAL GATTI</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_150_guaruja_edificio_colibri_apartamento" model="property.asset">
+        <field name="name">Guarujá – Edifício Colibri – Apartamento</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">mixed</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Edifício Colibri</field>
+        <field name="address_complement">AP</field>
+        <field name="city">Guarujá</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 150 - GUARUJÁ - ED. COLIBRI - AP</p>
+            <p><strong>Complexo / Edifício:</strong> 150 - ED. COLIBRI</p>
+            <p><strong>Unidade:</strong> AP</p>
+            <p><strong>Ocupante/status extraído:</strong> AP</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><strong>Tipo sugerido pela leitura:</strong> Residencial. Mantido com valores seguros de seleção para carga inicial.</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_169_169_r_alice_manholer_piteri_22_investcar" model="property.asset">
+        <field name="name">169 - R. ALICE MANHOLER PITERI 22 - INVESTCAR</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. ALICE MANHOLER PITERI 22</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 169 - R. ALICE MANHOLER PITERI 22 - INVESTCAR</p>
+            <p><strong>Complexo / Edifício:</strong> 169 - R. ALICE MANHOLER PITERI 22</p>
+            <p><strong>Ocupante/status extraído:</strong> INVESTCAR</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_176_mont_blanc_apto_2204" model="property.asset">
+        <field name="name">Mont Blanc – APTO 2204</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">mixed</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Mont Blanc</field>
+        <field name="address_complement">APTO 2204</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 176 - MONT BLANC APTO 2204 - HELOISA</p>
+            <p><strong>Complexo / Edifício:</strong> 176 - MONT BLANC</p>
+            <p><strong>Unidade:</strong> APTO 2204</p>
+            <p><strong>Ocupante/status extraído:</strong> HELOISA</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><strong>Tipo sugerido pela leitura:</strong> Residencial. Mantido com valores seguros de seleção para carga inicial.</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_176_mont_blanc_apto_2504" model="property.asset">
+        <field name="name">Mont Blanc – APTO 2504</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">mixed</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Mont Blanc</field>
+        <field name="address_complement">APTO 2504</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 176 - MONT BLANC APTO 2504 - KLEBERSON E FRANCINI</p>
+            <p><strong>Complexo / Edifício:</strong> 176 - MONT BLANC</p>
+            <p><strong>Unidade:</strong> APTO 2504</p>
+            <p><strong>Ocupante/status extraído:</strong> KLEBERSON E FRANCINI</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><strong>Tipo sugerido pela leitura:</strong> Residencial. Mantido com valores seguros de seleção para carga inicial.</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_178_178_av_aprigio_b_da_silva_x_jose_dini_taboao_da_serra_regis_vazio" model="property.asset">
+        <field name="name">178 - AV. APRIGIO B. DA SILVA X JOSE DINI - TABOÃO DA SERRA (Regis) - VAZIO</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. APRIGIO B. DA SILVA X JOSE DINI - TABOÃO DA SERRA (Regis)</field>
+        <field name="city">Taboão da Serra</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 178 - AV. APRIGIO B. DA SILVA X JOSE DINI - TABOÃO DA SERRA (Regis) - VAZIO</p>
+            <p><strong>Complexo / Edifício:</strong> 178 - AV. APRIGIO B. DA SILVA X JOSE DINI - TABOÃO DA SERRA (Regis)</p>
+            <p><strong>Ocupante/status extraído:</strong> VAZIO</p>
+            <p><strong>Status no KMS:</strong> Vazio</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_179_179_r_henry_ford_x_werner_osasco_metropolitan_havan" model="property.asset">
+        <field name="name">179 - R. HENRY FORD X WERNER OSASCO (METROPOLITAN) - HAVAN</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">R. HENRY FORD X WERNER OSASCO (METROPOLITAN)</field>
+        <field name="city">Osasco</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 179 - R. HENRY FORD X WERNER OSASCO (METROPOLITAN) - HAVAN</p>
+            <p><strong>Complexo / Edifício:</strong> 179 - R. HENRY FORD X WERNER OSASCO (METROPOLITAN)</p>
+            <p><strong>Ocupante/status extraído:</strong> HAVAN</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_180_180_al_colombia_904_casa_odete" model="property.asset">
+        <field name="name">180 - AL. COLOMBIA 904 - CASA ODETE</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">mixed</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. COLOMBIA 904</field>
+        <field name="neighborhood">Alphaville</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 180 - AL. COLOMBIA 904 - CASA ODETE</p>
+            <p><strong>Complexo / Edifício:</strong> 180 - AL. COLOMBIA 904</p>
+            <p><strong>Ocupante/status extraído:</strong> CASA ODETE</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><strong>Tipo sugerido pela leitura:</strong> Residencial. Mantido com valores seguros de seleção para carga inicial.</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_182_al_araguaia_933_sl_66" model="property.asset">
+        <field name="name">Al. Araguaia, 933 – SL 66</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Al. Araguaia, 933</field>
+        <field name="address_complement">SL 66</field>
+        <field name="neighborhood">Alphaville</field>
+        <field name="city">Barueri</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 182 - AL. ARAGUAIA, 933 - SL 66 - ENTERPRISE - JK SOLUÇÕES</p>
+            <p><strong>Complexo / Edifício:</strong> 182 - AL. ARAGUAIA, 933</p>
+            <p><strong>Unidade:</strong> SL 66</p>
+            <p><strong>Ocupante/status extraído:</strong> ENTERPRISE - JK SOLUÇÕES</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+    <record id="asset_kms_192_192_av_marcos_pent_ulhoa_3520_inspira_fase_anglo_2" model="property.asset">
+        <field name="name">192 - AV. MARCOS PENT. ULHOA, 3520 - INSPIRA_FASE (ANGLO 2)</field>
+        <field name="asset_type">commercial</field>
+        <field name="permitted_use">commercial</field>
+        <field name="construction_standard">medium</field>
+        <field name="status">available</field>
+        <field name="address">Av. MARCOS PENT. ULHOA, 3520</field>
+        <field name="neighborhood">Tamboré</field>
+        <field name="city">Santana de Parnaíba</field>
+        <field name="state_name">SP</field>
+        <field name="country_id" ref="base.br"/>
+        <field name="notes"><![CDATA[<p><strong>Origem KMS:</strong> 192 - AV. MARCOS PENT. ULHOA, 3520 - INSPIRA_FASE (ANGLO 2)</p>
+            <p><strong>Complexo / Edifício:</strong> 192 - AV. MARCOS PENT. ULHOA, 3520</p>
+            <p><strong>Ocupante/status extraído:</strong> INSPIRA_FASE (ANGLO 2)</p>
+            <p><strong>Status no KMS:</strong> Ocupado/Locatário informado</p>
+            <p><em>Registro gerado automaticamente a partir da listagem KMS. Conferir área, custos e situação contratual antes de uso operacional.</em></p>]]></field>
+    </record>
+
+</odoo>

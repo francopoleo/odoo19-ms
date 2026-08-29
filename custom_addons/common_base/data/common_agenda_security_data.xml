@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Remove regras antigas que referenciavam campos removidos de mail.activity/calendar.event. -->
+    <function model="common.agenda.event" name="cleanup_legacy_agenda_rules"/>
+
+    <!-- Migra datas de testes anteriores que criavam calendar.event com campos ERP. -->
+    <function model="common.agenda.event" name="backfill_from_old_calendar_events"/>
+    <!-- Oculta o tipo de atividade de teste antigo para não confundir com Agenda Geral. -->
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', '=', 'Compromisso Operacional')]"/>
+        <value eval="{'active': False}"/>
+    </function>
+
+    <!-- Renomeia o tipo comum para deixar claro que ele é uma pendência/tarefa interna,
+         não um compromisso da Agenda Geral nem uma reunião do calendário.
+         Fica global: pode ser usado em qualquer model como cobrança operacional simples. -->
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', 'in', ['Prazo Operacional', 'Pendência Operacional'])]"/>
+        <value eval="{'name': 'Pendência Operacional', 'res_model': False, 'category': 'default', 'active': True}"/>
+    </function>
+
+    <!-- Padronização enterprise: tipos de atividade específicos ficam restritos ao respectivo model.
+         Isso evita que Documentos apareça em Imóveis/Governança e que Governança apareça fora do seu fluxo. -->
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', 'in', ['Vencimento de Documento', 'Validação de Documento', 'Revisão de Documento'])]"/>
+        <value eval="{'res_model': 'document.document', 'category': 'default'}"/>
+    </function>
+
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', 'in', ['Follow-up de Governança', 'Acompanhar Resposta', 'Resposta de Governança em Atraso'])]"/>
+        <value eval="{'res_model': 'governance.case', 'category': 'default'}"/>
+    </function>
+
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', '=', 'Pendência Obrigatória de Governança')]"/>
+        <value eval="{'res_model': 'governance.case.pending', 'category': 'default'}"/>
+    </function>
+
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', '=', 'Vencimento de Contrato')]"/>
+        <value eval="{'res_model': 'property.contract', 'category': 'default'}"/>
+    </function>
+
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', '=', 'Mandato de Corretor')]"/>
+        <value eval="{'res_model': 'property.broker.assignment', 'category': 'default'}"/>
+    </function>
+
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', '=', 'Reajuste de Aluguel')]"/>
+        <value eval="{'res_model': 'property.contract', 'category': 'default'}"/>
+    </function>
+
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', '=', 'Cobrança de Aluguel')]"/>
+        <value eval="{'res_model': 'property.rent', 'category': 'default'}"/>
+    </function>
+
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', '=', 'Vistoria de Imóvel')]"/>
+        <value eval="{'res_model': 'property.inspection', 'category': 'default'}"/>
+    </function>
+
+    <function model="mail.activity.type" name="write">
+        <value model="mail.activity.type" search="[('name', '=', 'Manutenção de Imóvel')]"/>
+        <value eval="{'res_model': 'property.maintenance', 'category': 'default'}"/>
+    </function>
+
+</odoo>

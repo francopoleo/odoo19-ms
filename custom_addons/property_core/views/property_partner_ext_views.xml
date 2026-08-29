@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_res_partner_form_property_stakeholders" model="ir.ui.view">
+        <field name="name">res.partner.form.property.stakeholders</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <div class="oe_button_box" name="button_box_property_stakeholders">
+                    <button name="action_view_property_stakeholder_profiles" type="object" class="oe_stat_button" icon="fa-users" help="Abra todos os perfis imobiliários vinculados a este contato mestre.">
+                        <field name="property_stakeholder_profile_count" widget="statinfo" string=" Perfis"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Perfis Imobiliários">
+                    <!-- Header da seção -->
+                    <div class="o_property_profiles_header">
+                        <h3 class="mb-3">Papéis Imobiliários</h3>
+                        <div class="alert alert-info" role="alert">
+                            <i class="fa fa-info-circle me-2" title="Informação"/>
+                            <strong>Dica:</strong> Um contato pode ter vários perfis imobiliários (proprietário, locatário, corretor, etc.).
+                        </div>
+                    </div>
+
+                    <!-- Botão para adicionar -->
+                    <div class="mb-3">
+                        <button name="action_new_property_stakeholder_profile" type="object" string="+ Adicionar Novo Perfil" class="btn btn-primary"/>
+                    </div>
+
+                    <!-- Lista de perfis -->
+                    <field name="property_stakeholder_profile_ids" readonly="0" context="{'default_company_id': company_id}" nolabel="1">
+                        <list editable="bottom" decoration-muted="role_status == 'inactive'">
+                            <field name="stakeholder_type_id" string="Perfil / Papel" required="1"/>
+                            <field name="role_status" string="Status" widget="badge"
+                                   decoration-success="role_status == 'active'"
+                                   decoration-secondary="role_status == 'inactive'"/>
+                            <field name="user_id" string="Usuário" optional="show"/>
+                            <field name="brokerage_profile_id" string="Imobiliária" optional="show"/>
+                        </list>
+                    </field>
+
+                    <!-- Footer com instruções -->
+                    <div class="mt-4 pt-3 border-top">
+                        <small class="text-muted">
+                            <i class="fa fa-question-circle me-1" title="Ajuda"/>
+                            Cada perfil corresponde a um papel diferente que este contato exerce. Use "Abrir" em cada perfil para configurações específicas.
+                        </small>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_property_partner_contacts" model="ir.actions.act_window">
+        <field name="name">Contatos Imobiliários</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Cadastre a pessoa ou empresa em Contatos e depois adicione Perfis Imobiliários conforme o papel exercido.</p>
+            <p>Use esta tela para localizar os contatos que já possuem pelo menos um perfil imobiliário vinculado.</p>
+        </field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('has_property_stakeholder_profile', '=', True)]</field>
+    </record>
+</odoo>

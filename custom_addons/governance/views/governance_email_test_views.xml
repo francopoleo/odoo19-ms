@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_governance_email_test_list" model="ir.ui.view">
+        <field name="name">governance.email.test.list</field>
+        <field name="model">governance.email.test</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state in ('received','done')" decoration-warning="state == 'waiting_reply'" decoration-danger="state in ('failed','bounced')">
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="test_token"/>
+                <field name="outbound_email"/>
+                <field name="external_email"/>
+                <field name="channel_id" optional="show"/>
+                <field name="case_id" optional="show"/>
+                <field name="sent_datetime" optional="show"/>
+                <field name="received_datetime" optional="show"/>
+                <field name="bounce_datetime" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_governance_email_test_form" model="ir.ui.view">
+        <field name="name">governance.email.test.form</field>
+        <field name="model">governance.email.test</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_prepare_case" type="object" string="1. Preparar Caso" class="btn-secondary" invisible="state not in ('draft','failed')"/>
+                    <button name="action_send_test_email" type="object" string="2. Enviar Teste" class="btn-primary" invisible="state not in ('draft','case_ready','failed')"/>
+                    <button name="action_fetch_and_check" type="object" string="3. Buscar IMAP e Verificar" class="btn-secondary" invisible="state == 'draft'"/>
+                    <button name="action_check_results" type="object" string="Verificar sem Buscar" invisible="state == 'draft'"/>
+                    <button name="action_open_case" type="object" string="Abrir Caso" invisible="not case_id"/>
+                    <button name="action_reset_test" type="object" string="Novo Ciclo"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,case_ready,waiting_reply,done,bounced,failed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Teste de E-mail Governance"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Parâmetros do Teste">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="channel_id" options="{'no_create_edit': True}"/>
+                            <field name="case_type_id" readonly="1"/>
+                            <field name="test_token" readonly="1"/>
+                        </group>
+                        <group string="E-mails">
+                            <field name="outbound_email"/>
+                            <field name="reply_to_email"/>
+                            <field name="external_email"/>
+                            <field name="case_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Mensagem Enviada">
+                        <field name="subject"/>
+                        <field name="body_html" widget="html" nolabel="1" colspan="2"/>
+                    </group>
+
+                    <group string="Resultado Técnico">
+                        <group>
+                            <field name="outbound_sent_ok" readonly="1"/>
+                            <field name="inbound_found" readonly="1"/>
+                            <field name="bounce_found" readonly="1"/>
+                            <field name="mail_state" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="sent_datetime" readonly="1"/>
+                            <field name="fetch_executed_datetime" readonly="1"/>
+                            <field name="last_check_datetime" readonly="1"/>
+                            <field name="received_datetime" readonly="1"/>
+                            <field name="bounce_datetime" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Resultado Alcançado">
+                            <field name="result_summary" widget="html" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="Falha Técnica">
+                            <field name="failure_reason" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="Log Técnico">
+                            <field name="diagnostic_log" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="Objetos Técnicos">
+                            <group>
+                                <field name="sent_message_id" readonly="1"/>
+                                <field name="sent_mail_id" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_governance_email_test_search" model="ir.ui.view">
+        <field name="name">governance.email.test.search</field>
+        <field name="model">governance.email.test</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="test_token"/>
+                <field name="external_email"/>
+                <field name="outbound_email"/>
+                <field name="case_id"/>
+                <filter string="Aguardando Resposta" name="waiting_reply" domain="[('state','=','waiting_reply')]"/>
+                <filter string="Com Resposta" name="received" domain="[('inbound_found','=',True)]"/>
+                <filter string="Com Bounce/Falha" name="bounced" domain="[('bounce_found','=',True)]"/>
+                <separator/>
+                <filter string="Por Status" name="group_state" context="{'group_by': 'state'}"/>
+                <filter string="Por Canal" name="group_channel" context="{'group_by': 'channel_id'}"/>
+                <filter string="Por Empresa" name="group_company" context="{'group_by': 'company_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_governance_email_test" model="ir.actions.act_window">
+        <field name="name">Testes de E-mail</field>
+        <field name="res_model">governance.email.test</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_governance_email_test_search"/>
+        <field name="context">{'default_external_email': 'francopoleo@gmail.com', 'default_outbound_email': 'governance@ogie.com.br'}</field>
+    </record>
+
+</odoo>

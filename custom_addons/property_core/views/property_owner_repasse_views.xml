@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_owner_repasse_list" model="ir.ui.view">
+        <field name="name">property.owner.repasse.list</field>
+        <field name="model">property.owner.repasse</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'paid'"
+                  decoration-info="state == 'confirmed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="owner_id"/>
+                <field name="period_month" string="Mês"/>
+                <field name="period_year" string="Ano"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="rent_total" string="Aluguéis"/>
+                <field name="management_fee" string="Taxa Adm."/>
+                <field name="net_amount" string="Valor Repasse"/>
+                <field name="payment_date" string="Data Repasse"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'paid'"
+                       decoration-info="state == 'confirmed'"
+                       decoration-warning="state == 'draft'"
+                       decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_owner_repasse_form" model="ir.ui.view">
+        <field name="name">property.owner.repasse.form</field>
+        <field name="model">property.owner.repasse</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_load_data" type="object"
+                            string="Carregar Dados do Período"
+                            class="btn-secondary"
+                            invisible="state != 'draft'"
+                            help="Busca automaticamente parcelas pagas, comissões e manutenções do período selecionado"/>
+                    <button name="action_confirm" type="object"
+                            string="Confirmar" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_register_payment" type="object"
+                            string="Registrar Pagamento" class="btn-success"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" type="object"
+                            string="Cancelar" class="btn-danger"
+                            invisible="state in ('paid', 'cancelled')"/>
+                    <button name="action_reset_draft" type="object"
+                            string="Redefinir para Rascunho"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,paid"/>
+                </header>
+
+                <sheet>
+                    <!-- Smart Buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_account_move" type="object"
+                                class="oe_stat_button" icon="fa-book"
+                                invisible="not account_move_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">Contábil</span>
+                                <span class="o_stat_text">Ver Lançamento</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Repasse">
+                            <field name="reference" readonly="1"/>
+                            <field name="owner_id" readonly="state != 'draft'"/>
+                            <field name="period_month" readonly="state != 'draft'"/>
+                            <field name="period_year" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Período">
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
+                            <field name="payment_date" readonly="state not in ('confirmed', 'paid')"/>
+                            <field name="management_fee_pct" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                        <page string="Parcelas Pagas" name="rents">
+                            <field name="rent_ids" mode="list" readonly="state != 'draft'">
+                                <list>
+                                    <field name="reference"/>
+                                    <field name="name"/>
+                                    <field name="asset_id"/>
+                                    <field name="due_date"/>
+                                    <field name="payment_date"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="amount_due" string="Valor"/>
+                                    <field name="amount_paid" string="Pago"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Comissões" name="commissions">
+                            <field name="commission_ids" mode="list" readonly="state != 'draft'">
+                                <list>
+                                    <field name="reference"/>
+                                    <field name="asset_id"/>
+                                    <field name="broker_id"/>
+                                    <field name="commission_type"/>
+                                    <field name="payment_date"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="commission_value"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Manutenções" name="maintenances">
+                            <field name="maintenance_ids" mode="list" readonly="state != 'draft'">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="asset_id"/>
+                                    <field name="maintenance_type"/>
+                                    <field name="completion_date"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="cost_actual" string="Custo Real"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Resumo Financeiro" name="financial">
+                            <group>
+                                <group string="Receitas">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="rent_total" readonly="1"/>
+                                </group>
+                                <group string="Deduções">
+                                    <field name="commission_total" readonly="1"/>
+                                    <field name="maintenance_total" readonly="1"/>
+                                    <field name="management_fee" readonly="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Resultado">
+                                    <field name="gross_amount" readonly="1"/>
+                                    <field name="net_amount" readonly="1"
+                                           decoration-success="net_amount > 0"
+                                           decoration-danger="net_amount == 0"/>
+                                </group>
+                                <group invisible="not account_move_id">
+                                    <field name="account_move_id" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Observações" name="notes">
+                            <field name="notes" placeholder="Informações adicionais sobre este repasse..."/>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_owner_repasse_search" model="ir.ui.view">
+        <field name="name">property.owner.repasse.search</field>
+        <field name="model">property.owner.repasse</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="owner_id"/>
+                <field name="reference"/>
+                <filter string="Rascunho" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmado" name="confirmed" domain="[('state','=','confirmed')]"/>
+                <filter string="Pago" name="paid" domain="[('state','=','paid')]"/>
+                <filter string="Cancelado" name="cancelled" domain="[('state','=','cancelled')]"/>
+                <separator/>
+                <filter string="Pendentes" name="pending"
+                        domain="[('state','in',['draft','confirmed'])]"/>
+                <separator/>
+                <filter string="Proprietário" name="by_owner"
+                        domain="[]" context="{'group_by': 'owner_id'}"/>
+                <filter string="Ano" name="by_year"
+                        domain="[]" context="{'group_by': 'period_year'}"/>
+                <filter string="Mês" name="by_month"
+                        domain="[]" context="{'group_by': 'period_month'}"/>
+                <filter string="Estado" name="by_state"
+                        domain="[]" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_owner_repasse" model="ir.actions.act_window">
+        <field name="name">Repasses ao Proprietário</field>
+        <field name="res_model">property.owner.repasse</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_pending": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Nenhum repasse cadastrado.
+            </p>
+            <p>
+                Crie um repasse mensal para calcular e registrar
+                o pagamento ao proprietário de um imóvel.
+            </p>
+        </field>
+    </record>
+
+</odoo>

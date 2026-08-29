@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu raiz com ícone -->
+    <menuitem id="menu_document_root"
+              name="Documentos"
+              sequence="30"
+              groups="document_core.group_document_operator"
+              web_icon="document_core,static/description/icon.png"/>
+
+    <menuitem id="menu_document_dashboard" name="Painel Operacional" parent="menu_document_root" action="action_document_dashboard" sequence="5" groups="document_core.group_document_operator"/>
+
+    <menuitem id="menu_document_operation" name="Operação Documental" parent="menu_document_root" sequence="10" groups="document_core.group_document_operator"/>
+    <menuitem id="menu_document_documents" name="Todos os Documentos" parent="menu_document_operation" action="action_document_document" sequence="40" groups="document_core.group_document_operator"/>
+
+    <menuitem id="menu_document_monitoring" name="Acompanhamento" parent="menu_document_root" sequence="30" groups="document_core.group_document_operator"/>
+    <menuitem id="menu_document_pending_validation" name="Pendentes de Validação Formal" parent="menu_document_monitoring" action="action_document_document_pending_validation" sequence="20" groups="document_core.group_document_manager"/>
+    <menuitem id="menu_document_without_files" name="Sem Arquivo Anexado" parent="menu_document_monitoring" action="action_document_document_without_files" sequence="30" groups="document_core.group_document_operator"/>
+    <menuitem id="menu_document_expiring" name="A Vencer" parent="menu_document_monitoring" action="action_document_document_expiring" sequence="40" groups="document_core.group_document_operator"/>
+    <menuitem id="menu_document_expired" name="Vencidos" parent="menu_document_monitoring" action="action_document_document_expired" sequence="50" groups="document_core.group_document_operator"/>
+    <menuitem id="menu_document_with_files" name="Com Arquivos" parent="menu_document_monitoring" action="action_document_document_with_files" sequence="60" groups="document_core.group_document_operator"/>
+    <menuitem id="menu_document_calendar" name="Agenda Documental" parent="menu_document_monitoring" action="common_base.action_common_agenda_calendar_document" sequence="15" groups="document_core.group_document_operator"/>
+
+    <menuitem id="menu_document_config" name="Configuração Documental" parent="menu_document_root" sequence="90" groups="document_core.group_document_manager"/>
+    <menuitem id="menu_document_type" name="Tipos de Documento e Regras" parent="menu_document_config" action="action_document_type" sequence="20" groups="document_core.group_document_manager"/>
+    <menuitem id="menu_document_category" name="Categorias Documentais" parent="menu_document_config" action="action_document_category" sequence="30" groups="document_core.group_document_manager"/>
+    <menuitem id="menu_document_location" name="Localizações Físicas" parent="menu_document_config" action="action_document_location" sequence="40" groups="document_core.group_document_manager"/>
+</odoo>

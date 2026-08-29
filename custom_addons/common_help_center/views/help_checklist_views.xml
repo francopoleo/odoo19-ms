@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_help_checklist_template_list" model="ir.ui.view">
+        <field name="name">help.checklist.template.list</field>
+        <field name="model">help.checklist.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="module_name"/>
+                <field name="model_name"/>
+                <field name="view_type"/>
+                <field name="audience"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_help_checklist_template_form" model="ir.ui.view">
+        <field name="name">help.checklist.template.form</field>
+        <field name="model">help.checklist.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="module_name"/>
+                            <field name="model_name"/>
+                            <field name="view_type"/>
+                            <field name="audience"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description"/>
+                    <notebook>
+                        <page string="Itens">
+                            <field name="item_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="required"/>
+                                    <field name="article_id"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_help_checklist_template_search" model="ir.ui.view">
+        <field name="name">help.checklist.template.search</field>
+        <field name="model">help.checklist.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="module_name"/>
+                <field name="model_name"/>
+                <filter name="active" string="Ativos" domain="[('active','=',True)]"/>
+                <filter name="group_model" string="Agrupar por Model" context="{'group_by':'model_name'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_help_checklist_template" model="ir.actions.act_window">
+        <field name="name">Checklists</field>
+        <field name="res_model">help.checklist.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_help_checklist_template_search"/>
+    </record>
+
+    <record id="view_help_checklist_progress_list" model="ir.ui.view">
+        <field name="name">help.checklist.progress.list</field>
+        <field name="model">help.checklist.progress</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="user_id"/>
+                <field name="template_id"/>
+                <field name="item_id"/>
+                <field name="model_name"/>
+                <field name="record_id"/>
+                <field name="done"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_help_checklist_progress" model="ir.actions.act_window">
+        <field name="name">Progresso dos Checklists</field>
+        <field name="res_model">help.checklist.progress</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

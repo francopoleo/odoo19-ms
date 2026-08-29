@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu raiz para gerenciamento de dossiês -->
+    <menuitem id="menu_dossier_root" name="Dossiês" parent="document_core.menu_document_root" sequence="50" groups="document_dossier.group_dossier_operator"/>
+
+    <!-- Submenu de gerenciamento de dossiês -->
+    <menuitem id="menu_dossier_dossier" name="Meus Dossiês" parent="menu_dossier_root" action="action_dossier_dossier" sequence="10" groups="document_dossier.group_dossier_operator"/>
+
+    <!-- Submenu de documentos do dossiê -->
+    <menuitem id="menu_dossier_documents" name="Documentos do Dossiê" parent="menu_dossier_root" action="action_dossier_documents" sequence="15" groups="document_dossier.group_dossier_operator"/>
+
+    <!-- Submenu de documentos avulsos -->
+    <menuitem id="menu_dossier_standalone_documents" name="Documentos Avulsos" parent="menu_dossier_root" action="action_dossier_standalone_documents" sequence="17" groups="document_dossier.group_dossier_operator"/>
+
+    <!-- Submenu de documentos pendentes -->
+    <menuitem id="menu_dossier_missing_documents" name="Documentos Faltantes" parent="menu_dossier_root" action="action_dossier_missing_documents" sequence="19" groups="document_dossier.group_dossier_operator"/>
+
+    <!-- Submenu de configuração de processos -->
+    <menuitem id="menu_dossier_process" name="Tipos de Processo" parent="menu_dossier_root" action="action_dossier_process" sequence="20" groups="document_dossier.group_dossier_manager"/>
+
+    <!-- Submenu de templates -->
+    <menuitem id="menu_dossier_template" name="Templates de Dossiê" parent="menu_dossier_root" action="action_dossier_template" sequence="25" groups="document_dossier.group_dossier_manager"/>
+
+    <!-- Submenu de agenda -->
+    <menuitem id="menu_dossier_calendar" name="Agenda de Dossiês" parent="menu_dossier_root" action="action_dossier_dossier_calendar" sequence="12" groups="document_dossier.group_dossier_operator"/>
+</odoo>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_media_category_list" model="ir.ui.view">
+        <field name="name">property.media.category.list</field>
+        <field name="model">property.media.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="applicable_purpose"/>
+                <field name="default_content_kind"/>
+                <field name="publishable_default"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_media_category_form" model="ir.ui.view">
+        <field name="name">property.media.category.form</field>
+        <field name="model">property.media.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="applicable_purpose"/>
+                            <field name="default_content_kind"/>
+                            <field name="publishable_default"/>
+                        </group>
+                    </group>
+                    <group string="Descrição">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_media_category_search" model="ir.ui.view">
+        <field name="name">property.media.category.search</field>
+        <field name="model">property.media.category</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <filter string="Por Fluxo" name="group_purpose" context="{'group_by': 'applicable_purpose'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_media_category" model="ir.actions.act_window">
+        <field name="name">Categorias de Mídia</field>
+        <field name="res_model">property.media.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         DASHBOARD MODEL FORM
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="view_governance_dashboard_form" model="ir.ui.view">
+        <field name="name">governance.dashboard.form</field>
+        <field name="model">governance.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Painel Operacional" create="false" edit="false" delete="false">
+                <sheet>
+
+                    <!-- ── Cabeçalho ──────────────────────────── -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 style="margin:0;font-size:20px;font-weight:700;color:#1a1a2e;">
+                                Painel Operacional — Governança
+                            </h2>
+                            <div style="font-size:12px;color:#6c757d;margin-top:2px;">
+                                Visão consolidada de casos, pendências e SLA em tempo real
+                            </div>
+                        </div>
+                        <button name="action_refresh" type="object"
+                                class="btn btn-outline-secondary btn-sm">
+                            <i class="fa fa-refresh" title="Atualizar"/> Atualizar
+                        </button>
+                    </div>
+
+                    <!-- ══════════════════════════════════════════
+                         SEÇÃO 1 — FILA DE TRABALHO
+                    ══════════════════════════════════════════ -->
+                    <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px;">
+                        Fila de Trabalho
+                    </div>
+                    <div class="row g-3 mb-4">
+
+                        <!-- Casos Ativos -->
+                        <div class="col-md-2">
+                            <div style="background:#f8f9fa;border:1px solid #dee2e6;border-radius:10px;padding:18px 12px;text-align:center;">
+                                <div style="font-size:38px;font-weight:800;color:#343a40;line-height:1;">
+                                    <field name="case_active_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:11px;color:#6c757d;margin-top:6px;font-weight:600;">Casos Ativos</div>
+                                <button name="action_view_active" type="object"
+                                        class="btn btn-link btn-sm p-0 mt-1" style="font-size:11px;">
+                                    Ver todos
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Urgentes -->
+                        <div class="col-md-2">
+                            <div style="background:#fef2f2;border:2px solid #dc2626;border-radius:10px;padding:18px 12px;text-align:center;">
+                                <div style="font-size:38px;font-weight:800;color:#dc2626;line-height:1;">
+                                    <field name="case_urgent_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:11px;color:#991b1b;margin-top:6px;font-weight:700;text-transform:uppercase;">Urgentes</div>
+                                <button name="action_view_urgent" type="object"
+                                        class="btn btn-danger btn-sm mt-2" style="font-size:11px;">
+                                    Abrir Fila
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Atenção -->
+                        <div class="col-md-2">
+                            <div style="background:#fffbeb;border:2px solid #d97706;border-radius:10px;padding:18px 12px;text-align:center;">
+                                <div style="font-size:38px;font-weight:800;color:#d97706;line-height:1;">
+                                    <field name="case_attention_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:11px;color:#92400e;margin-top:6px;font-weight:700;text-transform:uppercase;">Atenção</div>
+                                <button name="action_view_attention" type="object"
+                                        class="btn btn-warning btn-sm mt-2" style="font-size:11px;">
+                                    Abrir Fila
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Em Dia -->
+                        <div class="col-md-2">
+                            <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:18px 12px;text-align:center;">
+                                <div style="font-size:38px;font-weight:800;color:#16a34a;line-height:1;">
+                                    <field name="case_ok_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:11px;color:#166534;margin-top:6px;font-weight:700;text-transform:uppercase;">Em Dia</div>
+                                <button name="action_view_ok" type="object"
+                                        class="btn btn-success btn-sm mt-2" style="font-size:11px;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Críticos -->
+                        <div class="col-md-2">
+                            <div style="background:#fdf2f8;border:1px solid #c026d3;border-radius:10px;padding:18px 12px;text-align:center;">
+                                <div style="font-size:38px;font-weight:800;color:#c026d3;line-height:1;">
+                                    <field name="case_critical_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:11px;color:#86198f;margin-top:6px;font-weight:600;">Críticos</div>
+                                <button name="action_view_critical" type="object"
+                                        class="btn btn-link btn-sm p-0 mt-1" style="font-size:11px;color:#c026d3;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Alta Prioridade -->
+                        <div class="col-md-2">
+                            <div style="background:#fff7ed;border:1px solid #ea580c;border-radius:10px;padding:18px 12px;text-align:center;">
+                                <div style="font-size:38px;font-weight:800;color:#ea580c;line-height:1;">
+                                    <field name="case_high_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:11px;color:#9a3412;margin-top:6px;font-weight:600;">Alta Prioridade</div>
+                                <button name="action_view_high" type="object"
+                                        class="btn btn-link btn-sm p-0 mt-1" style="font-size:11px;color:#ea580c;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ══════════════════════════════════════════
+                         SEÇÃO 2 — SLA  |  RESPOSTAS
+                    ══════════════════════════════════════════ -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- SLA card -->
+                        <div class="col-md-5">
+                            <div style="background:#fff;border:1px solid #dee2e6;border-radius:10px;padding:16px 20px;">
+                                <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+                                    Controle de SLA
+                                </div>
+                                <div class="row g-2 text-center">
+                                    <!-- SLA Vencido -->
+                                    <div class="col-4">
+                                        <div style="background:#fef2f2;border-radius:8px;padding:12px 8px;">
+                                            <div style="font-size:28px;font-weight:800;color:#dc2626;">
+                                                <field name="case_overdue_sla_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#991b1b;font-weight:600;">Vencido</div>
+                                            <button name="action_view_overdue_sla" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#dc2626;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- SLA Próximo -->
+                                    <div class="col-4">
+                                        <div style="background:#fffbeb;border-radius:8px;padding:12px 8px;">
+                                            <div style="font-size:28px;font-weight:800;color:#d97706;">
+                                                <field name="case_due_soon_sla_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#92400e;font-weight:600;">Próximo</div>
+                                            <button name="action_view_due_soon_sla" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#d97706;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- SLA OK -->
+                                    <div class="col-4">
+                                        <div style="background:#f0fdf4;border-radius:8px;padding:12px 8px;">
+                                            <div style="font-size:28px;font-weight:800;color:#16a34a;">
+                                                <field name="case_on_track_sla_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#166534;font-weight:600;">No Prazo</div>
+                                            <button name="action_view_on_track_sla" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#16a34a;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Respostas card -->
+                        <div class="col-md-7">
+                            <div style="background:#fff;border:1px solid #dee2e6;border-radius:10px;padding:16px 20px;">
+                                <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+                                    Respostas &amp; Comunicação
+                                </div>
+                                <div class="row g-2 text-center">
+                                    <!-- Aguardando Resposta -->
+                                    <div class="col-4">
+                                        <div style="background:#eff6ff;border-radius:8px;padding:12px 8px;">
+                                            <div style="font-size:28px;font-weight:800;color:#2563eb;">
+                                                <field name="case_waiting_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#1e40af;font-weight:600;">Aguardando</div>
+                                            <button name="action_view_waiting" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#2563eb;">
+                                                Ver Casos
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Sem Resposta -->
+                                    <div class="col-4">
+                                        <div style="background:#fef2f2;border-radius:8px;padding:12px 8px;">
+                                            <div style="font-size:28px;font-weight:800;color:#dc2626;">
+                                                <field name="case_no_response_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#991b1b;font-weight:600;">Sem Resposta</div>
+                                            <button name="action_view_no_response" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#dc2626;">
+                                                Ver Casos
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Comunicações em Aberto -->
+                                    <div class="col-4">
+                                        <div style="background:#fdf4ff;border-radius:8px;padding:12px 8px;">
+                                            <div style="font-size:28px;font-weight:800;color:#9333ea;">
+                                                <field name="response_open_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#6b21a8;font-weight:600;">Solicitações Abertas</div>
+                                            <button name="action_view_response_open" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#9333ea;">
+                                                Ver Comun.
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ══════════════════════════════════════════
+                         SEÇÃO 3 — PENDÊNCIAS  |  MINHA OPERAÇÃO
+                    ══════════════════════════════════════════ -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Pendências card -->
+                        <div class="col-md-6">
+                            <div style="background:#fff;border:1px solid #dee2e6;border-radius:10px;padding:16px 20px;">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;">
+                                        Pendências
+                                    </div>
+                                    <div style="font-size:11px;color:#6c757d;">
+                                        Total abertas:
+                                        <strong>
+                                            <field name="pending_open_total" readonly="1" nolabel="1"/>
+                                        </strong>
+                                        <button name="action_view_pending_all" type="object"
+                                                class="btn btn-link btn-sm p-0 ms-1" style="font-size:11px;">
+                                            ver
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row g-2">
+                                    <!-- Atrasadas -->
+                                    <div class="col-4 text-center">
+                                        <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:14px 6px;">
+                                            <div style="font-size:30px;font-weight:800;color:#dc2626;">
+                                                <field name="pending_overdue_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#991b1b;font-weight:600;margin-top:2px;">Atrasadas</div>
+                                            <button name="action_view_pending_overdue" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#dc2626;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Hoje -->
+                                    <div class="col-4 text-center">
+                                        <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:14px 6px;">
+                                            <div style="font-size:30px;font-weight:800;color:#d97706;">
+                                                <field name="pending_today_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#92400e;font-weight:600;margin-top:2px;">Vencem Hoje</div>
+                                            <button name="action_view_pending_today" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#d97706;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Próx. 7d -->
+                                    <div class="col-4 text-center">
+                                        <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:14px 6px;">
+                                            <div style="font-size:30px;font-weight:800;color:#2563eb;">
+                                                <field name="pending_next7_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#1e40af;font-weight:600;margin-top:2px;">Próx. 7 Dias</div>
+                                            <button name="action_view_pending_next7" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#2563eb;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Minha Operação card -->
+                        <div class="col-md-6">
+                            <div style="background:#fff;border:1px solid #dee2e6;border-radius:10px;padding:16px 20px;">
+                                <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+                                    Minha Operação
+                                </div>
+                                <div class="row g-2">
+                                    <!-- Meus Casos -->
+                                    <div class="col-3 text-center">
+                                        <div style="background:#f8f9fa;border-radius:8px;padding:14px 6px;">
+                                            <div style="font-size:28px;font-weight:800;color:#343a40;">
+                                                <field name="case_my_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#6c757d;font-weight:600;margin-top:2px;">Meus Casos</div>
+                                            <button name="action_view_my_cases" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Meus Urgentes -->
+                                    <div class="col-3 text-center">
+                                        <div style="background:#fef2f2;border-radius:8px;padding:14px 6px;">
+                                            <div style="font-size:28px;font-weight:800;color:#dc2626;">
+                                                <field name="case_my_urgent_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#991b1b;font-weight:600;margin-top:2px;">Urgentes</div>
+                                            <button name="action_view_my_urgent" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#dc2626;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Minhas Pend. Atrasadas -->
+                                    <div class="col-3 text-center">
+                                        <div style="background:#fef2f2;border-radius:8px;padding:14px 6px;">
+                                            <div style="font-size:28px;font-weight:800;color:#ea580c;">
+                                                <field name="pending_my_overdue_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#9a3412;font-weight:600;margin-top:2px;">Pend. Atras.</div>
+                                            <button name="action_view_my_pending_overdue" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#ea580c;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Minhas Pend. Hoje -->
+                                    <div class="col-3 text-center">
+                                        <div style="background:#fffbeb;border-radius:8px;padding:14px 6px;">
+                                            <div style="font-size:28px;font-weight:800;color:#d97706;">
+                                                <field name="pending_my_today_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#92400e;font-weight:600;margin-top:2px;">Pend. Hoje</div>
+                                            <button name="action_view_my_pending_today" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#d97706;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ══════════════════════════════════════════
+                         SEÇÃO 4 — PIPELINE POR STATUS
+                    ══════════════════════════════════════════ -->
+                    <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px;">
+                        Pipeline por Status
+                    </div>
+                    <div style="background:#fff;border:1px solid #dee2e6;border-radius:10px;padding:16px 20px;margin-bottom:16px;">
+                        <div class="row g-2 text-center">
+
+                            <div class="col">
+                                <div style="border-right:1px solid #f0f0f0;padding:8px 4px;">
+                                    <div style="font-size:22px;font-weight:700;color:#6c757d;">
+                                        <field name="case_planned_count" readonly="1" nolabel="1"/>
+                                    </div>
+                                    <div style="font-size:10px;color:#6c757d;font-weight:600;margin-top:3px;">Planejado</div>
+                                    <button name="action_view_status_planned" type="object"
+                                            class="btn btn-link btn-sm p-0" style="font-size:10px;">
+                                        Ver
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div style="border-right:1px solid #f0f0f0;padding:8px 4px;">
+                                    <div style="font-size:22px;font-weight:700;color:#2563eb;">
+                                        <field name="case_sent_count" readonly="1" nolabel="1"/>
+                                    </div>
+                                    <div style="font-size:10px;color:#1e40af;font-weight:600;margin-top:3px;">E-mail Enviado</div>
+                                    <button name="action_view_status_sent" type="object"
+                                            class="btn btn-link btn-sm p-0" style="font-size:10px;color:#2563eb;">
+                                        Ver
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div style="border-right:1px solid #f0f0f0;padding:8px 4px;">
+                                    <div style="font-size:22px;font-weight:700;color:#d97706;">
+                                        <field name="case_waiting_status_count" readonly="1" nolabel="1"/>
+                                    </div>
+                                    <div style="font-size:10px;color:#92400e;font-weight:600;margin-top:3px;">Aguardando</div>
+                                    <button name="action_view_status_waiting" type="object"
+                                            class="btn btn-link btn-sm p-0" style="font-size:10px;color:#d97706;">
+                                        Ver
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div style="border-right:1px solid #f0f0f0;padding:8px 4px;">
+                                    <div style="font-size:22px;font-weight:700;color:#9333ea;">
+                                        <field name="case_partial_count" readonly="1" nolabel="1"/>
+                                    </div>
+                                    <div style="font-size:10px;color:#6b21a8;font-weight:600;margin-top:3px;">Parcial</div>
+                                    <button name="action_view_status_partial" type="object"
+                                            class="btn btn-link btn-sm p-0" style="font-size:10px;color:#9333ea;">
+                                        Ver
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div style="border-right:1px solid #f0f0f0;padding:8px 4px;">
+                                    <div style="font-size:22px;font-weight:700;color:#dc2626;">
+                                        <field name="case_no_response_status_count" readonly="1" nolabel="1"/>
+                                    </div>
+                                    <div style="font-size:10px;color:#991b1b;font-weight:600;margin-top:3px;">Sem Resposta</div>
+                                    <button name="action_view_status_no_response" type="object"
+                                            class="btn btn-link btn-sm p-0" style="font-size:10px;color:#dc2626;">
+                                        Ver
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div style="border-right:1px solid #f0f0f0;padding:8px 4px;">
+                                    <div style="font-size:22px;font-weight:700;color:#16a34a;">
+                                        <field name="case_done_count" readonly="1" nolabel="1"/>
+                                    </div>
+                                    <div style="font-size:10px;color:#166534;font-weight:600;margin-top:3px;">Concluído</div>
+                                    <button name="action_view_status_done" type="object"
+                                            class="btn btn-link btn-sm p-0" style="font-size:10px;color:#16a34a;">
+                                        Ver
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div style="padding:8px 4px;">
+                                    <div style="font-size:22px;font-weight:700;color:#475569;">
+                                        <field name="case_closed_count" readonly="1" nolabel="1"/>
+                                    </div>
+                                    <div style="font-size:10px;color:#64748b;font-weight:600;margin-top:3px;">Encerrado</div>
+                                    <button name="action_view_status_closed" type="object"
+                                            class="btn btn-link btn-sm p-0" style="font-size:10px;color:#475569;">
+                                        Ver
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ══════════════════════════════════════════
+                         SEÇÃO 5 — ATALHOS RÁPIDOS
+                    ══════════════════════════════════════════ -->
+                    <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px;">
+                        Atalhos Rápidos
+                    </div>
+                    <div style="background:#f8f9fa;border:1px solid #dee2e6;border-radius:10px;padding:14px 20px;">
+                        <div class="d-flex flex-wrap gap-2">
+                            <button name="action_shortcut_cases" type="object" class="btn btn-outline-primary btn-sm">
+                                <i class="fa fa-list" title="Casos"/> Central de Casos
+                            </button>
+                            <button name="action_shortcut_work_queue" type="object" class="btn btn-outline-danger btn-sm">
+                                <i class="fa fa-fire" title="Fila"/> Fila Geral
+                            </button>
+                            <button name="action_shortcut_my_queue" type="object" class="btn btn-outline-secondary btn-sm">
+                                <i class="fa fa-user" title="Minha Operação"/> Minha Operação
+                            </button>
+                            <button name="action_shortcut_pendings" type="object" class="btn btn-outline-warning btn-sm">
+                                <i class="fa fa-tasks" title="Pendências"/> Pendências
+                            </button>
+                            <button name="action_shortcut_communications" type="object" class="btn btn-outline-info btn-sm">
+                                <i class="fa fa-envelope" title="Comunicações"/> Comunicações
+                            </button>
+                            <button name="action_shortcut_executive" type="object" class="btn btn-outline-dark btn-sm">
+                                <i class="fa fa-bar-chart" title="Executivo"/> Painel Executivo
+                            </button>
+                        </div>
+                    </div>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         ACTION
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="action_governance_dashboard" model="ir.actions.act_window">
+        <field name="name">Painel Operacional</field>
+        <field name="res_model">governance.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_governance_dashboard_form"/>
+        <field name="target">current</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         VISTAS EXISTENTES (Fila e Executivo) — mantidas
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="view_governance_case_kanban_queue" model="ir.ui.view">
+        <field name="name">governance.case.kanban.queue</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="work_queue_status" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="responsible_id"/>
+                <field name="priority"/>
+                <field name="stage_id"/>
+                <field name="case_type_id"/>
+                <field name="primary_partner_id"/>
+                <field name="next_action_date"/>
+                <field name="has_open_pendings"/>
+                <field name="requires_response_attention"/>
+                <field name="pending_open_count"/>
+                <field name="response_deadline"/>
+                <field name="days_without_response"/>
+                <templates>
+                    <t t-name="card">
+                        <main>
+                            <div class="fw-bold"><field name="name"/></div>
+                            <div class="text-muted"><field name="reference"/></div>
+                            <div><field name="stage_id" widget="badge"/></div>
+                            <div><field name="case_type_id" widget="badge"/></div>
+                            <div>Responsável: <field name="responsible_id"/></div>
+                            <div>Contato: <field name="primary_partner_id"/></div>
+                            <div t-if="record.next_action_date.raw_value">Próxima ação: <field name="next_action_date"/></div>
+                            <div t-if="record.response_deadline.raw_value">Prazo resposta: <field name="response_deadline"/></div>
+                            <div>Pendências abertas: <field name="pending_open_count"/></div>
+                            <div>Dias sem resposta: <field name="days_without_response"/></div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_governance_case_queue_list" model="ir.ui.view">
+        <field name="name">governance.case.list.queue</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <list default_order="next_action_date asc, priority desc, create_date desc">
+                <field name="work_queue_status" widget="badge"/>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="responsible_id"/>
+                <field name="case_type_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="stage_id" widget="badge"/>
+                <field name="next_action_date"/>
+                <field name="response_deadline" optional="show"/>
+                <field name="pending_open_count" optional="show"/>
+                <field name="requires_response_attention" optional="show"/>
+                <field name="days_without_response" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_governance_work_queue" model="ir.actions.act_window">
+        <field name="name">Fila Geral</field>
+        <field name="res_model">governance.case</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_governance_case_kanban_queue"/>
+        <field name="domain">[("stage_id.status", "not in", ["closed"])]</field>
+        <field name="context">{'search_default_with_pendings': 1, 'search_default_needs_attention': 1, 'group_by': 'work_queue_status'}</field>
+        <field name="search_view_id" ref="view_governance_case_search"/>
+    </record>
+
+    <record id="action_governance_my_work_queue" model="ir.actions.act_window">
+        <field name="name">Minha Operação</field>
+        <field name="res_model">governance.case</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_governance_case_kanban_queue"/>
+        <field name="domain">[("stage_id.status", "not in", ["closed"]), ("responsible_id", "=", uid)]</field>
+        <field name="context">{'search_default_my_cases': 1, 'group_by': 'work_queue_status'}</field>
+        <field name="search_view_id" ref="view_governance_case_search"/>
+    </record>
+
+    <record id="view_governance_case_graph_executive" model="ir.ui.view">
+        <field name="name">governance.case.graph.executive</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <graph string="Painel Executivo" type="bar">
+                <field name="case_type_id"/>
+                <field name="case_volume" type="measure" string="Casos"/>
+                <field name="priority" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_governance_case_pivot_executive" model="ir.ui.view">
+        <field name="name">governance.case.pivot.executive</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <pivot string="Painel Executivo">
+                <field name="responsible_id" type="row"/>
+                <field name="case_type_id" type="col"/>
+                <field name="sla_status" type="col"/>
+                <field name="aging_bucket" type="row"/>
+                <field name="case_volume" type="measure" string="Casos"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_governance_case_list_executive" model="ir.ui.view">
+        <field name="name">governance.case.list.executive</field>
+        <field name="model">governance.case</field>
+        <field name="arch" type="xml">
+            <list default_order="work_queue_status desc, resolution_deadline asc, priority desc">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="case_type_id"/>
+                <field name="responsible_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="stage_id" widget="badge"/>
+                <field name="sla_status" widget="badge"/>
+                <field name="aging_bucket" widget="badge" optional="show"/>
+                <field name="pending_open_count" optional="show"/>
+                <field name="days_without_response" optional="show"/>
+                <field name="resolution_deadline" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_governance_executive_panel" model="ir.actions.act_window">
+        <field name="name">Painel Executivo</field>
+        <field name="res_model">governance.case</field>
+        <field name="view_mode">pivot,graph,list,form</field>
+        <field name="view_id" ref="view_governance_case_pivot_executive"/>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_overdue': 1, 'group_by': 'case_type_id'}</field>
+        <field name="search_view_id" ref="view_governance_case_search"/>
+    </record>
+
+</odoo>

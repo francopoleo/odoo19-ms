@@ -1,0 +1,796 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===== CATÁLOGO DE IMÓVEIS ===== -->
+    <template id="website_property_catalog" name="Catálogo de Imóveis">
+        <t t-call="website.layout">
+            <div id="wrap">
+
+                <style>
+                    .ms-property-hero {
+                        background:
+                            radial-gradient(circle at top left, rgba(255,255,255,.14), transparent 32%),
+                            radial-gradient(circle at top right, rgba(255,255,255,.10), transparent 24%),
+                            linear-gradient(135deg, #111827 0%, #172554 45%, #1d4ed8 100%);
+                    }
+                    .ms-property-shell {
+                        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 240px);
+                    }
+                    .ms-filter-card,
+                    .ms-property-card,
+                    .ms-detail-card,
+                    .ms-interest-card {
+                        border: 1px solid rgba(15, 23, 42, 0.06);
+                        border-radius: 1.25rem;
+                        background: #fff;
+                        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+                    }
+                    .ms-filter-card {
+                        margin-top: -38px;
+                        position: relative;
+                        z-index: 10;
+                    }
+                    .ms-property-card {
+                        overflow: hidden;
+                        transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+                    }
+                    .ms-property-card:hover {
+                        transform: translateY(-6px);
+                        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+                        border-color: rgba(37, 99, 235, 0.18);
+                    }
+                    .ms-property-media {
+                        height: 230px;
+                        background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+                    }
+                    .ms-property-placeholder {
+                        background:
+                            radial-gradient(circle at top left, rgba(37,99,235,.10), transparent 28%),
+                            linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+                    }
+                    .ms-chip {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: .35rem;
+                        padding: .38rem .7rem;
+                        border-radius: 999px;
+                        background: #f8fafc;
+                        border: 1px solid rgba(15, 23, 42, 0.06);
+                        font-size: 12px;
+                        color: #475569;
+                        font-weight: 600;
+                    }
+                    .ms-type-pill {
+                        border-radius: 999px;
+                        background: #eff6ff;
+                        color: #1d4ed8;
+                        border: 1px solid rgba(37, 99, 235, 0.14);
+                        padding: .35rem .7rem;
+                        font-size: 12px;
+                        font-weight: 700;
+                    }
+                    .ms-status-pill {
+                        border-radius: 999px;
+                        padding: .45rem .8rem;
+                        font-size: 12px;
+                        font-weight: 700;
+                        backdrop-filter: blur(8px);
+                    }
+                    .ms-muted-label {
+                        font-size: 11px;
+                        letter-spacing: .08em;
+                        text-transform: uppercase;
+                        color: #64748b;
+                        font-weight: 700;
+                    }
+                    .ms-price {
+                        line-height: 1;
+                        font-weight: 800;
+                        letter-spacing: -.02em;
+                    }
+                    .ms-sticky {
+                        position: sticky;
+                        top: 1.5rem;
+                    }
+                    .ms-spec-box {
+                        border-radius: 1rem;
+                        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+                        border: 1px solid rgba(15, 23, 42, 0.06);
+                        padding: 1rem;
+                        text-align: center;
+                        height: 100%;
+                    }
+                    .ms-detail-hero {
+                        height: 420px;
+                        border-radius: 1.5rem;
+                        overflow: hidden;
+                        background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+                    }
+                    .ms-form-control,
+                    .ms-form-select {
+                        border-radius: .9rem;
+                        border: 1px solid rgba(15, 23, 42, 0.10);
+                        min-height: 46px;
+                    }
+                    .ms-form-control:focus,
+                    .ms-form-select:focus {
+                        box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.12);
+                        border-color: rgba(37, 99, 235, 0.35);
+                    }
+                    .ms-btn-primary {
+                        border-radius: .95rem;
+                        font-weight: 700;
+                        min-height: 46px;
+                        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+                        border: none;
+                    }
+                    .ms-btn-secondary {
+                        border-radius: .95rem;
+                        font-weight: 700;
+                        min-height: 46px;
+                    }
+                    .ms-section-title {
+                        letter-spacing: -.02em;
+                    }
+                </style>
+
+                <div class="ms-property-shell">
+
+                    <!-- Hero -->
+                    <section class="ms-property-hero pt-5 pb-5 text-white">
+                        <div class="container py-4">
+                            <div class="row justify-content-center text-center">
+                                <div class="col-lg-8">
+                                    <span class="badge rounded-pill text-bg-light text-dark px-3 py-2 mb-3">
+                                        Portfólio Imobiliário
+                                    </span>
+                                    <h1 class="display-4 fw-bold mb-3">Encontre o imóvel ideal</h1>
+                                    <p class="lead opacity-75 mb-0">
+                                        Imóveis disponíveis para locação e venda, com uma navegação mais clara, rápida e elegante.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Filtros -->
+                    <section class="pb-3">
+                        <div class="container">
+                            <div class="ms-filter-card p-4 p-lg-4">
+                                <form method="get" action="/imoveis" class="row g-3 align-items-end">
+                                    <div class="col-lg-4">
+                                        <label class="form-label small fw-bold text-muted mb-2">Tipo de Imóvel</label>
+                                        <select name="tipo" class="form-select ms-form-select">
+                                            <option value="">Todos os tipos</option>
+                                            <t t-foreach="asset_types" t-as="at">
+                                                <option t-att-value="at[0]"
+                                                        t-att-selected="tipo == at[0]">
+                                                    <t t-out="at[1]"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label small fw-bold text-muted mb-2">Cidade</label>
+                                        <select name="cidade" class="form-select ms-form-select">
+                                            <option value="">Todas as cidades</option>
+                                            <t t-foreach="cities" t-as="city">
+                                                <option t-att-value="city"
+                                                        t-att-selected="cidade == city">
+                                                    <t t-out="city"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 col-lg-2">
+                                        <button type="submit" class="btn ms-btn-primary text-white w-100">
+                                            <i class="fa fa-search me-2"/>Filtrar
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6 col-lg-2" t-if="tipo or cidade">
+                                        <a href="/imoveis" class="btn btn-outline-secondary ms-btn-secondary w-100">
+                                            <i class="fa fa-times me-2"/>Limpar
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Grade de imóveis -->
+                    <section class="pt-4 pb-5">
+                        <div class="container">
+                            <t t-if="not assets">
+                                <div class="ms-detail-card text-center py-5 px-4">
+                                    <i class="fa fa-building fa-4x text-muted mb-3 d-block"/>
+                                    <h4 class="text-muted">Nenhum imóvel encontrado</h4>
+                                    <p class="text-muted mb-0">Tente remover os filtros aplicados.</p>
+                                    <a href="/imoveis" class="btn btn-outline-primary mt-4 px-4">Ver todos</a>
+                                </div>
+                            </t>
+
+                            <t t-if="assets">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+                                    <div>
+                                        <div class="ms-muted-label mb-1">Resultado da busca</div>
+                                        <h4 class="ms-section-title fw-bold mb-0">
+                                            <t t-out="len(assets)"/> imóvel(is) encontrado(s)
+                                        </h4>
+                                    </div>
+                                    <div class="text-muted small">
+                                        Navegue pelos imóveis disponíveis e clique para ver mais detalhes.
+                                    </div>
+                                </div>
+
+                                <div class="row g-4">
+                                    <t t-foreach="assets" t-as="asset">
+                                        <div class="col-md-6 col-xl-4">
+                                            <a t-attf-href="/imoveis/#{asset.id}" class="text-decoration-none">
+                                                <div class="ms-property-card h-100">
+
+                                                    <div class="ms-property-media position-relative overflow-hidden">
+                                                        <!-- Try to get cover media image, fallback to asset image -->
+                                                        <t t-set="cover_media" t-value="asset.media_ids.filtered(lambda m: m.is_cover and m.website_published and m.visibility_level == 'public' and m.image_1920)[:1]"/>
+                                                        <t t-if="cover_media">
+                                                            <img t-attf-src="/web/image/property.media/#{cover_media.id}/image_512"
+                                                                 class="w-100 h-100"
+                                                                 style="object-fit:cover;"
+                                                                 t-att-alt="cover_media.name"/>
+                                                        </t>
+                                                        <t t-elif="asset.image_512">
+                                                            <img t-attf-src="/web/image/property.asset/#{asset.id}/image_512"
+                                                                 class="w-100 h-100"
+                                                                 style="object-fit:cover;"
+                                                                 t-att-alt="asset.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <div class="ms-property-placeholder w-100 h-100 d-flex align-items-center justify-content-center">
+                                                                <t t-if="asset.asset_type == 'residential'">
+                                                                    <i class="fa fa-home fa-4x text-primary opacity-50"/>
+                                                                </t>
+                                                                <t t-elif="asset.asset_type == 'commercial'">
+                                                                    <i class="fa fa-building fa-4x text-primary opacity-50"/>
+                                                                </t>
+                                                                <t t-elif="asset.asset_type == 'land'">
+                                                                    <i class="fa fa-map fa-4x text-success opacity-50"/>
+                                                                </t>
+                                                                <t t-elif="asset.asset_type == 'industrial'">
+                                                                    <i class="fa fa-industry fa-4x text-secondary opacity-50"/>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <i class="fa fa-building-o fa-4x text-primary opacity-50"/>
+                                                                </t>
+                                                            </div>
+                                                        </t>
+
+                                                        <div class="position-absolute top-0 start-0 p-3">
+                                                            <span class="ms-type-pill">
+                                                                <t t-out="dict(asset._fields['asset_type'].selection).get(asset.asset_type, asset.asset_type)"/>
+                                                            </span>
+                                                        </div>
+
+                                                        <div class="position-absolute top-0 end-0 p-3">
+                                                            <t t-if="asset.status == 'available'">
+                                                                <span class="badge bg-white text-success ms-status-pill">Disponível</span>
+                                                            </t>
+                                                            <t t-elif="asset.status == 'for_sale'">
+                                                                <span class="badge bg-white text-primary ms-status-pill">À Venda</span>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="p-4">
+                                                        <h5 class="fw-bold text-dark mb-2">
+                                                            <t t-out="asset.name"/>
+                                                        </h5>
+
+                                                        <p class="text-muted mb-3">
+                                                            <i class="fa fa-map-marker me-2"/>
+                                                            <t t-out="asset.neighborhood or ''"/>
+                                                            <t t-if="asset.neighborhood and asset.city"> — </t>
+                                                            <t t-out="asset.city or ''"/>
+                                                        </p>
+
+                                                        <div class="d-flex flex-wrap gap-2 mb-4">
+                                                            <t t-if="asset.useful_area">
+                                                                <span class="ms-chip">
+                                                                    <i class="fa fa-arrows-alt"/>
+                                                                    <t t-out="'%.0f m²' % asset.useful_area"/>
+                                                                </span>
+                                                            </t>
+                                                            <t t-if="asset.bedrooms">
+                                                                <span class="ms-chip">
+                                                                    <i class="fa fa-bed"/>
+                                                                    <t t-out="asset.bedrooms"/> quarto(s)
+                                                                </span>
+                                                            </t>
+                                                            <t t-if="asset.bathrooms">
+                                                                <span class="ms-chip">
+                                                                    <i class="fa fa-bath"/>
+                                                                    <t t-out="asset.bathrooms"/> banheiro(s)
+                                                                </span>
+                                                            </t>
+                                                            <t t-if="asset.parking_spots">
+                                                                <span class="ms-chip">
+                                                                    <i class="fa fa-car"/>
+                                                                    <t t-out="asset.parking_spots"/> vaga(s)
+                                                                </span>
+                                                            </t>
+                                                        </div>
+
+                                                        <div class="d-flex align-items-end justify-content-between gap-3">
+                                                            <div>
+                                                                <div class="ms-muted-label mb-2">Valor</div>
+                                                                <t t-if="asset.rental_value and asset.status == 'available'">
+                                                                    <div class="ms-price fs-3 text-success">
+                                                                        <t t-out="asset.rental_value"
+                                                                           t-options='{"widget": "monetary", "display_currency": asset.currency_id}'/>
+                                                                    </div>
+                                                                    <div class="text-muted small mt-1">por mês</div>
+                                                                </t>
+                                                                <t t-elif="asset.market_value and asset.status == 'for_sale'">
+                                                                    <div class="ms-price fs-3 text-primary">
+                                                                        <t t-out="asset.market_value"
+                                                                           t-options='{"widget": "monetary", "display_currency": asset.currency_id}'/>
+                                                                    </div>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <div class="fw-semibold text-muted">Consulte-nos</div>
+                                                                </t>
+                                                            </div>
+
+                                                            <span class="text-primary fw-bold small">
+                                                                Ver detalhes <i class="fa fa-arrow-right ms-1"/>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ===== DETALHE DO IMÓVEL ===== -->
+    <template id="website_property_detail" name="Detalhe do Imóvel">
+        <t t-call="website.layout">
+            <div id="wrap">
+
+                <style>
+                    .ms-property-shell {
+                        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 260px);
+                    }
+                    .ms-detail-card,
+                    .ms-interest-card {
+                        border: 1px solid rgba(15, 23, 42, 0.06);
+                        border-radius: 1.25rem;
+                        background: #fff;
+                        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+                    }
+                    .ms-detail-hero {
+                        height: 420px;
+                        border-radius: 1.5rem;
+                        overflow: hidden;
+                        background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+                    }
+                    .ms-spec-box {
+                        border-radius: 1rem;
+                        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+                        border: 1px solid rgba(15, 23, 42, 0.06);
+                        padding: 1rem;
+                        text-align: center;
+                        height: 100%;
+                    }
+                    .ms-type-pill {
+                        border-radius: 999px;
+                        background: #eff6ff;
+                        color: #1d4ed8;
+                        border: 1px solid rgba(37, 99, 235, 0.14);
+                        padding: .45rem .8rem;
+                        font-size: 12px;
+                        font-weight: 700;
+                    }
+                    .ms-status-pill {
+                        border-radius: 999px;
+                        padding: .55rem .95rem;
+                        font-size: 12px;
+                        font-weight: 700;
+                        backdrop-filter: blur(8px);
+                    }
+                    .ms-muted-label {
+                        font-size: 11px;
+                        letter-spacing: .08em;
+                        text-transform: uppercase;
+                        color: #64748b;
+                        font-weight: 700;
+                    }
+                    .ms-price {
+                        line-height: 1;
+                        font-weight: 800;
+                        letter-spacing: -.02em;
+                    }
+                    .ms-sticky {
+                        position: sticky;
+                        top: 1.5rem;
+                    }
+                    .ms-form-control,
+                    .ms-form-select {
+                        border-radius: .9rem;
+                        border: 1px solid rgba(15, 23, 42, 0.10);
+                        min-height: 46px;
+                    }
+                    .ms-form-control:focus,
+                    .ms-form-select:focus {
+                        box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.12);
+                        border-color: rgba(37, 99, 235, 0.35);
+                    }
+                    .ms-btn-primary {
+                        border-radius: .95rem;
+                        font-weight: 700;
+                        min-height: 46px;
+                        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+                        border: none;
+                    }
+                </style>
+
+                <div class="ms-property-shell">
+
+                    <!-- Breadcrumb -->
+                    <div class="bg-white border-bottom py-3">
+                        <div class="container">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0 small">
+                                    <li class="breadcrumb-item"><a href="/">Início</a></li>
+                                    <li class="breadcrumb-item"><a href="/imoveis">Imóveis</a></li>
+                                    <li class="breadcrumb-item active">
+                                        <t t-out="asset.name"/>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="container py-5">
+                        <div class="row g-5">
+
+                            <!-- Coluna principal -->
+                            <div class="col-lg-8">
+
+                                <!-- Gallery Carousel or Simple Hero -->
+                                <t t-if="gallery">
+                                    <!-- Bootstrap Carousel with Thumbnails -->
+                                    <div class="position-relative mb-4">
+                                        <div t-attf-id="propertyCarousel_#{asset.id}"
+                                             class="carousel slide ms-detail-hero position-relative"
+                                             data-bs-ride="false"
+                                             data-bs-interval="false">
+                                            <div class="carousel-inner h-100">
+                                                <t t-foreach="gallery" t-as="slide">
+                                                    <div t-attf-class="carousel-item h-100 #{'active' if slide_index == 0 else ''}">
+                                                        <img t-attf-src="/web/image/property.media/#{slide.id}/image_1920"
+                                                             class="w-100 h-100"
+                                                             style="object-fit:cover;"
+                                                             t-att-alt="slide.name"/>
+                                                        <t t-if="slide.caption">
+                                                            <div class="position-absolute bottom-0 start-0 end-0 bg-black bg-opacity-50 text-white p-3">
+                                                                <p class="mb-0 small"><t t-out="slide.caption"/></p>
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                </t>
+                                            </div>
+
+                                            <!-- Carousel Controls -->
+                                            <t t-if="len(gallery) &gt; 1">
+                                                <button class="carousel-control-prev" type="button"
+                                                        t-attf-data-bs-target="#propertyCarousel_#{asset.id}"
+                                                        data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"/>
+                                                    <span class="visually-hidden">Anterior</span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button"
+                                                        t-attf-data-bs-target="#propertyCarousel_#{asset.id}"
+                                                        data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"/>
+                                                    <span class="visually-hidden">Próximo</span>
+                                                </button>
+                                            </t>
+                                        </div>
+
+                                        <!-- Thumbnail Grid -->
+                                        <t t-if="len(gallery) &gt; 1">
+                                            <div class="mt-3 row g-2">
+                                                <t t-foreach="gallery[:6]" t-as="thumb">
+                                                    <div class="col-4 col-md-2">
+                                                        <button type="button"
+                                                                class="border-0 bg-transparent p-0 w-100"
+                                                                t-attf-data-bs-target="#propertyCarousel_#{asset.id}"
+                                                                t-attf-data-bs-slide-to="#{thumb_index}"
+                                                                t-att-aria-label="'Ver imagem %s' % (thumb_index + 1)">
+                                                            <img t-attf-src="/web/image/property.media/#{thumb.id}/image_512"
+                                                                 t-attf-class="w-100 rounded #{'border border-primary border-2' if thumb_index == 0 else ''}"
+                                                                 style="height:80px;object-fit:cover;cursor:pointer;"
+                                                                 t-att-alt="thumb.name"/>
+                                                        </button>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <!-- Fallback: Simple hero without gallery -->
+                                    <div class="ms-detail-hero position-relative mb-4">
+                                        <t t-if="asset.image_1920">
+                                            <img t-attf-src="/web/image/property.asset/#{asset.id}/image_1920"
+                                                 class="w-100 h-100"
+                                                 style="object-fit:cover;"
+                                                 t-att-alt="asset.name"/>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="w-100 h-100 d-flex align-items-center justify-content-center"
+                                                 style="background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);">
+                                                <t t-if="asset.asset_type == 'residential'">
+                                                    <i class="fa fa-home text-primary opacity-25" style="font-size:8rem"/>
+                                                </t>
+                                                <t t-elif="asset.asset_type == 'commercial'">
+                                                    <i class="fa fa-building text-primary opacity-25" style="font-size:8rem"/>
+                                                </t>
+                                                <t t-elif="asset.asset_type == 'land'">
+                                                    <i class="fa fa-map text-success opacity-25" style="font-size:8rem"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <i class="fa fa-building-o text-primary opacity-25" style="font-size:8rem"/>
+                                                </t>
+                                            </div>
+                                        </t>
+
+                                        <div class="position-absolute top-0 start-0 p-4 d-flex gap-2 flex-wrap">
+                                            <span class="ms-type-pill">
+                                                <t t-out="dict(asset._fields['asset_type'].selection).get(asset.asset_type, asset.asset_type)"/>
+                                            </span>
+                                            <t t-if="asset.status == 'available'">
+                                                <span class="badge bg-white text-success ms-status-pill">Disponível para Locação</span>
+                                            </t>
+                                            <t t-elif="asset.status == 'for_sale'">
+                                                <span class="badge bg-white text-primary ms-status-pill">À Venda</span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <!-- Status Badges (shown outside carousel too) -->
+                                <div class="position-absolute top-0 start-0 p-4 d-flex gap-2 flex-wrap" style="z-index: 10;">
+                                    <span class="ms-type-pill">
+                                        <t t-out="dict(asset._fields['asset_type'].selection).get(asset.asset_type, asset.asset_type)"/>
+                                    </span>
+                                    <t t-if="asset.status == 'available'">
+                                        <span class="badge bg-white text-success ms-status-pill">Disponível para Locação</span>
+                                    </t>
+                                    <t t-elif="asset.status == 'for_sale'">
+                                        <span class="badge bg-white text-primary ms-status-pill">À Venda</span>
+                                    </t>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h1 class="fw-bold mb-2"><t t-out="asset.name"/></h1>
+                                    <p class="text-muted fs-6 mb-0">
+                                        <i class="fa fa-map-marker me-2"/>
+                                        <t t-out="asset.address or ''"/>
+                                        <t t-if="asset.address_number">, <t t-out="asset.address_number"/></t>
+                                        <t t-if="asset.neighborhood"> — <t t-out="asset.neighborhood"/></t>
+                                        <t t-if="asset.city">, <strong><t t-out="asset.city"/></strong></t>
+                                        <t t-if="asset.state_name"> - <t t-out="asset.state_name"/></t>
+                                    </p>
+                                </div>
+
+                                <div class="ms-detail-card p-4 p-lg-4 mb-4">
+                                    <h4 class="fw-bold mb-4">Características</h4>
+                                    <div class="row g-3">
+                                        <t t-if="asset.useful_area">
+                                            <div class="col-6 col-md-3">
+                                                <div class="ms-spec-box">
+                                                    <i class="fa fa-arrows-alt fa-2x text-primary mb-2 d-block"/>
+                                                    <div class="fw-bold"><t t-out="'%.0f m²' % asset.useful_area"/></div>
+                                                    <div class="text-muted small">Área Útil</div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-if="asset.total_area">
+                                            <div class="col-6 col-md-3">
+                                                <div class="ms-spec-box">
+                                                    <i class="fa fa-expand fa-2x text-primary mb-2 d-block"/>
+                                                    <div class="fw-bold"><t t-out="'%.0f m²' % asset.total_area"/></div>
+                                                    <div class="text-muted small">Área Total</div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-if="asset.bedrooms">
+                                            <div class="col-6 col-md-3">
+                                                <div class="ms-spec-box">
+                                                    <i class="fa fa-bed fa-2x text-primary mb-2 d-block"/>
+                                                    <div class="fw-bold"><t t-out="asset.bedrooms"/></div>
+                                                    <div class="text-muted small">Quartos</div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-if="asset.bathrooms">
+                                            <div class="col-6 col-md-3">
+                                                <div class="ms-spec-box">
+                                                    <i class="fa fa-bath fa-2x text-primary mb-2 d-block"/>
+                                                    <div class="fw-bold"><t t-out="asset.bathrooms"/></div>
+                                                    <div class="text-muted small">Banheiros</div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-if="asset.parking_spots">
+                                            <div class="col-6 col-md-3">
+                                                <div class="ms-spec-box">
+                                                    <i class="fa fa-car fa-2x text-primary mb-2 d-block"/>
+                                                    <div class="fw-bold"><t t-out="asset.parking_spots"/></div>
+                                                    <div class="text-muted small">Vagas</div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-if="asset.construction_year">
+                                            <div class="col-6 col-md-3">
+                                                <div class="ms-spec-box">
+                                                    <i class="fa fa-calendar fa-2x text-primary mb-2 d-block"/>
+                                                    <div class="fw-bold"><t t-out="asset.construction_year"/></div>
+                                                    <div class="text-muted small">Ano</div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <t t-if="asset.legal_description">
+                                    <div class="ms-detail-card p-4 p-lg-4 mb-4">
+                                        <h4 class="fw-bold mb-3">Informações Adicionais</h4>
+                                        <p class="text-muted mb-0" style="white-space:pre-line;">
+                                            <t t-out="asset.legal_description"/>
+                                        </p>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <!-- Sidebar -->
+                            <div class="col-lg-4">
+                                <div class="ms-sticky">
+
+                                    <div class="ms-detail-card p-4 mb-4">
+                                        <t t-if="asset.rental_value and asset.status == 'available'">
+                                            <div class="ms-muted-label mb-2">Valor do aluguel</div>
+                                            <div class="ms-price display-5 text-success mb-1">
+                                                <t t-out="asset.rental_value"
+                                                   t-options='{"widget": "monetary", "display_currency": asset.currency_id}'/>
+                                            </div>
+                                            <div class="text-muted">por mês</div>
+                                        </t>
+                                        <t t-elif="asset.market_value and asset.status == 'for_sale'">
+                                            <div class="ms-muted-label mb-2">Valor de venda</div>
+                                            <div class="ms-price display-5 text-primary mb-1">
+                                                <t t-out="asset.market_value"
+                                                   t-options='{"widget": "monetary", "display_currency": asset.currency_id}'/>
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="fs-4 fw-bold text-muted">Consulte-nos</div>
+                                        </t>
+
+                                        <hr class="my-4"/>
+
+                                        <div class="small text-muted">
+                                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                                <span>Tipo</span>
+                                                <strong class="text-dark">
+                                                    <t t-out="dict(asset._fields['asset_type'].selection).get(asset.asset_type, asset.asset_type)"/>
+                                                </strong>
+                                            </div>
+                                            <t t-if="asset.city">
+                                                <div class="d-flex justify-content-between py-2 border-bottom">
+                                                    <span>Cidade</span>
+                                                    <strong class="text-dark"><t t-out="asset.city"/></strong>
+                                                </div>
+                                            </t>
+                                            <t t-if="asset.registration">
+                                                <div class="d-flex justify-content-between py-2">
+                                                    <span>Matrícula</span>
+                                                    <strong class="text-dark"><t t-out="asset.registration"/></strong>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+
+                                    <div class="ms-interest-card p-4">
+                                        <h4 class="fw-bold mb-1">Tenho Interesse</h4>
+                                        <p class="text-muted small mb-4">
+                                            Preencha seus dados e entraremos em contato.
+                                        </p>
+
+                                        <t t-if="denied">
+                                        <div class="alert alert-warning d-flex align-items-center gap-2 rounded-4">
+                                            <i class="fa fa-lock fa-lg"/>
+                                            <div>
+                                                <strong>Acesso restrito.</strong><br/>
+                                                <span class="small"><t t-out="access_hint or 'Você não tem permissão para enviar interesse neste imóvel.'"/></span>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <t t-if="success">
+                                            <div class="alert alert-success d-flex align-items-center gap-2 rounded-4">
+                                                <i class="fa fa-check-circle fa-lg"/>
+                                                <div>
+                                                    <strong>Mensagem enviada!</strong><br/>
+                                                    <span class="small">Em breve entraremos em contato.</span>
+                                                </div>
+                                            </div>
+                                        </t>
+
+                                        <t t-if="not success and can_submit_interest">
+                                            <form t-attf-action="/imoveis/#{asset.id}/interesse" method="post">
+                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                                <div class="mb-3">
+                                                    <input type="text"
+                                                           name="contact_name"
+                                                           class="form-control ms-form-control"
+                                                           placeholder="Seu nome *"
+                                                           required="required"/>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <input type="email"
+                                                           name="contact_email"
+                                                           class="form-control ms-form-control"
+                                                           placeholder="E-mail *"
+                                                           required="required"/>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <input type="tel"
+                                                           name="contact_phone"
+                                                           class="form-control ms-form-control"
+                                                           placeholder="Telefone / WhatsApp"/>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <select name="interest_type" class="form-select ms-form-select">
+                                                        <option value="rent">Quero alugar</option>
+                                                        <option value="buy">Quero comprar</option>
+                                                        <option value="both">Locação ou compra</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <textarea name="contact_message"
+                                                              class="form-control ms-form-control"
+                                                              rows="4"
+                                                              placeholder="Mensagem (opcional)"></textarea>
+                                                </div>
+
+                                                <button type="submit" class="btn ms-btn-primary text-white w-100">
+                                                    <i class="fa fa-paper-plane me-2"/>
+                                                    Enviar Interesse
+                                                </button>
+                                            </form>
+                                        </t>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

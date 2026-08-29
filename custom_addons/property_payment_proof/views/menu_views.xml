@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_property_receipts_dashboard" name="Dashboard de Recebimentos" parent="property_core.menu_property_financeiro" action="action_property_receipts_dashboard" sequence="44"/>
+    <menuitem id="menu_property_payment_proof" name="Comprovantes de Pagamento" parent="property_core.menu_property_financeiro" action="action_property_payment_proof" sequence="45"/>
+    <menuitem id="menu_property_payment_proof_bulk_upload" name="Upload em Lote" parent="property_core.menu_property_financeiro" action="action_property_payment_proof_bulk_upload" sequence="45"/>
+    <menuitem id="menu_property_payment_authorized_payer" name="Pagadores Autorizados" parent="property_core.menu_property_financeiro" action="action_property_payment_authorized_payer" sequence="46"/>
+</odoo>

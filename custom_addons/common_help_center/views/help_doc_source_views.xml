@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_help_doc_source_list" model="ir.ui.view">
+        <field name="name">help.doc.source.list</field>
+        <field name="model">help.doc.source</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="module_name"/>
+                <field name="doc_type"/>
+                <field name="file_path"/>
+                <field name="article_id"/>
+                <field name="last_import_date"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_help_doc_source_form" model="ir.ui.view">
+        <field name="name">help.doc.source.form</field>
+        <field name="model">help.doc.source</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_import" type="object" string="Importar Agora" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="module_name"/>
+                            <field name="doc_type"/>
+                            <field name="overwrite_policy"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="article_id" readonly="1"/>
+                            <field name="last_import_date" readonly="1"/>
+                            <field name="checksum" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="file_path"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_help_doc_source" model="ir.actions.act_window">
+        <field name="name">Fontes Markdown</field>
+        <field name="res_model">help.doc.source</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

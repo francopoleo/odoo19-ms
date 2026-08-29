@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_governance_email_channel_list" model="ir.ui.view">
+        <field name="name">governance.email.channel.list</field>
+        <field name="model">governance.email.channel</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="alias_email"/>
+                <field name="case_type_id"/>
+                <field name="requires_triage" optional="show"/>
+                <field name="auto_assign_type" optional="show"/>
+                <field name="priority" widget="priority"/>
+                <field name="responsible_id" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_governance_email_channel_form" model="ir.ui.view">
+        <field name="name">governance.email.channel.form</field>
+        <field name="model">governance.email.channel</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_create_or_update_alias" type="object" string="Criar/Atualizar Alias" class="btn-primary"/>
+                    <button name="action_open_alias" type="object" string="Abrir Alias Técnico" invisible="not alias_id"/>
+                    <button name="action_open_case_type" type="object" string="Abrir Tipo de Caso" invisible="not case_type_id"/>
+                    <button name="action_open_cases" type="object" string="Ver Casos"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Ex.: Governança Geral"/></h1>
+                    </div>
+                    <group>
+                        <group string="Canal Institucional">
+                            <field name="active"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="alias_name" placeholder="governance"/>
+                            <field name="alias_email" readonly="1"/>
+                            <field name="alias_id" readonly="1"/>
+                        </group>
+                        <group string="Roteamento para Tipo de Caso">
+                            <field name="case_type_id" options="{'no_create_edit': True}"/>
+                            <field name="allowed_case_type_ids" widget="many2many_tags" options="{'no_create_edit': True}"/>
+                            <field name="auto_assign_type"/>
+                            <field name="requires_triage"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="responsible_id" options="{'no_create_edit': True}"/>
+                        </group>
+                    </group>
+                    <group string="Comportamento de Entrada">
+                        <group>
+                            <field name="create_case_from_email"/>
+                            <field name="update_existing_case"/>
+                        </group>
+                        <group>
+                            <field name="auto_add_sender_as_participant"/>
+                            <field name="require_response_by_default"/>
+                        </group>
+                    </group>
+                    <group string="Identidade Institucional de Saída">
+                        <group>
+                            <field name="force_institutional_identity"/>
+                            <field name="domain_alias" placeholder="governance.empresa.com.br"/>
+                            <field name="auto_import_attachments"/>
+                        </group>
+                        <group>
+                            <field name="institutional_email_from" placeholder="Governança &lt;governance@empresa.com.br&gt;"
+                                   invisible="not force_institutional_identity"/>
+                            <field name="institutional_reply_to" placeholder="governance@empresa.com.br"
+                                   invisible="not force_institutional_identity"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        O canal é somente a porta de entrada. Fluxo, SLA, pendências e etapas são definidos pelo Tipo de Caso.
+                    </div>
+                    <group string="Manual Operacional do Canal">
+                        <field name="notes" widget="html" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_governance_email_channel_search" model="ir.ui.view">
+        <field name="name">governance.email.channel.search</field>
+        <field name="model">governance.email.channel</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="alias_name"/>
+                <field name="case_type_id"/>
+                <field name="allowed_case_type_ids"/>
+                <field name="responsible_id"/>
+                <filter string="Ativos" name="active" domain="[('active','=',True)]"/>
+                <separator/>
+                <filter string="Por Empresa" name="group_company" context="{'group_by': 'company_id'}"/>
+                <filter string="Por Tipo" name="group_type" context="{'group_by': 'case_type_id'}"/>
+                <filter string="Por Responsável" name="group_responsible" context="{'group_by': 'responsible_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_governance_email_channel" model="ir.actions.act_window">
+        <field name="name">Canais de E-mail</field>
+        <field name="res_model">governance.email.channel</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_governance_email_channel_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

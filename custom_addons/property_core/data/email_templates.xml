@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         TEMPLATE 1 — REPASSE CONFIRMADO (ao proprietário)
+         Gatilho: property_owner_repasse.action_confirm()
+         ============================================================ -->
+    <record id="email_template_repasse_confirmado" model="mail.template">
+        <field name="name">Repasse — Confirmado</field>
+        <field name="model_id" ref="model_property_owner_repasse"/>
+        <field name="subject">Repasse ${object.reference} confirmado — ${object.period_month}/${object.period_year}</field>
+        <field name="email_from">${(user.email_formatted or user.company_id.email or '')}</field>
+        <field name="email_to">${(object.owner_id.partner_id.email if object.owner_id.partner_id else None) or object.owner_id.email or ''}</field>
+        <field name="lang">${object.owner_id.partner_id.lang if object.owner_id.partner_id else 'pt_BR'}</field>
+        <field name="body_html" type="html">
+<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#333;">
+
+  <!-- Cabeçalho -->
+  <div style="background:#1a3a5c;padding:28px 32px;border-radius:8px 8px 0 0;">
+    <h2 style="color:#fff;margin:0;font-size:20px;">Repasse Confirmado</h2>
+    <p style="color:#a8c4de;margin:4px 0 0 0;font-size:13px;">
+      ${object.reference} · ${object.period_month}/${object.period_year}
+    </p>
+  </div>
+
+  <!-- Corpo -->
+  <div style="background:#f8f9fa;padding:28px 32px;">
+    <p style="margin:0 0 16px 0;">Olá, <strong>${object.owner_id.name}</strong>,</p>
+    <p style="margin:0 0 20px 0;">
+      O seu repasse referente ao período de
+      <strong>${object.date_from}</strong> a <strong>${object.date_to}</strong>
+      foi <strong style="color:#198754;">confirmado</strong> e está aguardando o registro de pagamento.
+    </p>
+
+    <!-- Resumo financeiro -->
+    <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:6px;overflow:hidden;margin-bottom:20px;">
+      <tr style="background:#e9ecef;">
+        <th style="padding:10px 16px;text-align:left;font-size:12px;color:#495057;text-transform:uppercase;">Item</th>
+        <th style="padding:10px 16px;text-align:right;font-size:12px;color:#495057;text-transform:uppercase;">Valor</th>
+      </tr>
+      <tr>
+        <td style="padding:10px 16px;border-top:1px solid #dee2e6;font-size:14px;">Aluguéis recebidos</td>
+        <td style="padding:10px 16px;border-top:1px solid #dee2e6;font-size:14px;text-align:right;">
+          ${'{:,.2f}'.format(object.rent_total).replace(',','X').replace('.',',').replace('X','.')}
+        </td>
+      </tr>
+      <tr style="background:#fff8f0;">
+        <td style="padding:10px 16px;border-top:1px solid #dee2e6;font-size:14px;color:#fd7e14;">
+          (-) Taxa de administração (${object.management_fee_pct}%)
+        </td>
+        <td style="padding:10px 16px;border-top:1px solid #dee2e6;font-size:14px;text-align:right;color:#fd7e14;">
+          ${'{:,.2f}'.format(object.management_fee).replace(',','X').replace('.',',').replace('X','.')}
+        </td>
+      </tr>
+      % if object.commission_total:
+      <tr style="background:#fff8f0;">
+        <td style="padding:10px 16px;border-top:1px solid #dee2e6;font-size:14px;color:#fd7e14;">(-) Comissões</td>
+        <td style="padding:10px 16px;border-top:1px solid #dee2e6;font-size:14px;text-align:right;color:#fd7e14;">
+          ${'{:,.2f}'.format(object.commission_total).replace(',','X').replace('.',',').replace('X','.')}
+        </td>
+      </tr>
+      % endif
+      % if object.maintenance_total:
+      <tr style="background:#fff8f0;">
+        <td style="padding:10px 16px;border-top:1px solid #dee2e6;font-size:14px;color:#fd7e14;">(-) Manutenções</td>
+        <td style="padding:10px 16px;border-top:1px solid #dee2e6;font-size:14px;text-align:right;color:#fd7e14;">
+          ${'{:,.2f}'.format(object.maintenance_total).replace(',','X').replace('.',',').replace('X','.')}
+        </td>
+      </tr>
+      % endif
+      <tr style="background:#e8f5e9;">
+        <td style="padding:12px 16px;border-top:2px solid #198754;font-size:15px;font-weight:bold;color:#198754;">
+          Valor líquido a receber
+        </td>
+        <td style="padding:12px 16px;border-top:2px solid #198754;font-size:15px;font-weight:bold;color:#198754;text-align:right;">
+          R$ ${'{:,.2f}'.format(object.net_amount).replace(',','X').replace('.',',').replace('X','.')}
+        </td>
+      </tr>
+    </table>
+
+    <p style="color:#6c757d;font-size:12px;margin:0;">
+      Em caso de dúvidas, entre em contato com nossa equipe respondendo a este e-mail.
+    </p>
+  </div>
+
+  <!-- Rodapé -->
+  <div style="background:#1a3a5c;padding:16px 32px;border-radius:0 0 8px 8px;text-align:center;">
+    <p style="color:#a8c4de;font-size:11px;margin:0;">
+      ${user.company_id.name} · ${user.company_id.email or ''}
+    </p>
+  </div>
+
+</div>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         TEMPLATE 2 — REPASSE PAGO (ao proprietário) + PDF anexado via Python
+         Gatilho: property_owner_repasse.action_register_payment()
+         ============================================================ -->
+    <record id="email_template_repasse_pago" model="mail.template">
+        <field name="name">Repasse — Pago (com comprovante)</field>
+        <field name="model_id" ref="model_property_owner_repasse"/>
+        <field name="subject">Repasse ${object.reference} realizado em ${object.payment_date}</field>
+        <field name="email_from">${(user.email_formatted or user.company_id.email or '')}</field>
+        <field name="email_to">${(object.owner_id.partner_id.email if object.owner_id.partner_id else None) or object.owner_id.email or ''}</field>
+        <field name="lang">${object.owner_id.partner_id.lang if object.owner_id.partner_id else 'pt_BR'}</field>
+        <field name="report_template_ids" eval="[(4, ref('property_core.action_report_owner_repasse'))]"/>
+        <field name="body_html" type="html">
+<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#333;">
+
+  <!-- Cabeçalho -->
+  <div style="background:#198754;padding:28px 32px;border-radius:8px 8px 0 0;">
+    <h2 style="color:#fff;margin:0;font-size:20px;">&#10003; Repasse Realizado</h2>
+    <p style="color:#c3e6cb;margin:4px 0 0 0;font-size:13px;">
+      ${object.reference} · Pago em ${object.payment_date}
+    </p>
+  </div>
+
+  <!-- Corpo -->
+  <div style="background:#f8f9fa;padding:28px 32px;">
+    <p style="margin:0 0 16px 0;">Olá, <strong>${object.owner_id.name}</strong>,</p>
+    <p style="margin:0 0 20px 0;">
+      O repasse referente ao período de
+      <strong>${object.date_from}</strong> a <strong>${object.date_to}</strong>
+      foi <strong style="color:#198754;">efetuado com sucesso</strong>.
+    </p>
+
+    <!-- Comprovante resumido -->
+    <div style="background:#fff;border:1px solid #dee2e6;border-radius:6px;padding:20px;margin-bottom:20px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Referência</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;font-weight:bold;">${object.reference}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Período</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.date_from} a ${object.date_to}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Data do pagamento</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.payment_date}</td>
+        </tr>
+        <tr style="border-top:2px solid #198754;">
+          <td style="padding:10px 0 0 0;font-size:16px;font-weight:bold;color:#198754;">Valor transferido</td>
+          <td style="padding:10px 0 0 0;font-size:16px;font-weight:bold;color:#198754;text-align:right;">
+            R$ ${'{:,.2f}'.format(object.net_amount).replace(',','X').replace('.',',').replace('X','.')}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <p style="color:#6c757d;font-size:12px;margin:0;">
+      O comprovante detalhado em PDF está anexado a este e-mail.
+      Em caso de dúvidas, entre em contato com nossa equipe respondendo a este e-mail.
+    </p>
+  </div>
+
+  <!-- Rodapé -->
+  <div style="background:#198754;padding:16px 32px;border-radius:0 0 8px 8px;text-align:center;">
+    <p style="color:#c3e6cb;font-size:11px;margin:0;">
+      ${user.company_id.name} · ${user.company_id.email or ''}
+    </p>
+  </div>
+
+</div>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         TEMPLATE 3 — PARCELA EM ATRASO (ao locatário — D+5)
+         Gatilho: property_rent.action_cron_check_late_rents() no D+5
+         ============================================================ -->
+    <record id="email_template_parcela_atrasada" model="mail.template">
+        <field name="name">Parcela — Em Atraso (D+5)</field>
+        <field name="model_id" ref="model_property_rent"/>
+        <field name="subject">Parcela ${object.reference} em atraso — vencimento ${object.due_date}</field>
+        <field name="email_from">${(user.email_formatted or user.company_id.email or '')}</field>
+        <field name="partner_to">${object.partner_id.id}</field>
+        <field name="lang">${object.partner_id.lang or 'pt_BR'}</field>
+        <field name="body_html" type="html">
+<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#333;">
+
+  <!-- Cabeçalho -->
+  <div style="background:#dc3545;padding:28px 32px;border-radius:8px 8px 0 0;">
+    <h2 style="color:#fff;margin:0;font-size:20px;">&#9888; Parcela em Atraso</h2>
+    <p style="color:#f5c6cb;margin:4px 0 0 0;font-size:13px;">
+      Vencimento: ${object.due_date} · ${object.days_late} dias em atraso
+    </p>
+  </div>
+
+  <!-- Corpo -->
+  <div style="background:#f8f9fa;padding:28px 32px;">
+    <p style="margin:0 0 16px 0;">Olá, <strong>${object.partner_id.name}</strong>,</p>
+    <p style="margin:0 0 20px 0;">
+      Identificamos que a parcela de aluguel referente ao imóvel
+      <strong>${object.contract_id.asset_id.name}</strong>
+      encontra-se em aberto. Por favor, regularize o pagamento o quanto antes
+      para evitar encargos adicionais.
+    </p>
+
+    <!-- Detalhes da parcela -->
+    <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:6px;padding:20px;margin-bottom:20px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td style="padding:5px 0;font-size:13px;color:#6c757d;">Referência</td>
+          <td style="padding:5px 0;font-size:13px;text-align:right;">${object.reference}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 0;font-size:13px;color:#6c757d;">Imóvel</td>
+          <td style="padding:5px 0;font-size:13px;text-align:right;">${object.contract_id.asset_id.name}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 0;font-size:13px;color:#6c757d;">Vencimento original</td>
+          <td style="padding:5px 0;font-size:13px;text-align:right;">${object.due_date}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 0;font-size:13px;color:#6c757d;">Dias em atraso</td>
+          <td style="padding:5px 0;font-size:13px;text-align:right;color:#dc3545;font-weight:bold;">
+            ${object.days_late} dias
+          </td>
+        </tr>
+        <tr style="border-top:2px solid #dc3545;">
+          <td style="padding:10px 0 0 0;font-size:15px;font-weight:bold;color:#dc3545;">Valor em aberto</td>
+          <td style="padding:10px 0 0 0;font-size:15px;font-weight:bold;color:#dc3545;text-align:right;">
+            R$ ${'{:,.2f}'.format(object.amount_due).replace(',','X').replace('.',',').replace('X','.')}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <p style="color:#6c757d;font-size:12px;margin:0;">
+      Para regularizar, entre em contato com nossa equipe respondendo a este e-mail
+      ou ligue para ${user.company_id.phone or 'nossa central de atendimento'}.
+      Após a quitação, o recibo será enviado automaticamente.
+    </p>
+  </div>
+
+  <!-- Rodapé -->
+  <div style="background:#dc3545;padding:16px 32px;border-radius:0 0 8px 8px;text-align:center;">
+    <p style="color:#f5c6cb;font-size:11px;margin:0;">
+      ${user.company_id.name} · ${user.company_id.email or ''}
+    </p>
+  </div>
+
+</div>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         TEMPLATE 4 — CONTRATO A VENCER (ao locatário)
+         Gatilho: property_contract.action_cron_check_late() quando → "expiring"
+         ============================================================ -->
+    <record id="email_template_contrato_vencendo" model="mail.template">
+        <field name="name">Contrato — A Vencer (alerta)</field>
+        <field name="model_id" ref="model_property_contract"/>
+        <field name="subject">Seu contrato vence em ${object.days_to_expiry} dias — ${object.name}</field>
+        <field name="email_from">${(user.email_formatted or user.company_id.email or '')}</field>
+        <field name="partner_to">${object.partner_id.id}</field>
+        <field name="lang">${object.partner_id.lang or 'pt_BR'}</field>
+        <field name="body_html" type="html">
+<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#333;">
+
+  <!-- Cabeçalho -->
+  <div style="background:#fd7e14;padding:28px 32px;border-radius:8px 8px 0 0;">
+    <h2 style="color:#fff;margin:0;font-size:20px;">Contrato Próximo ao Vencimento</h2>
+    <p style="color:#fde8d0;margin:4px 0 0 0;font-size:13px;">
+      Vence em <strong>${object.days_to_expiry} dias</strong> · ${object.end_date}
+    </p>
+  </div>
+
+  <!-- Corpo -->
+  <div style="background:#f8f9fa;padding:28px 32px;">
+    <p style="margin:0 0 16px 0;">Olá, <strong>${object.partner_id.name}</strong>,</p>
+    <p style="margin:0 0 20px 0;">
+      Informamos que o seu contrato de locação do imóvel
+      <strong>${object.asset_id.name}</strong>
+      está próximo do vencimento. Entre em contato para discutirmos a renovação.
+    </p>
+
+    <!-- Dados do contrato -->
+    <div style="background:#fff;border:1px solid #dee2e6;border-radius:6px;padding:20px;margin-bottom:20px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Contrato</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.name}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Referência</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.reference}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Imóvel</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.asset_id.name}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Início do contrato</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.start_date}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Aluguel mensal</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">
+            R$ ${'{:,.2f}'.format(object.monthly_rent).replace(',','X').replace('.',',').replace('X','.')}
+          </td>
+        </tr>
+        <tr style="border-top:2px solid #fd7e14;">
+          <td style="padding:10px 0 0 0;font-size:15px;font-weight:bold;color:#fd7e14;">Vencimento</td>
+          <td style="padding:10px 0 0 0;font-size:15px;font-weight:bold;color:#fd7e14;text-align:right;">
+            ${object.end_date} (${object.days_to_expiry} dias)
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <p style="color:#6c757d;font-size:12px;margin:0;">
+      Para renovar ou encerrar o contrato, entre em contato respondendo a este e-mail
+      ou ligue para ${user.company_id.phone or 'nossa central'}.
+    </p>
+  </div>
+
+  <!-- Rodapé -->
+  <div style="background:#fd7e14;padding:16px 32px;border-radius:0 0 8px 8px;text-align:center;">
+    <p style="color:#fde8d0;font-size:11px;margin:0;">
+      ${user.company_id.name} · ${user.company_id.email or ''}
+    </p>
+  </div>
+
+</div>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         TEMPLATE 5 — MANUTENÇÃO CONCLUÍDA (ao proprietário)
+         Gatilho: property_maintenance.action_done()
+         ============================================================ -->
+    <record id="email_template_manutencao_concluida" model="mail.template">
+        <field name="name">Manutenção — Concluída</field>
+        <field name="model_id" ref="model_property_maintenance"/>
+        <field name="subject">Manutenção concluída: ${object.name} — ${object.asset_id.name}</field>
+        <field name="email_from">${(user.email_formatted or user.company_id.email or '')}</field>
+        <field name="email_to">${(object.asset_id.owner_id.partner_id.email if object.asset_id.owner_id.partner_id else None) or (object.asset_id.owner_id.email if object.asset_id.owner_id else '') or ''}</field>
+        <field name="lang">${object.asset_id.owner_id.partner_id.lang if object.asset_id.owner_id and object.asset_id.owner_id.partner_id else 'pt_BR'}</field>
+        <field name="body_html" type="html">
+<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#333;">
+
+  <!-- Cabeçalho -->
+  <div style="background:#0d6efd;padding:28px 32px;border-radius:8px 8px 0 0;">
+    <h2 style="color:#fff;margin:0;font-size:20px;">&#10003; Manutenção Concluída</h2>
+    <p style="color:#cfe2ff;margin:4px 0 0 0;font-size:13px;">
+      ${object.name} · Concluída em ${object.completion_date}
+    </p>
+  </div>
+
+  <!-- Corpo -->
+  <div style="background:#f8f9fa;padding:28px 32px;">
+    <p style="margin:0 0 16px 0;">Olá, <strong>${object.asset_id.owner_id.name}</strong>,</p>
+    <p style="margin:0 0 20px 0;">
+      Informamos que a manutenção do imóvel <strong>${object.asset_id.name}</strong>
+      foi <strong style="color:#198754;">concluída com sucesso</strong>.
+    </p>
+
+    <!-- Detalhes -->
+    <div style="background:#fff;border:1px solid #dee2e6;border-radius:6px;padding:20px;margin-bottom:20px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Serviço</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.name}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Imóvel</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.asset_id.name}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Tipo</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.maintenance_type}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;">Data de conclusão</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.completion_date}</td>
+        </tr>
+        % if object.description:
+        <tr>
+          <td style="padding:6px 0;font-size:13px;color:#6c757d;vertical-align:top;">Descrição</td>
+          <td style="padding:6px 0;font-size:13px;text-align:right;">${object.description}</td>
+        </tr>
+        % endif
+        <tr style="border-top:2px solid #0d6efd;">
+          <td style="padding:10px 0 0 0;font-size:15px;font-weight:bold;color:#0d6efd;">Custo total</td>
+          <td style="padding:10px 0 0 0;font-size:15px;font-weight:bold;color:#0d6efd;text-align:right;">
+            R$ ${'{:,.2f}'.format(object.cost_actual or object.cost_estimate or 0).replace(',','X').replace('.',',').replace('X','.')}
+            % if not object.cost_actual and object.cost_estimate:
+            <span style="font-size:11px;color:#6c757d;">(estimado)</span>
+            % endif
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <p style="color:#6c757d;font-size:12px;margin:0;">
+      Em caso de dúvidas sobre o serviço executado, entre em contato respondendo a este e-mail.
+    </p>
+  </div>
+
+  <!-- Rodapé -->
+  <div style="background:#0d6efd;padding:16px 32px;border-radius:0 0 8px 8px;text-align:center;">
+    <p style="color:#cfe2ff;font-size:11px;margin:0;">
+      ${user.company_id.name} · ${user.company_id.email or ''}
+    </p>
+  </div>
+
+</div>
+        </field>
+    </record>
+
+</odoo>

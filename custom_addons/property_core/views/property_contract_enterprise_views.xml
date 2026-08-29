@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_contract_form_enterprise_finance" model="ir.ui.view">
+        <field name="name">property.contract.form.enterprise.finance</field>
+        <field name="model">property.contract</field>
+        <field name="inherit_id" ref="property_core.view_property_contract_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='monthly_rent']" position="after">
+                <field name="rent_due_day"/>
+                <field name="late_fee_percent"/>
+                <field name="late_interest_percent_month"/>
+                <field name="late_grace_days"/>
+            </xpath>
+
+            <xpath expr="//field[@name='income_account_id']" position="after">
+                <field name="penalty_account_id"/>
+                <field name="interest_account_id"/>
+                <field name="discount_account_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

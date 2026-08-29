@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List view - organized by module -->
+    <record id="view_access_overview_list" model="ir.ui.view">
+        <field name="name">Permissões de Acesso por Módulo</field>
+        <field name="model">access.overview</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="module" string="Módulo" readonly="1"/>
+                <field name="model_name" string="Modelo" readonly="1"/>
+                <field name="group_id" string="Grupo de Acesso" readonly="1"/>
+                <field name="perm_read" string="L" readonly="1"/>
+                <field name="perm_write" string="E" readonly="1"/>
+                <field name="perm_create" string="C" readonly="1"/>
+                <field name="perm_unlink" string="D" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search view - add grouping -->
+    <record id="view_access_overview_search" model="ir.ui.view">
+        <field name="name">Buscar Permissões</field>
+        <field name="model">access.overview</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="module" string="Módulo" filter_domain="[('module', 'ilike', self)]"/>
+                <field name="model_name" string="Modelo" filter_domain="[('model_name', 'ilike', self)]"/>
+                <field name="group_id" string="Grupo" filter_domain="[('group_id', 'ilike', self)]"/>
+
+                <separator/>
+
+                <!-- Grouping options -->
+                <filter string="Por Módulo" name="group_module" domain="[]" context="{'group_by': 'module'}"/>
+                <filter string="Por Modelo" name="group_model" domain="[]" context="{'group_by': 'model_name'}"/>
+                <filter string="Por Grupo de Acesso" name="group_group" domain="[]" context="{'group_by': 'group_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_access_overview" model="ir.actions.act_window">
+        <field name="name">Permissões por Módulo</field>
+        <field name="res_model">access.overview</field>
+        <field name="view_mode">list,search</field>
+        <field name="context">{'group_by': 'module'}</field>
+    </record>
+
+    <!-- Menu item -->
+    <menuitem id="menu_access_overview" name="Permissões por Módulo"
+              parent="base.menu_administration"
+              action="action_access_overview"
+              sequence="45"
+              groups="base.group_system"/>
+
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_governance_case_form_dossier_ext" model="ir.ui.view">
+        <field name="name">governance.case.form.dossier.ext</field>
+        <field name="model">governance.case</field>
+        <field name="inherit_id" ref="governance.view_governance_case_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_assign_dossier_template" type="object" class="oe_stat_button" icon="fa-folder-plus" groups="document_dossier.group_dossier_operator">
+                    <span>Atribuir Dossiê</span>
+                </button>
+                <button name="action_view_dossier" type="object" class="oe_stat_button" icon="fa-folder-open" invisible="not dossier_id" groups="document_dossier.group_dossier_operator">
+                    <field string="Docs. Dossiê" name="dossier_document_count" widget="statinfo"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='description']" position="after">
+                <page string="Dossiê" groups="document_dossier.group_dossier_operator">
+                    <div invisible="dossier_id" class="alert alert-info" role="alert">
+                        Nenhum dossiê atribuído. Use o botão <strong>Atribuir Dossiê</strong> no topo do caso.
+                    </div>
+                    <group invisible="not dossier_id">
+                        <group>
+                            <field name="dossier_id" readonly="1"/>
+                            <field name="dossier_completion_percent" widget="percentpie" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="dossier_complete" readonly="1"/>
+                            <field name="dossier_missing_requirements" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_governance_case_list_dossier_ext" model="ir.ui.view">
+        <field name="name">governance.case.list.dossier.ext</field>
+        <field name="model">governance.case</field>
+        <field name="inherit_id" ref="governance.view_governance_case_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="after">
+                <field name="dossier_id" optional="hide"/>
+                <field name="dossier_completion_percent" optional="hide" widget="percentpie"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

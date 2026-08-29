@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- DOCUMENT: Contrato SP 2024 -->
+        <record id="demo_document_contract_sp_2024" model="document.document">
+            <field name="name">Contrato Locação - Imóvel São Paulo</field>
+            <field name="document_type_id" ref="demo_doc_type_contract"/>
+            <field name="reference">CT-SP-2024-001</field>
+            <field name="issue_date">2024-01-15</field>
+            <field name="expiry_date">2025-01-14</field>
+            <field name="document_state">active</field>
+            <field name="document_workflow_state">validated</field>
+            <field name="access_level">legal</field>
+            <field name="source">internal</field>
+            <field name="description">Contrato padrão de locação residencial</field>
+        </record>
+
+        <!-- DOCUMENT: Contrato RJ 2024 -->
+        <record id="demo_document_contract_rj_2024" model="document.document">
+            <field name="name">Contrato Locação - Imóvel Rio de Janeiro</field>
+            <field name="document_type_id" ref="demo_doc_type_contract"/>
+            <field name="reference">CT-RJ-2024-001</field>
+            <field name="issue_date">2024-03-20</field>
+            <field name="expiry_date">2025-03-19</field>
+            <field name="document_state">active</field>
+            <field name="document_workflow_state">validated</field>
+            <field name="access_level">legal</field>
+            <field name="source">internal</field>
+        </record>
+
+        <!-- DOCUMENT: RG Locatário 1 -->
+        <record id="demo_document_rg_tenant_1" model="document.document">
+            <field name="name">RG - João Silva</field>
+            <field name="document_type_id" ref="demo_doc_type_rg"/>
+            <field name="reference">RG-001-2024</field>
+            <field name="issue_date">2020-05-10</field>
+            <field name="expiry_date">2030-05-09</field>
+            <field name="document_state">active</field>
+            <field name="document_workflow_state">validated</field>
+            <field name="access_level">internal</field>
+            <field name="source">internal</field>
+            <field name="is_sensitive">True</field>
+        </record>
+
+        <!-- DOCUMENT: Extrato Bancário SP -->
+        <record id="demo_document_bank_statement_sp" model="document.document">
+            <field name="name">Extrato Bancário - Conta Operacional SP</field>
+            <field name="document_type_id" ref="demo_doc_type_bank_statement"/>
+            <field name="reference">EXTR-SP-2024-06</field>
+            <field name="issue_date">2024-06-01</field>
+            <field name="document_state">active</field>
+            <field name="document_workflow_state">validated</field>
+            <field name="access_level">finance</field>
+            <field name="source">internal</field>
+            <field name="is_sensitive">True</field>
+            <field name="description">Extrato de junho de 2024</field>
+        </record>
+
+        <!-- DOCUMENT: Registro de Imóvel SP -->
+        <record id="demo_document_property_reg_sp" model="document.document">
+            <field name="name">Registro de Imóvel - Av. Paulista, 1000</field>
+            <field name="document_type_id" ref="demo_doc_type_property_reg"/>
+            <field name="reference">RI-SP-001</field>
+            <field name="issue_date">2015-02-14</field>
+            <field name="document_state">active</field>
+            <field name="document_workflow_state">validated</field>
+            <field name="access_level">legal</field>
+            <field name="source">registry</field>
+            <field name="description">Matrícula imobiliária número 123456</field>
+        </record>
+
+        <!-- DOCUMENT: Apólice Seguro SP -->
+        <record id="demo_document_insurance_sp" model="document.document">
+            <field name="name">Apólice Seguro - Imóvel SP</field>
+            <field name="document_type_id" ref="demo_doc_type_insurance"/>
+            <field name="reference">APO-2024-001</field>
+            <field name="issue_date">2024-01-10</field>
+            <field name="expiry_date">2025-01-09</field>
+            <field name="document_state">active</field>
+            <field name="document_workflow_state">validated</field>
+            <field name="access_level">finance</field>
+            <field name="source">internal</field>
+        </record>
+
+        <!-- DOCUMENT: Relatório Vistoria SP -->
+        <record id="demo_document_inspection_sp" model="document.document">
+            <field name="name">Relatório Vistoria - Imóvel SP (2024-06)</field>
+            <field name="document_type_id" ref="demo_doc_type_inspection"/>
+            <field name="reference">VIST-SP-2024-06</field>
+            <field name="issue_date">2024-06-15</field>
+            <field name="document_state">active</field>
+            <field name="document_workflow_state">validated</field>
+            <field name="access_level">internal</field>
+            <field name="source">internal</field>
+            <field name="description">Vistoria realizada em junho - sem pendências</field>
+        </record>
+
+        <!-- DOCUMENT: Contrato Anteropor -->
+        <record id="demo_document_contract_anterior" model="document.document">
+            <field name="name">Contrato Locação Anterior - Arquivo</field>
+            <field name="document_type_id" ref="demo_doc_type_contract"/>
+            <field name="reference">CT-ARCH-2023</field>
+            <field name="issue_date">2023-01-10</field>
+            <field name="expiry_date">2023-12-31</field>
+            <field name="document_state">archived</field>
+            <field name="document_workflow_state">validated</field>
+            <field name="access_level">legal</field>
+            <field name="source">internal</field>
+            <field name="description">Contrato anterior - arquivado</field>
+        </record>
+
+    </data>
+</odoo>

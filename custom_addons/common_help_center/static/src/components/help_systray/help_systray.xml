@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="common_help_center.HelpCenterSystray">
+        <div class="o_help_center_systray_item d-flex align-items-center">
+            <button type="button"
+                    class="o_help_center_systray btn btn-link d-flex align-items-center gap-1"
+                    title="Abrir ajuda contextual"
+                    aria-label="Abrir ajuda contextual"
+                    t-on-click="openHelpDrawer">
+                <i class="fa fa-question-circle" title="Central de Ajuda"/>
+                <span class="d-none d-md-inline">Ajuda</span>
+            </button>
+        </div>
+
+        <t t-if="state.open">
+            <div class="o_help_center_backdrop" t-on-click="closeHelpDrawer"/>
+            <aside class="o_help_center_drawer">
+                <header class="o_help_center_drawer_header">
+                    <div>
+                        <h3 t-if="!state.selectedArticle">Central de Ajuda</h3>
+                        <h3 t-if="state.selectedArticle" t-esc="state.selectedArticle.name"/>
+                        <small t-if="state.bundle.context and state.bundle.context.model">
+                            Contexto: <t t-esc="state.bundle.context.model"/> <t t-if="state.bundle.context.viewType">/ <t t-esc="state.bundle.context.viewType"/></t>
+                        </small>
+                    </div>
+                    <button type="button" class="btn btn-link" t-on-click="closeHelpDrawer" aria-label="Fechar ajuda">
+                        <i class="fa fa-times" title="Fechar"/>
+                    </button>
+                </header>
+
+                <t t-if="!state.selectedArticle">
+                    <div class="o_help_center_context_banner">
+                        <div>
+                            <strong>Ajuda desta tela</strong>
+                            <div class="text-muted small">
+                                <t t-if="state.bundle.context and state.bundle.context.model">
+                                    <t t-esc="state.bundle.context.model"/>
+                                    <t t-if="state.bundle.context.viewType"> / <t t-esc="state.bundle.context.viewType"/></t>
+                                    <t t-if="state.bundle.context.recordId"> / registro <t t-esc="state.bundle.context.recordId"/></t>
+                                </t>
+                                <t t-else="">Contexto ainda não detectado.</t>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" t-on-click="openContextConfiguration">Configurar</button>
+                    </div>
+
+                    <div class="o_help_center_search">
+                        <form t-on-submit="searchHelp" class="d-flex gap-2">
+                            <input type="text" class="form-control" placeholder="Pesquisar ajuda..." t-model="state.query"/>
+                            <button type="submit" class="btn btn-primary" t-att-disabled="state.loading">Buscar</button>
+                        </form>
+                    </div>
+                </t>
+
+                <main class="o_help_center_drawer_body">
+                    <t t-if="state.loading or state.selectedArticleLoading">
+                        <div class="text-muted p-3">Carregando ajuda...</div>
+                    </t>
+                    <t t-elif="state.selectedArticle">
+                        <article class="o_help_center_article_full">
+                            <div class="o_help_center_article_meta mb-3">
+                                <span t-if="state.selectedArticle.category" t-esc="state.selectedArticle.category"/>
+                                <span t-if="state.selectedArticle.article_type"> • <t t-esc="state.selectedArticle.article_type"/></span>
+                                <span t-if="state.selectedArticle.scope"> • <t t-esc="state.selectedArticle.scope"/></span>
+                                <span t-if="state.selectedArticle.module"> • <t t-esc="state.selectedArticle.module"/></span>
+                            </div>
+                            <p t-if="state.selectedArticle.summary" class="lead" t-esc="state.selectedArticle.summary"/>
+                            <div class="o_help_center_article_content" t-out="state.selectedArticle.content"/>
+                        </article>
+                    </t>
+                    <t t-else="">
+                        <section class="o_help_center_section o_help_center_primary_articles">
+                            <h4>Artigos do contexto</h4>
+                            <t t-if="state.bundle.articles and state.bundle.articles.length">
+                                <t t-foreach="state.bundle.articles" t-as="article" t-key="article.id">
+                                    <article class="o_help_center_article_card">
+                                        <button type="button" class="btn btn-link p-0 text-start" t-on-click="() => this.openArticle(article)">
+                                            <strong t-esc="article.name"/>
+                                        </button>
+                                        <div class="o_help_center_article_meta">
+                                            <span t-if="article.category" t-esc="article.category"/>
+                                            <span t-if="article.type_label"> • <t t-esc="article.type_label"/></span>
+                                            <span t-if="article.module"> • <t t-esc="article.module"/></span>
+                                            <span t-if="article.model"> • <t t-esc="article.model"/></span>
+                                        </div>
+                                        <p t-if="article.summary" t-esc="article.summary"/>
+                                        <div class="o_help_center_feedback_buttons">
+                                            <button class="btn btn-sm btn-light" t-on-click="() => this.sendFeedback(article, 'useful')">Útil</button>
+                                            <button class="btn btn-sm btn-light" t-on-click="() => this.sendFeedback(article, 'not_useful')">Não ajudou</button>
+                                        </div>
+                                    </article>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <p class="text-muted">Nenhum artigo contextual específico foi encontrado para esta tela. Use “Configurar” ou adicione blocos HELP:ARTICLE no docs/08_AJUDA_CONTEXTUAL.md do módulo principal.</p>
+                            </t>
+                        </section>
+
+                        <section t-if="state.bundle.dynamic_reference and state.bundle.dynamic_reference.model" class="o_help_center_section o_help_center_dynamic_reference">
+                            <h4>Campos, opções e filtros desta tela</h4>
+                            <div class="o_help_center_dynamic_intro">
+                                <strong t-esc="state.bundle.dynamic_reference.model_label or state.bundle.dynamic_reference.model"/>
+                                <span t-if="state.bundle.dynamic_reference.view_type"> • <t t-esc="state.bundle.dynamic_reference.view_type"/></span>
+                                <p class="text-muted small mb-0">Referência dinâmica. Os artigos explicam o fluxo; esta seção mostra apenas opções reais úteis para preencher a tela.</p>
+                                <t t-if="!state.bundle.dynamic_reference.available">
+                                    <div class="alert alert-warning mt-2 mb-0 py-2">
+                                        A Central detectou a tela, mas não encontrou opções dinâmicas visíveis para este model.
+                                        Verifique se o model possui campos obrigatórios, campos de seleção, relações relevantes ou filtros de busca.
+                                    </div>
+                                </t>
+                                <t t-if="false and state.bundle.dynamic_reference.debug and state.bundle.dynamic_reference.debug.length">
+                                    <div class="text-muted small mt-1">
+                                        <t t-foreach="state.bundle.dynamic_reference.debug" t-as="debug_line" t-key="debug_line">
+                                            <div t-esc="debug_line"/>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <details t-if="state.bundle.dynamic_reference.required_fields and state.bundle.dynamic_reference.required_fields.length" open="open" class="o_help_center_dynamic_group">
+                                <summary>Campos obrigatórios</summary>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered o_help_center_dynamic_table">
+                                        <thead><tr><th>Campo</th><th>Técnico</th><th>Tipo</th></tr></thead>
+                                        <tbody>
+                                            <t t-foreach="state.bundle.dynamic_reference.required_fields" t-as="field" t-key="field.name">
+                                                <tr>
+                                                    <td>
+                                                        <strong t-esc="field.label"/>
+                                                        <div t-if="field.help" class="text-muted small" t-esc="field.help"/>
+                                                    </td>
+                                                    <td><code t-esc="field.name"/></td>
+                                                    <td t-esc="field.type"/>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </details>
+
+                            <details t-if="state.bundle.dynamic_reference.selection_fields and state.bundle.dynamic_reference.selection_fields.length" class="o_help_center_dynamic_group">
+                                <summary>Opções fixas do formulário</summary>
+                                <t t-foreach="state.bundle.dynamic_reference.selection_fields" t-as="field" t-key="field.name">
+                                    <div class="o_help_center_option_block">
+                                        <strong t-esc="field.label"/>
+                                        <code class="ms-1" t-esc="field.name"/>
+                                        <span t-if="field.required" class="badge text-bg-warning ms-1">obrigatório</span>
+                                        <div t-if="field.help" class="text-muted small" t-esc="field.help"/>
+                                        <div class="o_help_center_option_pills">
+                                            <t t-foreach="field.options" t-as="opt" t-key="field.name + '_' + opt.value">
+                                                <span class="badge rounded-pill text-bg-light border">
+                                                    <t t-esc="opt.label"/>
+                                                    <small class="text-muted"> (<t t-esc="opt.value"/>)</small>
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+                            </details>
+
+                            <details t-if="state.bundle.dynamic_reference.relational_options and state.bundle.dynamic_reference.relational_options.length" class="o_help_center_dynamic_group">
+                                <summary>Categorias, tipos, responsáveis e cadastros relacionados</summary>
+                                <t t-foreach="state.bundle.dynamic_reference.relational_options" t-as="field" t-key="field.name">
+                                    <div class="o_help_center_option_block">
+                                        <strong t-esc="field.label"/>
+                                        <code class="ms-1" t-esc="field.name"/>
+                                        <span t-if="field.required" class="badge text-bg-warning ms-1">obrigatório</span>
+                                        <div class="text-muted small" t-esc="field.type"/>
+                                        <div t-if="field.help" class="text-muted small" t-esc="field.help"/>
+                                        <t t-if="field.options and field.options.length">
+                                            <div class="o_help_center_option_pills">
+                                                <t t-foreach="field.options" t-as="opt" t-key="field.name + '_' + opt.id">
+                                                    <span class="badge rounded-pill text-bg-light border" t-esc="opt.name"/>
+                                                </t>
+                                            </div>
+                                            <div t-if="field.truncated" class="text-muted small mt-1">Mostrando os primeiros registros disponíveis.</div>
+                                        </t>
+                                        <t t-else="">
+                                            <p class="text-muted small mb-0">Nenhuma opção visível para seu usuário ou cadastro ainda não configurado.</p>
+                                        </t>
+                                    </div>
+                                </t>
+                            </details>
+
+                            <details t-if="state.bundle.dynamic_reference.search_filters and state.bundle.dynamic_reference.search_filters.length" class="o_help_center_dynamic_group">
+                                <summary>Filtros e agrupamentos disponíveis</summary>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered o_help_center_dynamic_table">
+                                        <thead><tr><th>Nome</th><th>Tipo</th><th>Detalhe técnico</th></tr></thead>
+                                        <tbody>
+                                            <t t-foreach="state.bundle.dynamic_reference.search_filters" t-as="filter" t-key="filter.name + '_' + filter.label">
+                                                <tr>
+                                                    <td>
+                                                        <strong t-esc="filter.label"/>
+                                                        <div class="text-muted small" t-if="filter.view" t-esc="filter.view"/>
+                                                    </td>
+                                                    <td><span class="badge text-bg-secondary" t-esc="filter.kind_label"/></td>
+                                                    <td>
+                                                        <div t-if="filter.domain"><small>Domínio:</small> <code t-esc="filter.domain"/></div>
+                                                        <div t-if="filter.context"><small>Contexto:</small> <code t-esc="filter.context"/></div>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </details>
+
+                            <t t-if="state.bundle.dynamic_reference.notes and state.bundle.dynamic_reference.notes.length">
+                                <t t-foreach="state.bundle.dynamic_reference.notes" t-as="note" t-key="note">
+                                    <p class="text-muted small mb-1" t-esc="note"/>
+                                </t>
+                            </t>
+                        </section>
+
+                        <section t-if="state.errorSuggestions and state.errorSuggestions.length" class="o_help_center_section o_help_center_alert">
+                            <h4>Ajuda para erro recente</h4>
+                            <t t-foreach="state.errorSuggestions" t-as="suggestion" t-key="suggestion.id">
+                                <div class="o_help_center_suggestion">
+                                    <strong t-esc="suggestion.name"/>
+                                    <p t-if="suggestion.tip" t-esc="suggestion.tip"/>
+                                </div>
+                            </t>
+                        </section>
+
+                        <section t-if="state.bundle.tips and state.bundle.tips.length" class="o_help_center_section">
+                            <h4>Dicas rápidas</h4>
+                            <t t-foreach="state.bundle.tips" t-as="tip" t-key="tip.id">
+                                <div class="o_help_center_tip">
+                                    <strong t-esc="tip.name"/>
+                                    <p t-esc="tip.content"/>
+                                </div>
+                            </t>
+                        </section>
+
+                        <section t-if="state.bundle.checklists and state.bundle.checklists.length" class="o_help_center_section">
+                            <h4>Checklists</h4>
+                            <t t-foreach="state.bundle.checklists" t-as="checklist" t-key="checklist.id">
+                                <div class="o_help_center_checklist">
+                                    <strong t-esc="checklist.name"/>
+                                    <p t-if="checklist.description" class="text-muted" t-esc="checklist.description"/>
+                                    <t t-foreach="checklist.items" t-as="item" t-key="item.id">
+                                        <label class="o_help_center_checklist_item">
+                                            <input type="checkbox" t-att-checked="item.done" t-on-change="() => this.toggleChecklist(item)"/>
+                                            <span t-att-class="item.done ? 'text-decoration-line-through text-muted' : ''" t-esc="item.name"/>
+                                        </label>
+                                    </t>
+                                </div>
+                            </t>
+                        </section>
+
+                        <section t-if="state.bundle.suggestions and state.bundle.suggestions.length" class="o_help_center_section">
+                            <h4>Sugestões inteligentes</h4>
+                            <t t-foreach="state.bundle.suggestions" t-as="suggestion" t-key="suggestion.id">
+                                <div class="o_help_center_suggestion">
+                                    <strong t-esc="suggestion.name"/>
+                                    <p t-if="suggestion.tip" t-esc="suggestion.tip"/>
+                                </div>
+                            </t>
+                        </section>
+                    </t>
+                </main>
+
+                <footer class="o_help_center_drawer_footer">
+                    <t t-if="state.selectedArticle">
+                        <button type="button" class="btn btn-secondary" t-on-click="backToContext">Voltar ao contexto</button>
+                        <button type="button" class="btn btn-outline-secondary" t-on-click="() => this.openArticleFull()">Abrir tela completa</button>
+                    </t>
+                    <t t-else="">
+                        <button type="button" class="btn btn-secondary" t-on-click="openHelpCenter">Abrir biblioteca completa</button>
+                        <button type="button" class="btn btn-outline-secondary" t-on-click="openContextConfiguration">Configurar contexto</button>
+                    </t>
+                    <button type="button" class="btn btn-link" t-on-click="closeHelpDrawer">Fechar</button>
+                </footer>
+            </aside>
+        </t>
+    </t>
+</templates>

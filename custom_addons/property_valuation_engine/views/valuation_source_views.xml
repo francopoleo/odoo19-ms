@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_valuation_source_list" model="ir.ui.view">
+        <field name="name">property.valuation.source.list</field>
+        <field name="model">property.valuation.source</field>
+        <field name="arch" type="xml">
+            <list string="Fontes de Valuation">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="source_type"/>
+                <field name="reliability_score"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_valuation_source_form" model="ir.ui.view">
+        <field name="name">property.valuation.source.form</field>
+        <field name="model">property.valuation.source</field>
+        <field name="arch" type="xml">
+            <form string="Fonte de Valuation">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="source_type"/>
+                            <field name="reliability_score"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="url"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Observações">
+                            <field name="notes" placeholder="Detalhes da fonte, periodicidade, responsável, restrições de uso..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_valuation_source_search" model="ir.ui.view">
+        <field name="name">property.valuation.source.search</field>
+        <field name="model">property.valuation.source</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Fontes">
+                <field name="name"/>
+                <field name="source_type"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_valuation_source" model="ir.actions.act_window">
+        <field name="name">Fontes</field>
+        <field name="res_model">property.valuation.source</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_property_valuation_source_search"/>
+    </record>
+</odoo>

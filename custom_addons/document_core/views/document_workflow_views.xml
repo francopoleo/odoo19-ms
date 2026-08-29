@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================
+         WORKFLOW - Aprovação de Documentos Pendentes
+    ============================================================ -->
+
+
+    <!-- Kanban View para Pendentes de Aprovação -->
+    <record id="view_document_approval_kanban" model="ir.ui.view">
+        <field name="name">document.document.approval.kanban</field>
+        <field name="model">document.document</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="document_workflow_state" class="o_kanban_mobile">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="created_by_id"/>
+                <field name="document_type_id"/>
+                <field name="document_workflow_state"/>
+                <field name="create_date"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click o_kanban_record">
+                            <div class="o_kanban_record_title">
+                                <strong>
+                                    <field name="name"/>
+                                </strong>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="text-muted">
+                                    <span><i class="fa fa-user" title="Criado por"></i> <field name="created_by_id"/></span>
+                                </div>
+                                <div class="text-muted">
+                                    <span><i class="fa fa-tag" title="Tipo"></i> <field name="document_type_id"/></span>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <small class="text-muted"><field name="create_date"/></small>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left"/>
+                                <div class="oe_kanban_bottom_right">
+                                    <span t-if="record.document_workflow_state.raw_value == 'pending_approval'" class="badge badge-warning">
+                                        <i class="fa fa-clock-o" title="Pendente"/> Pendente
+                                    </span>
+                                    <span t-elif="record.document_workflow_state.raw_value == 'validated'" class="badge badge-success">
+                                        <i class="fa fa-check" title="Aprovado"/> Aprovado
+                                    </span>
+                                    <span t-elif="record.document_workflow_state.raw_value == 'rejected'" class="badge badge-danger">
+                                        <i class="fa fa-times" title="Rejeitado"/> Rejeitado
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List View para Aprovação -->
+    <record id="view_document_approval_list" model="ir.ui.view">
+        <field name="name">document.document.approval.list</field>
+        <field name="model">document.document</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="created_by_id"/>
+                <field name="document_type_id"/>
+                <field name="document_workflow_state" widget="badge"
+                       decoration-warning="document_workflow_state == 'pending_approval'"
+                       decoration-success="document_workflow_state == 'validated'"
+                       decoration-danger="document_workflow_state == 'rejected'"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action para Documentos Pendentes de Aprovação -->
+    <record id="action_document_pending_approval" model="ir.actions.act_window">
+        <field name="name">Documentos Pendentes de Aprovação</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('document_workflow_state', '=', 'pending_approval')]</field>
+        <field name="search_view_id" ref="view_document_document_search"/>
+        <field name="context">{'search_default_state_active': 1}</field>
+    </record>
+
+    <!-- Action para Todos os Documentos do Workflow -->
+    <record id="action_document_workflow" model="ir.actions.act_window">
+        <field name="name">Workflow de Documentos</field>
+        <field name="res_model">document.document</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_document_document_search"/>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_document_pending_approval"
+              parent="document_core.menu_document_root"
+              action="action_document_pending_approval"
+              sequence="10"/>
+
+    <menuitem id="menu_document_workflow"
+              parent="document_core.menu_document_root"
+              action="action_document_workflow"
+              sequence="15"/>
+
+</odoo>

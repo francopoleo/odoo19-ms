@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_valuation_factor_list" model="ir.ui.view">
+        <field name="name">property.valuation.factor.list</field>
+        <field name="model">property.valuation.factor</field>
+        <field name="arch" type="xml">
+            <list string="Fatores de Valuation">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="factor_type"/>
+                <field name="multiplier"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_valuation_factor_form" model="ir.ui.view">
+        <field name="name">property.valuation.factor.form</field>
+        <field name="model">property.valuation.factor</field>
+        <field name="arch" type="xml">
+            <form string="Fator de Valuation">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="factor_type"/>
+                        </group>
+                        <group>
+                            <field name="multiplier"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Explique quando esse fator deve ser aplicado."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_valuation_factor_search" model="ir.ui.view">
+        <field name="name">property.valuation.factor.search</field>
+        <field name="model">property.valuation.factor</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Fatores">
+                <field name="name"/>
+                <field name="factor_type"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_valuation_factor" model="ir.actions.act_window">
+        <field name="name">Fatores</field>
+        <field name="res_model">property.valuation.factor</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_property_valuation_factor_search"/>
+    </record>
+</odoo>

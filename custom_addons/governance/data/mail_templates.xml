@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="mail_template_governance_followup" model="mail.template">
+        <field name="name">Governança: Solicitação de Follow-up</field>
+        <field name="model_id" ref="governance.model_governance_case"/>
+        <field name="subject">Follow-up: {{ object.name }} [{{ object.reference }}]</field>
+        <field name="body_html"><![CDATA[
+<div>
+    <p>Prezado(s),</p>
+    <p>Estamos entrando em contato para solicitar retorno referente ao caso abaixo:</p>
+    <table style="border-collapse:collapse;width:100%">
+        <tr><td style="padding:4px;font-weight:bold">Assunto</td><td style="padding:4px">{{ object.name }}</td></tr>
+        <tr><td style="padding:4px;font-weight:bold">Referência</td><td style="padding:4px">{{ object.reference }}</td></tr>
+        <tr><td style="padding:4px;font-weight:bold">Data de Origem</td><td style="padding:4px">{{ object.origin_date }}</td></tr>
+        <tr><td style="padding:4px;font-weight:bold">Prazo para Resposta</td><td style="padding:4px">{{ object.response_deadline }}</td></tr>
+    </table>
+    <p>Aguardamos seu posicionamento.</p>
+    <p>Atenciosamente,<br/>{{ user.name }}</p>
+</div>
+        ]]></field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_governance_overdue" model="mail.template">
+        <field name="name">Governança: Aviso de Silêncio</field>
+        <field name="model_id" ref="governance.model_governance_case"/>
+        <field name="subject">AVISO: Sem resposta — {{ object.name }} [{{ object.reference }}]</field>
+        <field name="body_html"><![CDATA[
+<div>
+    <p>Prezado(s),</p>
+    <p>Constatamos que, até a presente data, não recebemos resposta referente ao caso:</p>
+    <table style="border-collapse:collapse;width:100%">
+        <tr><td style="padding:4px;font-weight:bold">Assunto</td><td style="padding:4px">{{ object.name }}</td></tr>
+        <tr><td style="padding:4px;font-weight:bold">Referência</td><td style="padding:4px">{{ object.reference }}</td></tr>
+        <tr><td style="padding:4px;font-weight:bold">Dias sem resposta</td><td style="padding:4px">{{ object.days_without_response }}</td></tr>
+    </table>
+    <p>Este caso está sendo registrado como <strong>Sem Resposta</strong> em nosso sistema de governança.</p>
+    <p>Atenciosamente,<br/>{{ user.name }}</p>
+</div>
+        ]]></field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_governance_notification" model="mail.template">
+        <field name="name">Governança: Notificação Inicial</field>
+        <field name="model_id" ref="governance.model_governance_case"/>
+        <field name="subject">Notificação: {{ object.name }} [{{ object.reference }}]</field>
+        <field name="body_html"><![CDATA[
+<div>
+    <p>Prezado(s),</p>
+    <p>Por meio desta, formalizamos a abertura do seguinte caso em nosso sistema de governança:</p>
+    <table style="border-collapse:collapse;width:100%;font-family:Arial,sans-serif;font-size:13px">
+        <tr style="background:#f5f5f5">
+            <td style="padding:8px;font-weight:bold;width:35%">Referência</td>
+            <td style="padding:8px">{{ object.reference }}</td>
+        </tr>
+        <tr>
+            <td style="padding:8px;font-weight:bold">Assunto</td>
+            <td style="padding:8px">{{ object.name }}</td>
+        </tr>
+        <tr style="background:#f5f5f5">
+            <td style="padding:8px;font-weight:bold">Tipo</td>
+            <td style="padding:8px">{{ object.case_type_id.name or '' }}</td>
+        </tr>
+        <tr>
+            <td style="padding:8px;font-weight:bold">Prioridade</td>
+            <td style="padding:8px">{{ {'0':'Baixa','1':'Média','2':'Alta','3':'Crítica'}.get(object.priority, '') }}</td>
+        </tr>
+        <tr style="background:#f5f5f5">
+            <td style="padding:8px;font-weight:bold">Data de Origem</td>
+            <td style="padding:8px">{{ object.origin_date }}</td>
+        </tr>
+        <tr>
+            <td style="padding:8px;font-weight:bold">Prazo para Resposta</td>
+            <td style="padding:8px"><strong>{{ object.response_deadline }}</strong></td>
+        </tr>
+        <tr style="background:#f5f5f5">
+            <td style="padding:8px;font-weight:bold">Responsável</td>
+            <td style="padding:8px">{{ object.responsible_id.name or '' }}</td>
+        </tr>
+    </table>
+
+    {% if object.description %}
+    <p style="margin-top:12px"><strong>Descrição:</strong></p>
+    <div style="border-left:3px solid #875a7b;padding-left:12px;color:#555">
+        {{ object.description }}
+    </div>
+    {% endif %}
+
+    <p style="margin-top:16px">Solicitamos que nos encaminhe resposta até a data indicada acima.</p>
+    <p>Atenciosamente,<br/><strong>{{ user.name }}</strong><br/>{{ user.company_id.name }}</p>
+</div>
+        ]]></field>
+        <field name="email_to">{{ ','.join([p.email for p in object.partner_ids if p.email]) }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

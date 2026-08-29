@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mail Activity Types for Document Lifecycle -->
+    <record id="mail_activity_type_document_expiry" model="mail.activity.type">
+        <field name="name">Vencimento de Documento</field>
+        <field name="icon">fa-calendar-times-o</field>
+        <field name="category">default</field>
+        <field name="res_model">document.document</field>
+        <field name="summary">Renovar documentação</field>
+    </record>
+
+    <record id="mail_activity_type_document_validation" model="mail.activity.type">
+        <field name="name">Validação de Documento</field>
+        <field name="icon">fa-check-square-o</field>
+        <field name="category">default</field>
+        <field name="res_model">document.document</field>
+        <field name="summary">Validar documentação</field>
+    </record>
+
+    <record id="mail_activity_type_document_review" model="mail.activity.type">
+        <field name="name">Revisão de Documento</field>
+        <field name="icon">fa-refresh</field>
+        <field name="category">default</field>
+        <field name="res_model">document.document</field>
+        <field name="summary">Revisar documentação</field>
+    </record>
+
+    <!-- Cron Jobs for Document Lifecycle Management -->
+    <record id="cron_document_check_expiry" model="ir.cron">
+        <field name="name">Document Core: Verificar Vencimentos</field>
+        <field name="model_id" ref="model_document_document"/>
+        <field name="state">code</field>
+        <field name="code">model.action_cron_check_expiry()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_document_check_validation" model="ir.cron">
+        <field name="name">Document Core: Verificar Validações</field>
+        <field name="model_id" ref="model_document_document"/>
+        <field name="state">code</field>
+        <field name="code">model.action_cron_check_validation()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_document_check_review" model="ir.cron">
+        <field name="name">Document Core: Verificar Ciclos de Revisão</field>
+        <field name="model_id" ref="model_document_document"/>
+        <field name="state">code</field>
+        <field name="code">model.action_cron_check_review()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>

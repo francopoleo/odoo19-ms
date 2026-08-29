@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend property.asset form view with dossier section -->
+    <record id="view_property_asset_form_dossier_ext" model="ir.ui.view">
+        <field name="name">property.asset.form.dossier.ext</field>
+        <field name="model">property.asset</field>
+        <field name="inherit_id" ref="property_core.view_property_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_assign_dossier_template" type="object" class="oe_stat_button" icon="fa-folder-plus" groups="document_dossier.group_dossier_operator">
+                    <span>Atribuir Dossiê</span>
+                </button>
+                <button name="action_view_dossiers" type="object" class="oe_stat_button" icon="fa-folder-open" invisible="not dossier_count" groups="document_dossier.group_dossier_operator">
+                    <field string="Dossiês" name="dossier_count" widget="statinfo"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook/page[2]" position="after">
+                <page string="Dossiês" groups="document_dossier.group_dossier_operator">
+                    <field name="dossier_ids" mode="kanban">
+                        <kanban>
+                            <field name="name"/>
+                            <field name="state"/>
+                            <field name="process_id"/>
+                            <field name="completion_percent"/>
+                            <templates>
+                                <t t-name="card">
+                                    <div class="oe_kanban_card o_has_shadow">
+                                        <div class="oe_kanban_card_header">
+                                            <span class="oe_kanban_record_title"><strong><t t-out="record.name.value"/></strong></span>
+                                            <span class="badge float-end" t-attf-class="bg-{{ record.state.value == 'active' and 'success' or record.state.value == 'closed' and 'secondary' or 'warning' }}">
+                                                <t t-out="record.state.raw_value"/>
+                                            </span>
+                                        </div>
+                                        <div class="oe_kanban_card_content p-2">
+                                            <small class="text-muted"><t t-out="record.process_id.value"/></small><br/>
+                                            <div class="progress mb-2" style="height:20px;">
+                                                <t t-set="pct" t-value="record.completion_percent.raw_value or 0.0"/>
+                                                <div class="progress-bar" t-attf-style="width:{{ Math.max(0, Math.min(100, pct)) }}%;">
+                                                    <small><t t-out="Math.round(pct)"/>%</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend property.asset list view to show dossier information -->
+    <record id="view_property_asset_list_dossier_ext" model="ir.ui.view">
+        <field name="name">property.asset.list.dossier.ext</field>
+        <field name="model">property.asset</field>
+        <field name="inherit_id" ref="property_core.view_property_asset_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='status']" position="after">
+                <field name="dossier_count" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

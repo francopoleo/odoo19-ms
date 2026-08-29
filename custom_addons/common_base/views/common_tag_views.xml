@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View (antes era tree) -->
+    <record id="view_common_tag_list" model="ir.ui.view">
+        <field name="name">common.tag.list</field>
+        <field name="model">common.tag</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="color" widget="color"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="usage_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_common_tag_form" model="ir.ui.view">
+        <field name="name">common.tag.form</field>
+        <field name="model">common.tag</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nome da tag..."/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="category"/>
+                            <field name="sequence"/>
+                            <field name="color" widget="color"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                            <field name="usage_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Descrição">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_common_tag_search" model="ir.ui.view">
+        <field name="name">common.tag.search</field>
+        <field name="model">common.tag</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="category"/>
+                <filter string="Ativos" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inativos" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Por Categoria" name="category" context="{'group_by':'category'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_common_tag" model="ir.actions.act_window">
+        <field name="name">Tags</field>
+        <field name="res_model">common.tag</field>
+        <field name="view_mode">list,form</field>  <!-- list,form, não tree,form -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Crie tags para classificar seus registros!</p>
+        </field>
+    </record>
+</odoo>

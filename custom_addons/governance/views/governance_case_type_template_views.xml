@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_governance_case_type_pending_template_list" model="ir.ui.view">
+        <field name="name">governance.case.type.pending.template.list</field>
+        <field name="model">governance.case.type.pending.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="case_type_id"/>
+                <field name="name"/>
+                <field name="default_deadline_days"/>
+                <field name="priority" widget="priority"/>
+                <field name="assign_to_responsible" widget="boolean_toggle"/>
+                <field name="required" widget="boolean_toggle"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_governance_case_type_pending_template_form" model="ir.ui.view">
+        <field name="name">governance.case.type.pending.template.form</field>
+        <field name="model">governance.case.type.pending.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="case_type_id"/>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="default_deadline_days"/>
+                        </group>
+                        <group>
+                            <field name="priority" widget="priority"/>
+                            <field name="assign_to_responsible"/>
+                            <field name="required"/>
+                            <field name="active"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_governance_case_type_pending_template_search" model="ir.ui.view">
+        <field name="name">governance.case.type.pending.template.search</field>
+        <field name="model">governance.case.type.pending.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="case_type_id"/>
+                <filter string="Ativos" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Obrigatórios" name="required" domain="[('required', '=', True)]"/>
+                <separator/>
+                <filter string="Tipo de Caso" name="group_case_type" context="{'group_by': 'case_type_id'}"/>
+                <filter string="Prioridade" name="group_priority" context="{'group_by': 'priority'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_governance_case_type_pending_template" model="ir.actions.act_window">
+        <field name="name">Modelos de Pendência</field>
+        <field name="res_model">governance.case.type.pending.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_governance_case_type_pending_template_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+    </record>
+
+</odoo>

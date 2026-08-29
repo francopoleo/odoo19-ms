@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_document_document_user,document.document.operator,model_document_document,document_core.group_document_operator,1,1,1,0
+access_document_document_manager,document.document.manager,model_document_document,document_core.group_document_manager,1,1,1,1
+access_document_category_user,document.category.operator,model_document_category,document_core.group_document_operator,1,0,0,0
+access_document_category_manager,document.category.manager,model_document_category,document_core.group_document_manager,1,1,1,1
+access_document_type_user,document.type.operator,model_document_type,document_core.group_document_operator,1,0,0,0
+access_document_type_manager,document.type.manager,model_document_type,document_core.group_document_manager,1,1,1,1
+access_document_location_user,document.location.operator,model_document_location,document_core.group_document_operator,1,0,0,0
+access_document_location_manager,document.location.manager,model_document_location,document_core.group_document_manager,1,1,1,1
+access_document_dashboard_operator,document.dashboard.operator,model_document_dashboard,document_core.group_document_operator,1,1,1,1
+access_document_communication_operator,document.communication.operator,model_document_communication,document_core.group_document_operator,1,1,1,0
+access_document_communication_manager,document.communication.manager,model_document_communication,document_core.group_document_manager,1,1,1,1
+access_document_reject_wizard_manager,document.reject.wizard.manager,model_document_reject_wizard,document_core.group_document_manager,1,1,1,1

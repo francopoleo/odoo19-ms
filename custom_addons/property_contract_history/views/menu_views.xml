@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═════════════════════════════════════════════════════════════════════════════
+         ACTIONS
+         ═════════════════════════════════════════════════════════════════════════════ -->
+
+    <record id="action_property_contract_history" model="ir.actions.act_window">
+        <field name="name">Histórico de Contratos</field>
+        <field name="res_model">property.contract.history</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{"create": True}</field>
+        <field name="help">Upload e gerenciamento de contratos históricos com OCR</field>
+    </record>
+
+    <record id="action_property_contract_history_kanban" model="ir.actions.act_window">
+        <field name="name">Contratos por Status</field>
+        <field name="res_model">property.contract.history</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_group_state': 1}</field>
+    </record>
+
+    <record id="action_property_contract_history_bulk_upload" model="ir.actions.act_window">
+        <field name="name">Upload em Lote de Contratos</field>
+        <field name="res_model">property.contract.history.bulk.upload</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_property_asset_import_contract" model="ir.actions.act_window">
+        <field name="name">Importar Contrato Histórico</field>
+        <field name="res_model">property.contract.history</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ═════════════════════════════════════════════════════════════════════════════
+         MENU ITEMS
+         ═════════════════════════════════════════════════════════════════════════════ -->
+
+    <menuitem id="menu_property_contract_history_root"
+              name="Contratos Históricos"
+              parent="property_core.menu_property_root"
+              sequence="95"
+              groups="property_core.group_property_manager"/>
+
+    <menuitem id="menu_property_contract_history"
+              name="Gerenciar Contratos"
+              parent="menu_property_contract_history_root"
+              action="action_property_contract_history"
+              sequence="10"
+              groups="property_core.group_property_manager"/>
+
+    <menuitem id="menu_property_contract_history_kanban"
+              name="Por Status"
+              parent="menu_property_contract_history_root"
+              action="action_property_contract_history_kanban"
+              sequence="20"
+              groups="property_core.group_property_manager"/>
+
+    <menuitem id="menu_property_contract_history_bulk_upload"
+              name="Upload em Lote"
+              parent="menu_property_contract_history_root"
+              action="action_property_contract_history_bulk_upload"
+              sequence="30"
+              groups="property_core.group_property_manager"/>
+
+</odoo>

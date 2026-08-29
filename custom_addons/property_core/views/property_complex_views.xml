@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_complex_list" model="ir.ui.view">
+        <field name="name">property.complex.list</field>
+        <field name="model">property.complex</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="complex_type"/>
+                <field name="city"/>
+                <field name="unit_count"/>
+                <field name="units_rented"/>
+                <field name="occupancy_rate" string="Ocupação %"/>
+                <field name="total_monthly_rent"/>
+                <field name="noi_monthly"/>
+                <field name="owner_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_complex_form" model="ir.ui.view">
+        <field name="name">property.complex.form</field>
+        <field name="model">property.complex</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <!-- Smart Buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_units" type="object"
+                                class="oe_stat_button" icon="fa-building-o">
+                            <div class="o_stat_info">
+                                <field name="unit_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Unidades</span>
+                            </div>
+                        </button>
+                        <button name="action_view_units" type="object"
+                                class="oe_stat_button" icon="fa-check-circle"
+                                invisible="units_rented == 0">
+                            <div class="o_stat_info">
+                                <field name="units_rented" class="o_stat_value text-success"/>
+                                <span class="o_stat_text">Alugadas</span>
+                            </div>
+                        </button>
+                        <button name="action_view_units" type="object"
+                                class="oe_stat_button" icon="fa-circle-o"
+                                invisible="units_available == 0">
+                            <div class="o_stat_info">
+                                <field name="units_available" class="o_stat_value text-info"/>
+                                <span class="o_stat_text">Disponíveis</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nome do complexo..."/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="reference" readonly="1" class="text-muted"/>
+                        </div>
+                    </div>
+
+                    <!-- ===================== PRIMEIRA PÁGINA: IDENTIFICAÇÃO ESSENCIAL ===================== -->
+                    <group>
+                        <group string="Identificação">
+                            <field name="complex_type"/>
+                            <field name="owner_id"/>
+                            <field name="registration"/>
+                            <field name="iptu_number"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Construção">
+                            <field name="construction_year"/>
+                            <field name="construction_standard"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="tag_ids" widget="many2many_tags"/>
+                    </group>
+
+                    <!-- ===================== NOTEBOOK COM TABS ORGANIZADAS ===================== -->
+                    <notebook>
+                        <!-- TAB 1: LOCALIZAÇÃO -->
+                        <page string="Localização" id="tab_location">
+                            <group string="Endereço">
+                                <group>
+                                    <field name="address"/>
+                                    <field name="address_number"/>
+                                    <field name="neighborhood"/>
+                                </group>
+                                <group>
+                                    <field name="city"/>
+                                    <field name="state_name"/>
+                                    <field name="zip_code" onchange="_onchange_zip_code" help="Digite o CEP (8 dígitos) para buscar dados automaticamente"/>
+                                    <field name="country_id"/>
+                                </group>
+                                <group>
+                                    <button name="action_search_zip_code" type="object" string="🔍 Buscar CEP"
+                                            class="btn-link" help="Busca dados de endereço pelo CEP (ViaCEP)"/>
+                                </group>
+                            </group>
+                            <group string="Geolocalização">
+                                <group>
+                                    <field name="latitude"/>
+                                    <field name="longitude"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- TAB 2: CARACTERÍSTICAS FÍSICAS -->
+                        <page string="Características" id="tab_characteristics">
+                            <group string="Dimensões">
+                                <group>
+                                    <field name="land_area"/>
+                                    <field name="total_gla"/>
+                                </group>
+                                <group>
+                                    <field name="floors"/>
+                                    <field name="parking_total"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- TAB 3: FINANCEIRO &amp; KPIs -->
+                        <page string="Financeiro &amp; KPIs" id="tab_financial">
+                            <group string="Avaliação">
+                                <group>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="asset_value"/>
+                                </group>
+                            </group>
+                            <group string="Custos Operacionais Anuais">
+                                <group>
+                                    <field name="iptu_annual"/>
+                                    <field name="foro_annual"/>
+                                    <field name="condominium_monthly"/>
+                                    <field name="total_annual_costs" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="KPIs de Ocupação">
+                                <group>
+                                    <field name="unit_count" readonly="1"/>
+                                    <field name="units_rented" readonly="1"/>
+                                    <field name="units_available" readonly="1"/>
+                                    <field name="occupancy_rate" readonly="1" string="Ocupação (%)"/>
+                                </group>
+                                <group>
+                                    <field name="total_monthly_rent" readonly="1"/>
+                                    <field name="noi_monthly" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <!-- TAB 4: UNIDADES -->
+                        <page string="Unidades" id="tab_units">
+                            <field name="asset_ids" context="{'default_complex_id': id}">
+                                <list decoration-success="status == 'rented'"
+                                      decoration-info="status == 'available'"
+                                      decoration-muted="status == 'inactive'">
+                                    <field name="unit_identifier" string="Unidade"/>
+                                    <field name="unit_type"/>
+                                    <field name="floor"/>
+                                    <field name="gla" string="ABL (m²)"/>
+                                    <field name="rental_value"/>
+                                    <field name="current_monthly_rent"/>
+                                    <field name="active_contract_id" string="Contrato Ativo"/>
+                                    <field name="status" widget="badge"
+                                           decoration-success="status == 'rented'"
+                                           decoration-info="status == 'available'"
+                                           decoration-warning="status in ('maintenance','negotiating')"
+                                           decoration-muted="status == 'inactive'"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- TAB 5: DESCRIÇÃO LEGAL -->
+                        <page string="Descrição Legal" id="tab_legal">
+                            <field name="legal_description"/>
+                        </page>
+
+                        <!-- TAB 6: EXTENSÕES DE OUTROS MÓDULOS -->
+                        <!-- document_core pode adicionar: tab_documents (documentos vinculados) -->
+                        <!-- governance pode adicionar: tab_governance_cases (casos de governança) -->
+                        <!-- Padrão: Módulos externos usam xpath para inserir antes desta linha -->
+
+                        <!-- TAB 7: OBSERVAÇÕES &amp; COMUNICAÇÕES -->
+                        <page string="Observações &amp; Comunicações" id="tab_notes_comms">
+                            <notebook>
+                                <page string="Observações">
+                                    <field name="notes"/>
+                                </page>
+                                <page string="Comunicações">
+                                    <chatter/>
+                                </page>
+                            </notebook>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== KANBAN ==================== -->
+    <record id="view_property_complex_kanban" model="ir.ui.view">
+        <field name="name">property.complex.kanban</field>
+        <field name="model">property.complex</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="complex_type" quick_create="false" class="o_property_complex_kanban">
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="complex_type"/>
+                <field name="city"/>
+                <field name="unit_count"/>
+                <field name="units_rented"/>
+                <field name="units_available"/>
+                <field name="occupancy_rate"/>
+                <field name="owner_id"/>
+                <field name="total_monthly_rent"/>
+                <field name="noi_monthly"/>
+                <field name="asset_value"/>
+                <field name="tag_ids"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_property_complex_card">
+                            <div class="o_property_complex_card_header">
+                                <div class="o_property_complex_image_placeholder">
+                                    <i class="fa fa-building" role="img" aria-label="Complexo" title="Complexo"/>
+                                </div>
+
+                                <div class="o_property_complex_header_info">
+                                    <div class="o_property_complex_title">
+                                        <field name="name"/>
+                                    </div>
+                                    <div class="o_property_complex_reference text-muted">
+                                        <i class="fa fa-hashtag me-1" title="Referência"/>
+                                        <field name="reference"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="o_property_complex_card_body">
+                                <div class="o_property_complex_location text-muted">
+                                    <i class="fa fa-map-marker me-1" title="Localização"/>
+                                    <span t-if="record.city.raw_value">
+                                        <field name="city"/>
+                                    </span>
+                                    <span t-if="!record.city.raw_value">Localização não informada</span>
+                                </div>
+
+                                <div class="o_property_complex_meta">
+                                    <span class="o_meta_chip">
+                                        <i class="fa fa-building-o me-1" title="Tipo"/>
+                                        <field name="complex_type"/>
+                                    </span>
+                                    <span t-if="record.owner_id.value" class="o_meta_chip">
+                                        <i class="fa fa-user-o me-1" title="Proprietário"/>
+                                        <field name="owner_id"/>
+                                    </span>
+                                </div>
+
+                                <div class="o_property_complex_units">
+                                    <div class="o_unit_box">
+                                        <div class="o_unit_value"><field name="unit_count"/></div>
+                                        <div class="o_unit_label">Total</div>
+                                    </div>
+                                    <div class="o_unit_box success">
+                                        <div class="o_unit_value"><field name="units_rented"/></div>
+                                        <div class="o_unit_label">Alugadas</div>
+                                    </div>
+                                    <div class="o_unit_box info">
+                                        <div class="o_unit_value"><field name="units_available"/></div>
+                                        <div class="o_unit_label">Disponíveis</div>
+                                    </div>
+                                </div>
+
+                                <div class="o_property_complex_occupancy">
+                                    <div class="o_occupancy_label">Ocupação</div>
+                                    <div class="o_occupancy_value">
+                                        <field name="occupancy_rate"/> %
+                                    </div>
+                                </div>
+
+                                <div class="o_property_complex_financials">
+                                    <div t-if="record.total_monthly_rent.raw_value" class="o_financial_box">
+                                        <div class="o_financial_label">Aluguel mensal</div>
+                                        <div class="o_financial_value">
+                                            <field name="total_monthly_rent"/>
+                                        </div>
+                                    </div>
+                                    <div t-if="record.noi_monthly.raw_value" class="o_financial_box">
+                                        <div class="o_financial_label">NOI mensal</div>
+                                        <div class="o_financial_value">
+                                            <field name="noi_monthly"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <field name="tag_ids" widget="many2many_tags" class="mt-2" options="{'color_field': 'color'}"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_complex_search" model="ir.ui.view">
+        <field name="name">property.complex.search</field>
+        <field name="model">property.complex</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="city"/>
+                <field name="owner_id"/>
+                <field name="tag_ids"/>
+                <filter string="Arquivados" name="archived" domain="[('active','=',False)]"/>
+                <separator/>
+                <filter string="Por Tipo" name="group_type" context="{'group_by': 'complex_type'}"/>
+                <filter string="Por Cidade" name="group_city" context="{'group_by': 'city'}"/>
+                <filter string="Por Proprietário" name="group_owner" context="{'group_by': 'owner_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_complex" model="ir.actions.act_window">
+        <field name="name">Complexos</field>
+        <field name="res_model">property.complex</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Cadastre seu primeiro complexo!</p>
+        </field>
+    </record>
+
+</odoo>

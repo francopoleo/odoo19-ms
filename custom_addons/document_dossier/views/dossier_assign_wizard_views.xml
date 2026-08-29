@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dossier_assign_wizard_form" model="ir.ui.view">
+        <field name="name">dossier.assign.wizard.form</field>
+        <field name="model">dossier.assign.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Atribuir Dossiê">
+                <sheet>
+                    <div class="alert alert-info mb-3" role="alert">
+                        <strong>Dossiê documental</strong><br/>
+                        Crie ou selecione um dossiê para organizar os documentos deste registro. Os documentos individuais existentes podem ser vinculados ao dossiê sem perder o vínculo original.
+                    </div>
+                    <group>
+                        <field name="target_model" invisible="1"/>
+                        <field name="target_id" invisible="1"/>
+                        <field name="target_name" readonly="1"/>
+                        <field name="mode" widget="radio"/>
+                    </group>
+                    <group invisible="mode != 'select'">
+                        <field name="dossier_id" required="mode == 'select'" options="{'no_create_edit': True}"/>
+                    </group>
+                    <group invisible="mode != 'create'">
+                        <group>
+                            <field name="name" required="mode == 'create'"/>
+                            <field name="process_id" required="mode == 'create'"/>
+                            <field name="template_id" domain="[('active','=',True)]"/>
+                        </group>
+                        <group>
+                            <field name="responsible_id"/>
+                            <field name="description"/>
+                        </group>
+                    </group>
+                    <separator string="Documentos"/>
+                    <group>
+                        <field name="include_existing_documents"/>
+                        <field name="include_related_documents" invisible="not include_existing_documents"/>
+                        <field name="create_template_documents"/>
+                        <field name="create_only_missing" invisible="not create_template_documents"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_assign_dossier" type="object" string="Atribuir Dossiê" class="btn-primary"/>
+                    <button string="Cancelar" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

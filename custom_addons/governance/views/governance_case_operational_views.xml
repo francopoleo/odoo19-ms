@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_governance_case_communication_list" model="ir.ui.view">
+        <field name="name">governance.case.communication.list</field>
+        <field name="model">governance.case.communication</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="communication_datetime"/>
+                <field name="name"/>
+                <field name="case_id"/>
+                <field name="communication_type" widget="badge"/>
+                <field name="direction" widget="badge"/>
+                <field name="partner_id" optional="show"/>
+                <field name="responsible_id" optional="show"/>
+                <field name="requires_response" optional="show"/>
+                <field name="response_deadline" optional="show"/>
+                <field name="response_received" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_governance_case_communication_form" model="ir.ui.view">
+        <field name="name">governance.case.communication.form</field>
+        <field name="model">governance.case.communication</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_case" type="object" string="Abrir Caso" class="btn-secondary"/>
+                    <button name="action_register_response" type="object" string="Registrar Resposta" invisible="response_received == True"/>
+                    <button name="action_create_pending" type="object" string="Gerar Pendência"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="case_id"/>
+                            <field name="communication_datetime"/>
+                            <field name="communication_type"/>
+                            <field name="direction"/>
+                        </group>
+                        <group>
+                            <field name="participant_id"/>
+                            <field name="partner_id"/>
+                            <field name="responsible_id"/>
+                            <field name="requires_response"/>
+                            <field name="response_deadline" invisible="requires_response == False"/>
+                            <field name="response_received"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detalhes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_governance_case_communication_search" model="ir.ui.view">
+        <field name="name">governance.case.communication.search</field>
+        <field name="model">governance.case.communication</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="case_id"/>
+                <field name="partner_id"/>
+                <field name="responsible_id"/>
+                <filter string="Saída" name="out" domain="[('direction','=','out')]"/>
+                <filter string="Entrada" name="in" domain="[('direction','=','in')]"/>
+                <filter string="Exige Resposta" name="req_resp" domain="[('requires_response','=',True)]"/>
+                <filter string="Sem Resposta" name="no_resp" domain="[('requires_response','=',True),('response_received','=',False)]"/>
+                <filter string="Atraso de Resposta" name="resp_overdue" domain="[('requires_response','=',True),('response_received','=',False),('response_deadline','&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Agrupar por Caso" name="grp_case" context="{'group_by':'case_id'}"/>
+                <filter string="Agrupar por Tipo" name="grp_type" context="{'group_by':'communication_type'}"/>
+                <filter string="Agrupar por Responsável" name="grp_resp" context="{'group_by':'responsible_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_governance_case_communication" model="ir.actions.act_window">
+        <field name="name">Comunicações</field>
+        <field name="res_model">governance.case.communication</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_req_resp': 1}</field>
+        <field name="help" type="html">
+            <p>Registre notificações, contatos, respostas pendentes e tentativas de follow-up.</p>
+        </field>
+    </record>
+
+    <record id="view_governance_case_pending_list" model="ir.ui.view">
+        <field name="name">governance.case.pending.list</field>
+        <field name="model">governance.case.pending</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="case_id"/>
+                <field name="responsible_id" optional="show"/>
+                <field name="participant_id" optional="show"/>
+                <field name="stage_id" optional="show"/>
+                <field name="priority" widget="priority"/>
+                <field name="due_date"/>
+                <field name="is_overdue" optional="show"/>
+                <field name="state" widget="badge"/>
+                <button name="action_mark_done" type="object" string="Concluir" invisible="state != 'open'"/>
+                <button name="action_reopen" type="object" string="Reabrir" invisible="state != 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_governance_case_pending_form" model="ir.ui.view">
+        <field name="name">governance.case.pending.form</field>
+        <field name="model">governance.case.pending</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_case" type="object" string="Abrir Caso" class="btn-secondary"/>
+                    <button name="action_mark_done" type="object" string="Concluir" invisible="state != 'open'" class="btn-primary"/>
+                    <button name="action_reopen" type="object" string="Reabrir" invisible="state != 'done'"/>
+                    <button name="action_cancel" type="object" string="Cancelar" invisible="state == 'cancel'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,done,cancel"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="case_id"/>
+                            <field name="responsible_id"/>
+                            <field name="participant_id"/>
+                            <field name="partner_id"/>
+                            <field name="stage_id"/>
+                        </group>
+                        <group>
+                            <field name="priority" widget="priority"/>
+                            <field name="due_date"/>
+                            <field name="date_done" readonly="1"/>
+                            <field name="communication_id"/>
+                            <field name="response_id"/>
+                            <field name="is_overdue" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descrição">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_governance_case_pending_search" model="ir.ui.view">
+        <field name="name">governance.case.pending.search</field>
+        <field name="model">governance.case.pending</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="case_id"/>
+                <field name="responsible_id"/>
+                <field name="participant_id"/>
+                <field name="stage_id"/>
+                <filter string="Abertas" name="open" domain="[('state','=','open')]"/>
+                <filter string="Obrigatórias" name="required" domain="[('required','=',True),('state','=','open')]"/>
+                <filter string="Atrasadas" name="overdue" domain="[('is_overdue','=',True)]"/>
+                <filter string="Próx. 7 Dias" name="next_7" domain="[('deadline_bucket','=','next_7'),('state','=','open')]"/>
+                <filter string="Concluídas" name="done" domain="[('state','=','done')]"/>
+                <separator/>
+                <filter string="Agrupar por Caso" name="grp_case" context="{'group_by':'case_id'}"/>
+                <filter string="Agrupar por Responsável" name="grp_resp" context="{'group_by':'responsible_id'}"/>
+                <filter string="Agrupar por Status" name="grp_state" context="{'group_by':'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_governance_case_pending" model="ir.actions.act_window">
+        <field name="name">Pendências</field>
+        <field name="res_model">governance.case.pending</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','=','open')]</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p>Acompanhe providências abertas, responsáveis, prazos e pendências obrigatórias.</p>
+        </field>
+    </record>
+
+    <record id="action_governance_case_attention" model="ir.actions.act_window">
+        <field name="name">Casos em Atenção</field>
+        <field name="res_model">governance.case</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">['|', ('work_queue_status', '=', 'urgent'), ('work_queue_status', '=', 'attention')]</field>
+        <field name="context">{'search_default_needs_attention': 1}</field>
+    </record>
+
+    <record id="action_governance_case_response_attention" model="ir.actions.act_window">
+        <field name="name">Solicitações sem Resposta</field>
+        <field name="res_model">governance.case.communication</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('requires_response','=',True),('response_received','=',False)]</field>
+        <field name="context">{'search_default_no_resp': 1}</field>
+    </record>
+
+    <record id="action_governance_case_required_pendings" model="ir.actions.act_window">
+        <field name="name">Pendências Obrigatórias</field>
+        <field name="res_model">governance.case.pending</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('required','=',True),('state','=','open')]</field>
+        <field name="context">{'search_default_required': 1}</field>
+        <field name="help" type="html">
+            <p>Fila priorizada de obrigações ainda não concluídas.</p>
+        </field>
+    </record>
+
+
+    <record id="action_governance_case_pending_overdue" model="ir.actions.act_window">
+        <field name="name">Pendências Atrasadas</field>
+        <field name="res_model">governance.case.pending</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','=','open'),('is_overdue','=',True)]</field>
+        <field name="context">{'search_default_overdue': 1}</field>
+    </record>
+
+    <record id="action_governance_case_pending_next_7" model="ir.actions.act_window">
+        <field name="name">Pendências Próx. 7 Dias</field>
+        <field name="res_model">governance.case.pending</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','=','open'),('deadline_bucket','=','next_7')]</field>
+        <field name="context">{'search_default_next_7': 1}</field>
+    </record>
+
+</odoo>

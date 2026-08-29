@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         DASHBOARD FORM VIEW
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="view_document_dashboard_form" model="ir.ui.view">
+        <field name="name">document.dashboard.form</field>
+        <field name="model">document.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Painel Operacional Documental" create="false" edit="false" delete="false">
+                <sheet>
+
+                    <!-- ── Cabeçalho ──────────────────────────── -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 style="margin:0;font-size:20px;font-weight:700;color:#1a1a2e;">
+                                Painel Operacional — Documentos
+                            </h2>
+                            <div style="font-size:12px;color:#6c757d;margin-top:2px;">
+                                Visão consolidada de documentos, dossiês e ciclos de vida em tempo real
+                            </div>
+                        </div>
+                        <button name="action_refresh" type="object"
+                                class="btn btn-outline-secondary btn-sm">
+                            <i class="fa fa-refresh" title="Atualizar"/> Atualizar
+                        </button>
+                    </div>
+
+                    <!-- ══════════════════════════════════════════
+                         SEÇÃO 1 — VISÃO GERAL
+                    ══════════════════════════════════════════ -->
+                    <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px;">
+                        Visão Geral
+                    </div>
+                    <div class="row g-3 mb-4">
+
+                        <!-- Total de Documentos -->
+                        <div class="col-md-3">
+                            <div style="background:#f8f9fa;border:1px solid #dee2e6;border-radius:10px;padding:18px 12px;text-align:center;">
+                                <div style="font-size:38px;font-weight:800;color:#495057;line-height:1;">
+                                    <field name="total_documents" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:11px;color:#6c757d;margin-top:6px;font-weight:600;">Total de Documentos</div>
+                                <button name="action_view_all_documents" type="object"
+                                        class="btn btn-link btn-sm p-0 mt-1" style="font-size:11px;">
+                                    Ver todos
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Documentos Completos -->
+                        <div class="col-md-3">
+                            <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:18px 12px;text-align:center;">
+                                <div style="font-size:38px;font-weight:800;color:#16a34a;line-height:1;">
+                                    <field name="complete_documents" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:11px;color:#166534;margin-top:6px;font-weight:700;">Completos</div>
+                                <button name="action_view_complete_documents" type="object"
+                                        class="btn btn-success btn-sm mt-2" style="font-size:11px;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Documentos Incompletos -->
+                        <div class="col-md-3">
+                            <div style="background:#fef2f2;border:2px solid #dc2626;border-radius:10px;padding:18px 12px;text-align:center;">
+                                <div style="font-size:38px;font-weight:800;color:#dc2626;line-height:1;">
+                                    <field name="incomplete_documents" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:11px;color:#991b1b;margin-top:6px;font-weight:700;">Incompletos</div>
+                                <button name="action_view_incomplete_documents" type="object"
+                                        class="btn btn-danger btn-sm mt-2" style="font-size:11px;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ══════════════════════════════════════════
+                         SEÇÃO 2 — AÇÃO IMEDIATA
+                    ══════════════════════════════════════════ -->
+                    <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px;">
+                        Ação Imediata
+                    </div>
+                    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;">
+
+                        <!-- Vencidos -->
+                        <div style="flex:1;min-width:140px;">
+                            <div style="background:#fef2f2;border:2px solid #dc2626;border-radius:8px;padding:14px 10px;text-align:center;height:100%;">
+                                <div style="font-size:32px;font-weight:800;color:#dc2626;line-height:1;">
+                                    <field name="expired_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:9px;color:#991b1b;margin-top:4px;font-weight:700;text-transform:uppercase;">Vencidos</div>
+                                <button name="action_view_expired" type="object"
+                                        class="btn btn-danger btn-sm mt-1" style="font-size:9px;padding:3px 8px;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- A Vencer -->
+                        <div style="flex:1;min-width:140px;">
+                            <div style="background:#fffbeb;border:2px solid #d97706;border-radius:8px;padding:14px 10px;text-align:center;height:100%;">
+                                <div style="font-size:32px;font-weight:800;color:#d97706;line-height:1;">
+                                    <field name="expiring_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:9px;color:#92400e;margin-top:4px;font-weight:700;text-transform:uppercase;">A Vencer</div>
+                                <button name="action_view_expiring" type="object"
+                                        class="btn btn-warning btn-sm mt-1" style="font-size:9px;padding:3px 8px;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sem Arquivo -->
+                        <div style="flex:1;min-width:140px;">
+                            <div style="background:#fed7aa;border:2px solid #ea580c;border-radius:8px;padding:14px 10px;text-align:center;height:100%;">
+                                <div style="font-size:32px;font-weight:800;color:#ea580c;line-height:1;">
+                                    <field name="missing_file_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:9px;color:#9a3412;margin-top:4px;font-weight:700;text-transform:uppercase;">Sem Arquivo</div>
+                                <button name="action_view_missing_files" type="object"
+                                        class="btn btn-sm mt-1" style="font-size:9px;padding:3px 8px;background:#ea580c;color:white;border:none;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Validação Pendente -->
+                        <div style="flex:1;min-width:140px;">
+                            <div style="background:#f3e8ff;border:2px solid #8b5cf6;border-radius:8px;padding:14px 10px;text-align:center;height:100%;">
+                                <div style="font-size:32px;font-weight:800;color:#8b5cf6;line-height:1;">
+                                    <field name="pending_validation_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:9px;color:#6d28d9;margin-top:4px;font-weight:700;text-transform:uppercase;">Validação</div>
+                                <button name="action_view_pending_validation" type="object"
+                                        class="btn btn-sm mt-1" style="font-size:9px;padding:3px 8px;background:#8b5cf6;color:white;border:none;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ══════════════════════════════════════════
+                         SEÇÃO 3 — SAÚDE E REVISÕES
+                    ══════════════════════════════════════════ -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Revisões Periódicas -->
+                        <div class="col-md-6">
+                            <div style="background:#fff;border:1px solid #dee2e6;border-radius:10px;padding:16px 20px;">
+                                <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+                                    Revisões Periódicas
+                                </div>
+                                <div class="row g-2 text-center">
+                                    <!-- Atrasadas -->
+                                    <div class="col-4">
+                                        <div style="background:#fef2f2;border-radius:8px;padding:12px 8px;">
+                                            <div style="font-size:28px;font-weight:800;color:#dc2626;">
+                                                <field name="review_overdue_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#991b1b;font-weight:600;">Atrasadas</div>
+                                            <button name="action_view_review_overdue" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#dc2626;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Próximas -->
+                                    <div class="col-4">
+                                        <div style="background:#fffbeb;border-radius:8px;padding:12px 8px;">
+                                            <div style="font-size:28px;font-weight:800;color:#d97706;">
+                                                <field name="review_due_soon_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#92400e;font-weight:600;">Próximas</div>
+                                            <button name="action_view_review_due_soon" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#d97706;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Atualizadas -->
+                                    <div class="col-4">
+                                        <div style="background:#f0fdf4;border-radius:8px;padding:12px 8px;">
+                                            <div style="font-size:28px;font-weight:800;color:#16a34a;">
+                                                <field name="review_up_to_date_count" readonly="1" nolabel="1"/>
+                                            </div>
+                                            <div style="font-size:10px;color:#166534;font-weight:600;">Atualizadas</div>
+                                            <button name="action_view_review_up_to_date" type="object"
+                                                    class="btn btn-link btn-sm p-0" style="font-size:10px;color:#16a34a;">
+                                                Ver
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ══════════════════════════════════════════
+                         SEÇÃO 4 — MINHA OPERAÇÃO
+                    ══════════════════════════════════════════ -->
+                    <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px;">
+                        Minha Operação
+                    </div>
+                    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;">
+
+                        <!-- Meus Documentos -->
+                        <div style="flex:1;min-width:140px;">
+                            <div style="background:#eff6ff;border:2px solid #2563eb;border-radius:8px;padding:14px 10px;text-align:center;height:100%;">
+                                <div style="font-size:32px;font-weight:800;color:#2563eb;line-height:1;">
+                                    <field name="my_docs_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:9px;color:#1e40af;margin-top:4px;font-weight:700;text-transform:uppercase;">Meus Docs</div>
+                                <button name="action_view_my_docs" type="object"
+                                        class="btn btn-link btn-sm p-0 mt-1" style="font-size:9px;color:#2563eb;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Meus Vencidos -->
+                        <div style="flex:1;min-width:140px;">
+                            <div style="background:#fef2f2;border:2px solid #dc2626;border-radius:8px;padding:14px 10px;text-align:center;height:100%;">
+                                <div style="font-size:32px;font-weight:800;color:#dc2626;line-height:1;">
+                                    <field name="my_expired_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:9px;color:#991b1b;margin-top:4px;font-weight:700;text-transform:uppercase;">Vencidos</div>
+                                <button name="action_view_my_expired" type="object"
+                                        class="btn btn-link btn-sm p-0 mt-1" style="font-size:9px;color:#dc2626;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Meus a Vencer -->
+                        <div style="flex:1;min-width:140px;">
+                            <div style="background:#fffbeb;border:2px solid #d97706;border-radius:8px;padding:14px 10px;text-align:center;height:100%;">
+                                <div style="font-size:32px;font-weight:800;color:#d97706;line-height:1;">
+                                    <field name="my_expiring_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:9px;color:#92400e;margin-top:4px;font-weight:700;text-transform:uppercase;">A Vencer</div>
+                                <button name="action_view_my_expiring" type="object"
+                                        class="btn btn-link btn-sm p-0 mt-1" style="font-size:9px;color:#d97706;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Minhas Revisões Atrasadas -->
+                        <div style="flex:1;min-width:140px;">
+                            <div style="background:#fdf2f8;border:2px solid #ec4899;border-radius:8px;padding:14px 10px;text-align:center;height:100%;">
+                                <div style="font-size:32px;font-weight:800;color:#ec4899;line-height:1;">
+                                    <field name="my_review_overdue_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:9px;color:#9d174d;margin-top:4px;font-weight:700;text-transform:uppercase;">Revisão</div>
+                                <button name="action_view_my_review_overdue" type="object"
+                                        class="btn btn-link btn-sm p-0 mt-1" style="font-size:9px;color:#ec4899;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Meus Incompletos -->
+                        <div style="flex:1;min-width:140px;">
+                            <div style="background:#f3e8ff;border:2px solid #8b5cf6;border-radius:8px;padding:14px 10px;text-align:center;height:100%;">
+                                <div style="font-size:32px;font-weight:800;color:#8b5cf6;line-height:1;">
+                                    <field name="my_missing_count" readonly="1" nolabel="1"/>
+                                </div>
+                                <div style="font-size:9px;color:#6d28d9;margin-top:4px;font-weight:700;text-transform:uppercase;">Incompletos</div>
+                                <button name="action_view_my_missing" type="object"
+                                        class="btn btn-link btn-sm p-0 mt-1" style="font-size:9px;color:#8b5cf6;">
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ══════════════════════════════════════════
+                         SEÇÃO 5 — ATALHOS RÁPIDOS
+                    ══════════════════════════════════════════ -->
+                    <div style="font-size:11px;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:2px;">
+                        Atalhos Rápidos
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <button name="action_shortcut_documents" type="object"
+                                    class="btn btn-outline-secondary btn-sm me-2">
+                                <i class="fa fa-file"/> Todos os Documentos
+                            </button>
+                            <button name="action_shortcut_expiring" type="object"
+                                    class="btn btn-outline-warning btn-sm me-2">
+                                <i class="fa fa-calendar"/> A Vencer
+                            </button>
+                            <button name="action_shortcut_validation" type="object"
+                                    class="btn btn-outline-danger btn-sm">
+                                <i class="fa fa-check-circle"/> Validação
+                            </button>
+                        </div>
+                    </div>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         ACTION
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="action_document_dashboard" model="ir.actions.act_window">
+        <field name="name">Painel Operacional</field>
+        <field name="res_model">document.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+</odoo>

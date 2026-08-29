@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="case_type_triagem_geral" model="governance.case.type">
+            <field name="name">Triagem Geral</field>
+            <field name="code">TRIAGEM</field>
+            <field name="default_priority">1</field>
+            <field name="sla_days">10</field>
+            <field name="color">8</field>
+            <field name="sequence">0</field>
+            <field name="initial_stage_id" ref="governance.stage_planned"/>
+            <field name="waiting_stage_id" ref="governance.stage_waiting"/>
+            <field name="no_response_stage_id" ref="governance.stage_no_response"/>
+            <field name="done_stage_id" ref="governance.stage_done"/>
+            <field name="closed_stage_id" ref="governance.stage_closed"/>
+            <field name="allowed_stage_ids" eval="[(6, 0, [ref('governance.stage_planned'), ref('governance.stage_sent'), ref('governance.stage_waiting'), ref('governance.stage_partial'), ref('governance.stage_no_response'), ref('governance.stage_done'), ref('governance.stage_closed')])]"/>
+        </record>
+
+        <record id="email_channel_governance_general" model="governance.email.channel">
+            <field name="name">Governança Geral</field>
+            <field name="sequence">1</field>
+            <field name="alias_name">governance</field>
+            <field name="case_type_id" ref="governance.case_type_triagem_geral"/>
+            <field name="allowed_case_type_ids" eval="[(6, 0, [ref('governance.case_type_triagem_geral'), ref('governance.case_type_juridico'), ref('governance.case_type_financeiro'), ref('governance.case_type_documental'), ref('governance.case_type_compliance'), ref('governance.case_type_operacional'), ref('governance.case_type_reclamacao')])]"/>
+            <field name="requires_triage">1</field>
+            <field name="auto_assign_type">1</field>
+            <field name="priority">1</field>
+            <field name="notes"><![CDATA[
+                <p>Entrada ampla para assuntos que ainda precisam de classificação.</p>
+                <p>Após análise, reclassifique o Tipo de Caso e conclua a triagem.</p>
+            ]]></field>
+        </record>
+
+        <record id="email_channel_juridico" model="governance.email.channel">
+            <field name="name">Jurídico</field>
+            <field name="sequence">10</field>
+            <field name="alias_name">juridico</field>
+            <field name="case_type_id" ref="governance.case_type_juridico"/>
+            <field name="allowed_case_type_ids" eval="[(6, 0, [ref('governance.case_type_juridico'), ref('governance.case_type_documental'), ref('governance.case_type_compliance')])]"/>
+            <field name="requires_triage">0</field>
+            <field name="auto_assign_type">1</field>
+            <field name="priority">2</field>
+        </record>
+
+        <record id="email_channel_documental" model="governance.email.channel">
+            <field name="name">Documental</field>
+            <field name="sequence">20</field>
+            <field name="alias_name">documental</field>
+            <field name="case_type_id" ref="governance.case_type_documental"/>
+            <field name="allowed_case_type_ids" eval="[(6, 0, [ref('governance.case_type_documental'), ref('governance.case_type_juridico'), ref('governance.case_type_compliance')])]"/>
+            <field name="requires_triage">0</field>
+            <field name="auto_assign_type">1</field>
+            <field name="priority">1</field>
+        </record>
+
+        <record id="email_channel_financeiro_governance" model="governance.email.channel">
+            <field name="name">Financeiro de Governança</field>
+            <field name="sequence">30</field>
+            <field name="alias_name">financeiro.governance</field>
+            <field name="case_type_id" ref="governance.case_type_financeiro"/>
+            <field name="allowed_case_type_ids" eval="[(6, 0, [ref('governance.case_type_financeiro'), ref('governance.case_type_juridico'), ref('governance.case_type_compliance')])]"/>
+            <field name="requires_triage">0</field>
+            <field name="auto_assign_type">1</field>
+            <field name="priority">2</field>
+        </record>
+
+    </data>
+</odoo>

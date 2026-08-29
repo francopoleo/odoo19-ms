@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!--
+        Métodos de pagamento contábil para PIX (account.payment.method).
+        Distintos de payment.method (provedor online):
+        estes aparecem no wizard "Registrar Pagamento" de faturas/contas.
+    -->
+
+    <record id="account_payment_method_pix_inbound" model="account.payment.method">
+        <field name="name">PIX</field>
+        <field name="code">pix</field>
+        <field name="payment_type">inbound</field>
+    </record>
+
+    <record id="account_payment_method_pix_outbound" model="account.payment.method">
+        <field name="name">PIX</field>
+        <field name="code">pix</field>
+        <field name="payment_type">outbound</field>
+    </record>
+
+</odoo>

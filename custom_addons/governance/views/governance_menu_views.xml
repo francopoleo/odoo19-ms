@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_governance_root"
+              name="Governança"
+              web_icon="governance,static/description/icon.png"
+              sequence="20" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_operation_root"
+              name="Operação Diária"
+              parent="menu_governance_root"
+              sequence="10" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_monitoring_root"
+              name="Monitoramento e Alertas"
+              parent="menu_governance_root"
+              sequence="20" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_registry_root"
+              name="Cadastros Operacionais"
+              parent="menu_governance_root"
+              sequence="30" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_dashboard"
+              name="Painel Operacional"
+              parent="menu_governance_root"
+              action="action_governance_dashboard"
+              sequence="5" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_cases"
+              name="Central de Casos"
+              parent="menu_governance_operation_root"
+              action="action_governance_case"
+              sequence="10" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_work_queue"
+              name="Fila Geral"
+              parent="menu_governance_operation_root"
+              action="action_governance_work_queue"
+              sequence="50" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_my_work_queue"
+              name="Minha Operação"
+              parent="menu_governance_operation_root"
+              action="action_governance_my_work_queue"
+              sequence="60" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_communications"
+              name="Comunicações"
+              parent="menu_governance_operation_root"
+              action="action_governance_case_communication"
+              sequence="20" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_pendings"
+              name="Pendências"
+              parent="menu_governance_operation_root"
+              action="action_governance_case_pending"
+              sequence="30" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_responses"
+              name="Respostas Formais"
+              parent="menu_governance_operation_root"
+              action="action_governance_case_response"
+              sequence="40" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_executive_panel"
+              name="Painel Executivo"
+              parent="menu_governance_monitoring_root"
+              action="action_governance_executive_panel"
+              sequence="10" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_attention_cases"
+              name="Casos em Atenção"
+              parent="menu_governance_monitoring_root"
+              action="action_governance_case_attention"
+              sequence="20" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_response_attention"
+              name="Solicitações sem Resposta"
+              parent="menu_governance_monitoring_root"
+              action="action_governance_case_response_attention"
+              sequence="30" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_required_pendings"
+              name="Pendências Obrigatórias"
+              parent="menu_governance_monitoring_root"
+              action="action_governance_case_required_pendings"
+              sequence="40" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_pending_overdue"
+              name="Pendências Atrasadas"
+              parent="menu_governance_monitoring_root"
+              action="action_governance_case_pending_overdue"
+              sequence="50" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_pending_next_7"
+              name="Pendências Próx. 7 Dias"
+              parent="menu_governance_monitoring_root"
+              action="action_governance_case_pending_next_7"
+              sequence="60" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_pending_calendar" name="Agenda de Pendências" parent="menu_governance_monitoring_root" action="common_base.action_common_agenda_calendar_pending" sequence="34" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_calendar" name="Agenda de Governança" parent="menu_governance_monitoring_root" action="common_base.action_common_agenda_calendar_governance" sequence="35" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_email_tests_monitoring" name="Testes de E-mail" parent="menu_governance_monitoring_root" action="action_governance_email_test" sequence="70" groups="governance.group_governance_manager"/>
+
+    <menuitem id="menu_governance_tags_root"
+              name="Tags e Classificações"
+              parent="menu_governance_registry_root"
+              action="action_governance_tag"
+              sequence="10" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_types_registry"
+              name="Tipos de Caso"
+              parent="menu_governance_registry_root"
+              action="action_governance_case_type"
+              sequence="20" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_participants_registry"
+              name="Participantes"
+              parent="menu_governance_registry_root"
+              action="action_governance_case_participant"
+              sequence="30" groups="base.group_user"/>
+
+    <!-- Configurações -->
+    <menuitem id="menu_governance_config"
+              name="Administração"
+              parent="menu_governance_root"
+              sequence="90" groups="governance.group_governance_manager"/>
+
+    <menuitem id="menu_governance_stages" groups="governance.group_governance_manager"
+              name="Etapas"
+              parent="menu_governance_config"
+              action="action_governance_stage"
+              sequence="10"/>
+
+    <menuitem id="menu_governance_case_types" groups="governance.group_governance_manager"
+              name="Tipos de Caso"
+              parent="menu_governance_config"
+              action="action_governance_case_type"
+              sequence="15"/>
+
+    <menuitem id="menu_governance_tags" groups="governance.group_governance_manager"
+              name="Tags"
+              parent="menu_governance_config"
+              action="action_governance_tag"
+              sequence="20"/>
+
+    <menuitem id="menu_governance_participants" groups="governance.group_governance_manager"
+              name="Participantes"
+              parent="menu_governance_config"
+              action="action_governance_case_participant"
+              sequence="25"/>
+
+    <menuitem id="menu_governance_pending_templates" groups="governance.group_governance_manager"
+              name="Modelos de Checklist"
+              parent="menu_governance_config"
+              action="action_governance_case_type_pending_template"
+              sequence="30"/>
+
+    <menuitem id="menu_governance_email_tests_config" name="Testes de E-mail" parent="menu_governance_config" action="action_governance_email_test" sequence="45" groups="governance.group_governance_manager"/>
+
+</odoo>

@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_asset_list" model="ir.ui.view">
+        <field name="name">property.asset.list</field>
+        <field name="model">property.asset</field>
+        <field name="arch" type="xml">
+            <list decoration-info="status == 'available'"
+                  decoration-success="status == 'rented'"
+                  decoration-warning="status in ('maintenance','negotiating')"
+                  decoration-muted="status == 'inactive'">
+                <field name="reference"/>
+                <field name="company_id" optional="show"/>
+                <field name="display_name_full" string="Imóvel"/>
+                <field name="complex_id" optional="show"/>
+                <field name="unit_identifier" optional="show"/>
+                <field name="asset_type"/>
+                <field name="city"/>
+                <field name="useful_area"/>
+                <field name="registration" optional="hide"/>
+                <field name="rental_value"/>
+                <field name="current_monthly_rent"/>
+                <field name="contract_count"/>
+                <field name="status" widget="badge"
+                       decoration-info="status == 'available'"
+                       decoration-success="status == 'rented'"
+                       decoration-primary="status == 'for_sale'"
+                       decoration-warning="status in ('maintenance','negotiating')"
+                       decoration-muted="status == 'inactive'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_asset_form" model="ir.ui.view">
+        <field name="name">property.asset.form</field>
+        <field name="model">property.asset</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_set_available" type="object" string="Disponível"
+                            invisible="status == 'available'" class="btn-primary"/>
+                    <button name="action_set_rented" type="object" string="Marcar Alugado"
+                            invisible="status != 'available'"/>
+                    <button name="action_set_for_sale" type="object" string="Colocar à Venda"
+                            invisible="status not in ['available','rented']"/>
+                    <button name="action_set_negotiating" type="object" string="Em Negociação"
+                            invisible="status != 'for_sale'"/>
+                    <button name="action_set_maintenance" type="object" string="Em Manutenção"
+                            invisible="status not in ['available','rented']"/>
+                    <button name="action_set_inactive" type="object" string="Inativar"
+                            invisible="status == 'inactive'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="available,rented,for_sale,negotiating,maintenance,inactive"/>
+                </header>
+                <sheet>
+                    <!-- Smart Buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_contracts" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o">
+                            <div class="o_stat_info">
+                                <field name="active_contract_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Ativos</span>
+                            </div>
+                        </button>
+                        <button name="action_view_contracts" type="object"
+                                class="oe_stat_button" icon="fa-files-o">
+                            <div class="o_stat_info">
+                                <field name="contract_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Contratos</span>
+                            </div>
+                        </button>
+                        <button name="action_view_media" type="object"
+                                class="oe_stat_button" icon="fa-camera"
+                                invisible="media_count == 0">
+                            <div class="o_stat_info">
+                                <field name="media_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Mídias</span>
+                            </div>
+                        </button>
+                        <button name="action_view_inspections" type="object"
+                                class="oe_stat_button" icon="fa-search">
+                            <div class="o_stat_info">
+                                <field name="inspection_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Vistorias</span>
+                            </div>
+                        </button>
+                        <button name="action_view_maintenance" type="object"
+                                class="oe_stat_button" icon="fa-wrench"
+                                invisible="maintenance_open_count == 0">
+                            <div class="o_stat_info">
+                                <field name="maintenance_open_count" class="o_stat_value text-warning"/>
+                                <span class="o_stat_text">Manutenção</span>
+                            </div>
+                        </button>
+                        <button name="action_view_maintenance" type="object"
+                                class="oe_stat_button" icon="fa-wrench"
+                                invisible="maintenance_open_count != 0">
+                            <div class="o_stat_info">
+                                <field name="maintenance_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Manutenção</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nome do imóvel..."/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="reference" readonly="1" class="text-muted"/>
+                            <field name="status" widget="badge" readonly="1" class="ms-2"/>
+                        </div>
+                    </div>
+
+                    <!-- ===================== PRIMEIRA PÁGINA: IDENTIFICAÇÃO ESSENCIAL ===================== -->
+                    <group>
+                        <group string="Identificação">
+                            <field name="asset_type"/>
+                            <field name="permitted_use"/>
+                            <field name="registration"/>
+                            <field name="iptu_number"/>
+                            <field name="owner_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Complexo / Unidade">
+                            <field name="complex_id" onchange="_onchange_complex_id"/>
+                            <field name="unit_identifier" invisible="not complex_id"/>
+                            <field name="unit_type" invisible="not complex_id"/>
+                            <field name="floor" invisible="not complex_id"/>
+                            <field name="gla" invisible="not complex_id"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="tag_ids" widget="many2many_tags"/>
+                    </group>
+
+                    <!-- ===================== NOTEBOOK COM TABS ORGANIZADAS ===================== -->
+                    <notebook>
+                        <!-- TAB 1: LOCALIZAÇÃO -->
+                        <page string="Localização" id="tab_location">
+                            <div class="text-muted small mb-2" invisible="not complex_id">
+                                <i class="fa fa-info-circle me-1"/>
+                                <span>Este endereço é sincronizado do complexo.</span>
+                            </div>
+                            <group string="Endereço">
+                                <group>
+                                    <field name="address" readonly="complex_id" force_save="1" help="Editável quando sem complexo vinculado"/>
+                                    <field name="address_number" readonly="complex_id" force_save="1" help="Editável quando sem complexo vinculado"/>
+                                    <field name="address_complement"/>
+                                    <field name="neighborhood" readonly="complex_id" force_save="1" help="Editável quando sem complexo vinculado"/>
+                                </group>
+                                <group>
+                                    <field name="city" readonly="complex_id" force_save="1" help="Editável quando sem complexo vinculado"/>
+                                    <field name="state_name" readonly="complex_id" force_save="1" help="Editável quando sem complexo vinculado"/>
+                                    <field name="zip_code" readonly="complex_id" force_save="1" help="Editável quando sem complexo vinculado. Use o botão buscar para preencher automaticamente." onchange="_onchange_zip_code"/>
+                                    <field name="country_id" readonly="complex_id" force_save="1"/>
+                                </group>
+                                <group>
+                                    <button name="action_search_zip_code" type="object" string="🔍 Buscar CEP"
+                                            invisible="complex_id" class="btn-link"
+                                            help="Busca dados de endereço pelo CEP (ViaCEP)"/>
+                                </group>
+                            </group>
+                            <group string="Geolocalização">
+                                <group>
+                                    <field name="latitude" readonly="complex_id" force_save="1" help="Editável quando sem complexo vinculado"/>
+                                    <field name="longitude" readonly="complex_id" force_save="1" help="Editável quando sem complexo vinculado"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- TAB 2: CARACTERÍSTICAS FÍSICAS -->
+                        <page string="Características" id="tab_characteristics">
+                            <group string="Dimensões">
+                                <group>
+                                    <field name="bedrooms"/>
+                                    <field name="bathrooms"/>
+                                    <field name="parking_spots"/>
+                                </group>
+                                <group>
+                                    <field name="total_area"/>
+                                    <field name="useful_area"/>
+                                    <field name="land_area"/>
+                                </group>
+                            </group>
+                            <group string="Construção">
+                                <group>
+                                    <field name="construction_year"/>
+                                    <field name="construction_standard"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- TAB 3: FINANCEIRO &amp;VALORES -->
+                        <page string="Valores" id="tab_financial">
+                            <group string="Avaliação">
+                                <group>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="asset_value"/>
+                                    <field name="market_value"/>
+                                </group>
+                            </group>
+                            <group string="Aluguel &amp; Receita">
+                                <group>
+                                    <field name="rental_value" help="Valor mensal de referência para novas locações"/>
+                                    <field name="current_monthly_rent" readonly="1" string="Aluguel Atual"/>
+                                </group>
+                            </group>
+                            <group string="Custos Operacionais Anuais">
+                                <group>
+                                    <field name="iptu_annual"/>
+                                    <field name="foro_annual"/>
+                                    <field name="condominium_monthly"/>
+                                    <field name="total_annual_costs" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- TAB 4: CONTRATOS -->
+                        <!-- TAB 5: GALERIA -->
+                        <!-- TAB 6: VISTORIAS -->
+                        <!-- TAB 7: MANUTENÇÕES -->
+                        <!-- TAB 8: MÍDIAS -->
+                        <!-- TAB 9: NOTAS &amp;COMUNICAÇÕES -->
+                        <!-- Espaço para extensões de outros módulos (document_core, governance, etc) -->
+                        <!-- Padrão de IDs para xpath em extensões: tab_* -->
+
+                        <!-- OPERAÇÕES (Contratos, Vistorias, Manutenção) - agrupados -->
+                        <page string="Operações" id="tab_operations">
+                            <notebook>
+                                <page string="Contratos">
+                                    <field name="contract_ids" mode="list">
+                                        <list>
+                                            <field name="reference"/>
+                                            <field name="contract_type"/>
+                                            <field name="partner_id"/>
+                                            <field name="start_date"/>
+                                            <field name="end_date"/>
+                                            <field name="monthly_rent"/>
+                                            <field name="days_to_expiry"/>
+                                            <field name="status" widget="badge"
+                                                   decoration-success="status == 'active'"
+                                                   decoration-warning="status in ('expiring','renewing')"
+                                                   decoration-danger="status in ('late','defaulting')"
+                                                   decoration-muted="status == 'closed'"/>
+                                        </list>
+                                    </field>
+                                </page>
+                                <page string="Vistorias">
+                                    <div class="alert alert-info" role="alert">
+                                        <p class="mb-0"><i class="fa fa-search" title="Vistorias"></i> Histórico de vistorias do imóvel. As fotos e relatórios ficam dentro de cada vistoria.</p>
+                                    </div>
+                                    <field name="inspection_ids" mode="list,form" context="{'default_asset_id': id}">
+                                        <list>
+                                            <field name="reference"/>
+                                            <field name="name"/>
+                                            <field name="inspection_type"/>
+                                            <field name="scheduled_date"/>
+                                            <field name="date"/>
+                                            <field name="inspector_id"/>
+                                            <field name="overall_condition"/>
+                                            <field name="status" widget="badge"/>
+                                        </list>
+                                    </field>
+                                </page>
+                                <page string="Manutenções">
+                                    <div class="alert alert-info" role="alert">
+                                        <p class="mb-0"><i class="fa fa-wrench" title="Manutenções"></i> Histórico de manutenção do imóvel. Evidências, antes/depois e documentos ficam dentro de cada manutenção.</p>
+                                    </div>
+                                    <field name="maintenance_ids" mode="list,form" context="{'default_asset_id': id}">
+                                        <list>
+                                            <field name="reference"/>
+                                            <field name="name"/>
+                                            <field name="maintenance_type"/>
+                                            <field name="priority" widget="priority"/>
+                                            <field name="vendor_id"/>
+                                            <field name="request_date"/>
+                                            <field name="scheduled_date"/>
+                                            <field name="cost_estimate"/>
+                                            <field name="cost_actual"/>
+                                            <field name="status" widget="badge"/>
+                                        </list>
+                                    </field>
+                                </page>
+                            </notebook>
+                        </page>
+
+                        <!-- TAB: EXTENSÕES DE OUTROS MÓDULOS -->
+                        <!-- property_website_integration adiciona: tab_gallery (galeria para website) -->
+                        <!-- document_core adiciona: tab_other_media (mídias complementares) -->
+                        <!-- governance pode adicionar: tab_governance_cases (casos de governança) -->
+                        <!-- Padrão: Módulos externos usam xpath para inserir antes desta linha -->
+
+                        <page string="Observações &amp; Comunicações" id="tab_notes_comms">
+                            <notebook>
+                                <page string="Observações">
+                                    <field name="notes"/>
+                                </page>
+                                <page string="Comunicações">
+                                    <chatter/>
+                                </page>
+                            </notebook>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== KANBAN ==================== -->
+    <record id="view_property_asset_kanban" model="ir.ui.view">
+        <field name="name">property.asset.kanban</field>
+        <field name="model">property.asset</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" quick_create="false" class="o_property_asset_kanban">
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="display_name_full"/>
+                <field name="asset_type"/>
+                <field name="status"/>
+                <field name="city"/>
+                <field name="neighborhood"/>
+                <field name="kanban_location"/>
+                <field name="bedrooms"/>
+                <field name="bathrooms"/>
+                <field name="parking_spots"/>
+                <field name="useful_area"/>
+                <field name="gla"/>
+                <field name="owner_id"/>
+                <field name="contract_count"/>
+                <field name="active_contract_count"/>
+                <field name="rental_value"/>
+                <field name="current_monthly_rent"/>
+                <field name="market_value"/>
+                <field name="inspection_count"/>
+                <field name="maintenance_count"/>
+                <field name="maintenance_open_count"/>
+                <field name="kanban_alert_count"/>
+                <field name="kanban_alert_level"/>
+                <field name="kanban_alert_summary"/>
+                <field name="tag_ids"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_property_asset_card">
+                            <div class="o_property_asset_card_header">
+                                <div class="o_property_asset_image_placeholder">
+                                    <i class="fa fa-building-o" role="img" aria-label="Sem imagem" title="Sem imagem"/>
+                                </div>
+
+                                <div class="o_property_asset_header_badges">
+                                    <span t-if="record.status.raw_value == 'available'" class="badge rounded-pill text-bg-success">
+                                        <field name="status"/>
+                                    </span>
+                                    <span t-if="record.status.raw_value == 'rented'" class="badge rounded-pill text-bg-info">
+                                        <field name="status"/>
+                                    </span>
+                                    <span t-if="record.status.raw_value == 'for_sale'" class="badge rounded-pill text-bg-primary">
+                                        <field name="status"/>
+                                    </span>
+                                    <span t-if="record.status.raw_value == 'negotiating'" class="badge rounded-pill text-bg-warning">
+                                        <field name="status"/>
+                                    </span>
+                                    <span t-if="record.status.raw_value == 'maintenance'" class="badge rounded-pill text-bg-warning">
+                                        <field name="status"/>
+                                    </span>
+                                    <span t-if="record.status.raw_value == 'inactive'" class="badge rounded-pill text-bg-secondary">
+                                        <field name="status"/>
+                                    </span>
+
+                                    <span t-if="record.kanban_alert_count.raw_value and record.kanban_alert_level.raw_value == 'danger'"
+                                          class="badge rounded-pill text-bg-danger">
+                                        <i class="fa fa-bell me-1" title="Alertas"/>
+                                        <field name="kanban_alert_count"/>
+                                    </span>
+                                    <span t-if="record.kanban_alert_count.raw_value and record.kanban_alert_level.raw_value != 'danger'"
+                                          class="badge rounded-pill text-bg-warning">
+                                        <i class="fa fa-bell me-1" title="Alertas"/>
+                                        <field name="kanban_alert_count"/>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="o_property_asset_card_body">
+                                <div class="o_property_asset_title_row">
+                                    <div>
+                                        <div class="o_property_asset_title">
+                                            <field name="display_name_full"/>
+                                        </div>
+                                        <div class="o_property_asset_reference text-muted">
+                                            <i class="fa fa-hashtag me-1" title="Referência"/>
+                                            <field name="reference"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="o_property_asset_location text-muted">
+                                    <i class="fa fa-map-marker me-1" title="Localização"/>
+                                    <span t-if="record.kanban_location.raw_value">
+                                        <field name="kanban_location"/>
+                                    </span>
+                                    <span t-if="!record.kanban_location.raw_value">Localização não informada</span>
+                                </div>
+
+                                <div class="o_property_asset_meta">
+                                    <span class="o_meta_chip">
+                                        <i class="fa fa-home me-1" title="Tipo do imóvel"/>
+                                        <field name="asset_type"/>
+                                    </span>
+                                    <span t-if="record.useful_area.raw_value" class="o_meta_chip">
+                                        <i class="fa fa-arrows-alt me-1" title="Área"/>
+                                        <field name="useful_area"/> m²
+                                    </span>
+                                    <span t-if="!record.useful_area.raw_value and record.gla.raw_value" class="o_meta_chip">
+                                        <i class="fa fa-arrows-alt me-1" title="Área"/>
+                                        <field name="gla"/> m² ABL
+                                    </span>
+                                    <span t-if="record.owner_id.value" class="o_meta_chip">
+                                        <i class="fa fa-user-o me-1" title="Proprietário"/>
+                                        <field name="owner_id"/>
+                                    </span>
+                                </div>
+
+                                <div class="o_property_asset_specs">
+                                    <div class="o_spec_box">
+                                        <div class="o_spec_value"><field name="bedrooms"/></div>
+                                        <div class="o_spec_label">Qts</div>
+                                    </div>
+                                    <div class="o_spec_box">
+                                        <div class="o_spec_value"><field name="bathrooms"/></div>
+                                        <div class="o_spec_label">Ban.</div>
+                                    </div>
+                                    <div class="o_spec_box">
+                                        <div class="o_spec_value"><field name="parking_spots"/></div>
+                                        <div class="o_spec_label">Vagas</div>
+                                    </div>
+                                </div>
+
+                                <div class="o_property_asset_prices">
+                                    <div class="o_price_box">
+                                        <div class="o_price_label">Locação de referência</div>
+                                        <div class="o_price_value">
+                                            <field name="rental_value"/>
+                                        </div>
+                                    </div>
+                                    <div t-if="record.current_monthly_rent.raw_value" class="o_price_box success">
+                                        <div class="o_price_label">Receita atual</div>
+                                        <div class="o_price_value">
+                                            <field name="current_monthly_rent"/>
+                                        </div>
+                                    </div>
+                                    <div t-if="record.market_value.raw_value" class="o_price_box">
+                                        <div class="o_price_label">Valor de mercado</div>
+                                        <div class="o_price_value">
+                                            <field name="market_value"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div t-if="record.kanban_alert_count.raw_value and record.kanban_alert_level.raw_value == 'danger'"
+                                     class="o_property_asset_alert_box is-danger">
+                                    <i class="fa fa-exclamation-triangle me-2" title="Alerta crítico"/>
+                                    <span><field name="kanban_alert_summary"/></span>
+                                </div>
+                                <div t-if="record.kanban_alert_count.raw_value and record.kanban_alert_level.raw_value != 'danger'"
+                                     class="o_property_asset_alert_box is-warning">
+                                    <i class="fa fa-bell-o me-2" title="Atenção"/>
+                                    <span><field name="kanban_alert_summary"/></span>
+                                </div>
+
+                                <field name="tag_ids" widget="many2many_tags" class="mt-2" options="{'color_field': 'color'}"/>
+                            </div>
+
+                            <div class="o_property_asset_card_footer">
+                                <span class="o_footer_kpi">
+                                    <i class="fa fa-files-o me-1" title="Contratos"/>
+                                    <field name="contract_count"/> contratos
+                                </span>
+                                <span class="o_footer_kpi">
+                                    <i class="fa fa-search me-1" title="Vistorias"/>
+                                    <field name="inspection_count"/> vistorias
+                                </span>
+                                <span t-if="record.maintenance_open_count.raw_value" class="o_footer_kpi is-warning">
+                                    <i class="fa fa-wrench me-1" title="Manutenção"/>
+                                    <field name="maintenance_open_count"/> aberta(s)
+                                </span>
+                                <span t-if="!record.maintenance_open_count.raw_value" class="o_footer_kpi">
+                                    <i class="fa fa-wrench me-1" title="Manutenção"/>
+                                    <field name="maintenance_count"/> manutenção
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_asset_search" model="ir.ui.view">
+        <field name="name">property.asset.search</field>
+        <field name="model">property.asset</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="registration"/>
+                <field name="city"/>
+                <field name="complex_id"/>
+                <field name="tag_ids"/>
+                <filter string="Disponível" name="available" domain="[('status','=','available')]"/>
+                <filter string="Alugado" name="rented" domain="[('status','=','rented')]"/>
+                <filter string="À Venda" name="for_sale" domain="[('status','=','for_sale')]"/>
+                <filter string="Em Negociação" name="negotiating" domain="[('status','=','negotiating')]"/>
+                <filter string="Manutenção" name="maintenance" domain="[('status','=','maintenance')]"/>
+                <filter string="Inativo" name="inactive" domain="[('status','=','inactive')]"/>
+                <separator/>
+                <filter string="Apenas Unidades de Complexo" name="in_complex" domain="[('complex_id','!=',False)]"/>
+                <filter string="Sem Contrato" name="no_contract" domain="[('contract_count','=',0)]"/>
+                <filter string="Arquivados" name="archived" domain="[('active','=',False)]"/>
+                <separator/>
+                <filter string="Por Complexo" name="group_complex" context="{'group_by':'complex_id'}"/>
+                <filter string="Por Tipo" name="group_type" context="{'group_by':'asset_type'}"/>
+                <filter string="Por Status" name="group_status" context="{'group_by':'status'}"/>
+                <filter string="Por Cidade" name="group_city" context="{'group_by':'city'}"/>
+                <filter string="Por Padrão" name="group_standard" context="{'group_by':'construction_standard'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_asset" model="ir.actions.act_window">
+        <field name="name">Imóveis</field>
+        <field name="res_model">property.asset</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Cadastre seu primeiro imóvel!</p>
+        </field>
+    </record>
+
+</odoo>

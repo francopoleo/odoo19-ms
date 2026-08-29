@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_common_tag_user,common.tag.user,model_common_tag,base.group_user,1,0,0,0
+access_common_tag_manager,common.tag.manager,model_common_tag,group_common_manager,1,1,1,1
+access_common_sequence_user,common.sequence.user,model_common_sequence,base.group_system,1,0,0,0
+access_common_sequence_manager,common.sequence.manager,model_common_sequence,group_common_manager,1,1,1,1
+access_common_config_user,common.config.user,model_common_config,base.group_user,1,0,0,0
+access_common_config_system,common.config.system,model_common_config,base.group_system,1,1,1,1
+access_access_overview_user,access.overview.user,model_access_overview,base.group_user,1,0,0,0
+access_common_agenda_event_user,common.agenda.event.user,model_common_agenda_event,base.group_user,1,1,1,0
+access_common_agenda_event_manager,common.agenda.event.manager,model_common_agenda_event,group_common_agenda_manager,1,1,1,1
+access_common_agenda_event_system,common.agenda.event.system,model_common_agenda_event,base.group_system,1,1,1,1

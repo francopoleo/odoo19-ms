@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_property_contract_history" model="ir.sequence">
+        <field name="name">Property Contract History</field>
+        <field name="code">property.contract.history</field>
+        <field name="prefix">CTRT-%(y)s-</field>
+        <field name="padding">5</field>
+    </record>
+</odoo>

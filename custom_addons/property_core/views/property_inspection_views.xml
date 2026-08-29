@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <!-- ==================== LIST ==================== -->
+    <record id="view_property_inspection_list" model="ir.ui.view">
+        <field name="name">property.inspection.list</field>
+        <field name="model">property.inspection</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'done'" decoration-warning="status == 'scheduled'" decoration-muted="status == 'cancelled'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="inspection_type"/>
+                <field name="asset_id"/>
+                <field name="contract_id"/>
+                <field name="scheduled_date"/>
+                <field name="date"/>
+                <field name="inspector_id"/>
+                <field name="overall_condition"/>
+                <field name="status" widget="badge" decoration-info="status == 'draft'" decoration-warning="status == 'scheduled'" decoration-success="status == 'done'" decoration-muted="status == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ==================== FORM ==================== -->
+    <record id="view_property_inspection_form" model="ir.ui.view">
+        <field name="name">property.inspection.form</field>
+        <field name="model">property.inspection</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_schedule" type="object" string="Agendar" invisible="status != 'draft'" class="btn-primary"/>
+                    <button name="action_done" type="object" string="Concluir Vistoria" invisible="status not in ['draft','scheduled']" class="btn-primary"/>
+                    <button name="action_cancel" type="object" string="Cancelar" invisible="status in ['done','cancelled']"/>
+                    <button name="action_reset_draft" type="object" string="Reabrir" invisible="status != 'cancelled'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,scheduled,done"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+
+                        <button name="action_view_media" type="object" class="oe_stat_button" icon="fa-camera" invisible="media_count == 0">
+                            <div class="o_stat_info">
+                                <field name="media_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Mídias</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="reference" readonly="1" class="text-muted"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Vistoria">
+                            <field name="inspection_type"/>
+                            <field name="asset_id"/>
+                            <field name="contract_id" domain="[('asset_id','=',asset_id)]"/>
+                        </group>
+                        <group string="Datas">
+                            <field name="scheduled_date"/>
+                            <field name="date"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Responsáveis">
+                            <field name="inspector_id"/>
+                            <field name="present_ids" widget="many2many_tags"/>
+                        </group>
+                        <group string="Resultado" invisible="status == 'draft'">
+                            <field name="overall_condition"/>
+                        </group>
+                    </group>
+
+                    <group string="Laudo" invisible="status not in ['done','scheduled']">
+                        <field name="report" nolabel="1"/>
+                    </group>
+
+                    <group string="Observações">
+                        <field name="observations" nolabel="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Mídias da Vistoria"><div class="alert alert-info" role="alert"><p class="mb-0"><i class="fa fa-paperclip" title="Mídias"/><strong>Fotos e arquivos:</strong> use a mesma área para evidências fotográficas, relatórios, checklists, scans, PDFs e demais anexos da vistoria.</p></div><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Mídias e Arquivos da Vistoria</h5><button name="action_open_bulk_media_wizard" type="object" class="btn btn-primary btn-sm" icon="fa-upload" string="Adicionar Fotos/Arquivos"/></div><field name="media_ids" mode="kanban,list,form" context="{'default_inspection_id': id, 'default_asset_id': asset_id, 'default_purpose': 'inspection', 'default_context_selection': 'inspection', 'default_upload_kind': 'auto'}"><kanban class="o_kanban_small"><field name="id"/><field name="name"/><field name="image_512"/><field name="content_kind"/><field name="category_id"/><field name="file_name"/><field name="file_size_human"/><field name="location_note"/><field name="caption"/><templates><t t-name="card"><div class="oe_kanban_global_click position-relative h-100"><t t-if="record.image_512.raw_value"><img t-attf-src="/web/image/property.media/#{record.id.raw_value}/image_512" alt="Mídia" style="width:100%; height:150px; object-fit:cover; display:block;"/></t><t t-else=""><div style="width:100%; height:150px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;"><i class="fa fa-file-o" title="Arquivo" style="font-size:36px; color:#999;"/></div></t><div class="oe_kanban_details pt-2 px-2"><h6 class="mb-1 text-truncate"><span t-esc="record.name.value"/></h6><div class="small text-muted mb-1"><t t-if="record.file_name.value"><span t-esc="record.file_name.value"/></t></div><t t-if="record.location_note.value"><div class="small text-muted"><span t-esc="record.location_note.value"/></div></t><div class="mt-2"><t t-if="record.content_kind.raw_value == 'document'"><span class="badge bg-secondary">Arquivo</span></t><t t-if="record.content_kind.raw_value == 'image'"><span class="badge bg-info">Imagem</span></t><t t-if="record.category_id.value"><span class="badge bg-light text-dark ms-1"><span t-esc="record.category_id.value"/></span></t></div></div></div></t></templates></kanban><list editable="bottom"><field name="purpose" invisible="1"/><field name="sequence"/><field name="name"/><field name="content_kind"/><field name="category_id"/><field name="file_name" optional="show"/><field name="file_size_human" optional="show"/><field name="location_note" optional="show"/><field name="caption" optional="hide"/></list><form string="Mídias da Vistoria"><sheet><field name="purpose" invisible="1"/><field name="asset_id" invisible="1"/><field name="inspection_id" invisible="1"/><field name="maintenance_id" invisible="1"/><group><group string="Classificação"><field name="name"/><field name="content_kind"/><field name="category_id"/><field name="sequence"/></group><group string="Arquivo"><field name="file_name" placeholder="Nome original do arquivo"/><field name="file_size_human" readonly="1"/></group></group><group string="Foto / Imagem" invisible="content_kind != 'image'"><field name="image_1920" widget="image" options="{'size': [512, 512]}" nolabel="1"/></group><group string="Arquivo / Documento" invisible="content_kind != 'document'"><field name="file_data" filename="file_name" nolabel="1"/></group><group><field name="caption"/><field name="location_note"/><field name="date_taken"/></group><group string="Descrição"><field name="description" nolabel="1"/></group></sheet></form></field></page><page string="Comunicações">
+                            <chatter/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ==================== SEARCH ==================== -->
+    <record id="view_property_inspection_search" model="ir.ui.view">
+        <field name="name">property.inspection.search</field>
+        <field name="model">property.inspection</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="asset_id"/>
+                <field name="contract_id"/>
+                <field name="inspector_id"/>
+                <filter string="Agendadas" name="scheduled" domain="[('status','=','scheduled')]"/>
+                <filter string="Concluídas" name="done" domain="[('status','=','done')]"/>
+                <filter string="Entrada" name="entry" domain="[('inspection_type','=','entry')]"/>
+                <filter string="Saída" name="exit" domain="[('inspection_type','=','exit')]"/>
+                <separator/>
+                <filter string="Por Imóvel" name="group_asset" context="{'group_by':'asset_id'}"/>
+                <filter string="Por Tipo" name="group_type" context="{'group_by':'inspection_type'}"/>
+                <filter string="Por Status" name="group_status" context="{'group_by':'status'}"/>
+                <filter string="Por Mês" name="group_date" context="{'group_by':'date:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ==================== ACTION ==================== -->
+    <record id="action_property_inspection" model="ir.actions.act_window">
+        <field name="name">Vistorias</field>
+        <field name="res_model">property.inspection</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_scheduled": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Registre a primeira vistoria!</p>
+        </field>
+    </record>
+
+</odoo>
