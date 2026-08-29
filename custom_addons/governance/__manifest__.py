@@ -5,7 +5,7 @@
     "summary": "Casos de governança, auditoria, SLA e canais institucionais de e-mail",
     "author": "Franco Poleo / Manuela Silva",
     "license": "LGPL-3",
-    "depends": ["mail", "common_base"],
+    "depends": ["mail", "common_base", "common_help_center"],
     "data": [
         "security/governance_security.xml",
         "security/ir.model.access.csv",
