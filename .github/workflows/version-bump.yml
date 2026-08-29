@@ -1,0 +1,72 @@
+name: Auto Version Bump
+
+on:
+  push:
+    paths:
+      - 'custom_addons/**'
+      - 'account_addons/**'
+      - 'utils_addons/**'
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v19.0.0")
+          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+          echo "Latest tag: $latest_tag"
+
+      - name: Bump version
+        id: bump_version
+        run: |
+          latest_tag=${{ steps.get_tag.outputs.latest_tag }}
+          # Extract version numbers
+          version=${latest_tag#v}
+          major=$(echo $version | cut -d. -f1)
+          minor=$(echo $version | cut -d. -f2)
+          patch=$(echo $version | cut -d. -f3)
+
+          # Increment patch
+          new_patch=$((patch + 1))
+          new_version="v${major}.${minor}.${new_patch}"
+
+          echo "old_version=$latest_tag" >> $GITHUB_OUTPUT
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          echo "Version bumped: $latest_tag → $new_version"
+
+      - name: Create version file
+        run: |
+          echo "${{ steps.bump_version.outputs.new_version }}" > VERSION
+          cat VERSION
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit version bump
+        run: |
+          git add VERSION custom_addons/ account_addons/ utils_addons/
+          git commit -m "[RELEASE] Bump version to ${{ steps.bump_version.outputs.new_version }}" \
+            --allow-empty || echo "Nothing to commit"
+
+      - name: Create tag
+        run: |
+          git tag -a ${{ steps.bump_version.outputs.new_version }} \
+            -m "Release ${{ steps.bump_version.outputs.new_version }}" || \
+            echo "Tag already exists"
+
+      - name: Push changes
+        run: |
+          git push origin main --tags -f
