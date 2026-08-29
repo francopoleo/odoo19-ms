@@ -227,7 +227,7 @@
         <field name="code">legal_eviction_action</field>
         <field name="sequence">100</field>
         <field name="category_id" ref="document_core.doc_category_legal"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -245,7 +245,7 @@
         <field name="code">legal_possession_action</field>
         <field name="sequence">110</field>
         <field name="category_id" ref="document_core.doc_category_legal"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -263,7 +263,7 @@
         <field name="code">legal_tenant_action</field>
         <field name="sequence">120</field>
         <field name="category_id" ref="document_core.doc_category_legal"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -281,7 +281,7 @@
         <field name="code">legal_extrajudicial_notice</field>
         <field name="sequence">130</field>
         <field name="category_id" ref="document_core.doc_category_legal"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -1029,7 +1029,7 @@
         <field name="code">governance_legal_opinion</field>
         <field name="sequence">550</field>
         <field name="category_id" ref="document_core.doc_category_governance"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -1047,7 +1047,7 @@
         <field name="code">governance_audit_report</field>
         <field name="sequence">560</field>
         <field name="category_id" ref="document_core.doc_category_governance"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -1083,7 +1083,7 @@
         <field name="code">governance_evidence</field>
         <field name="sequence">580</field>
         <field name="category_id" ref="document_core.doc_category_governance"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -1100,7 +1100,7 @@
         <field name="code">governance_incident_report</field>
         <field name="sequence">590</field>
         <field name="category_id" ref="document_core.doc_category_governance"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -1118,7 +1118,7 @@
         <field name="code">governance_minutes</field>
         <field name="sequence">600</field>
         <field name="category_id" ref="document_core.doc_category_governance"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -1135,7 +1135,7 @@
         <field name="code">governance_formal_communication</field>
         <field name="sequence">610</field>
         <field name="category_id" ref="document_core.doc_category_governance"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -1431,7 +1431,7 @@
         <field name="code">legal_misc_document</field>
         <field name="sequence">999</field>
         <field name="category_id" ref="document_core.doc_category_legal"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -1516,7 +1516,7 @@
         <field name="code">governance_misc_document</field>
         <field name="sequence">999</field>
         <field name="category_id" ref="document_core.doc_category_governance"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -1784,7 +1784,7 @@
         <field name="code">legal_default_notice</field>
         <field name="sequence">250</field>
         <field name="category_id" ref="document_core.doc_category_legal"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -1801,7 +1801,7 @@
         <field name="code">legal_collection_letter</field>
         <field name="sequence">260</field>
         <field name="category_id" ref="document_core.doc_category_legal"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -5068,7 +5068,7 @@
         <field name="code">privacy_lgpd_consent</field>
         <field name="sequence">10</field>
         <field name="category_id" ref="document_core.doc_category_privacy_authorization"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -5086,7 +5086,7 @@
         <field name="code">privacy_data_processing_authorization</field>
         <field name="sequence">20</field>
         <field name="category_id" ref="document_core.doc_category_privacy_authorization"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -5104,7 +5104,7 @@
         <field name="code">privacy_credit_check_consent</field>
         <field name="sequence">30</field>
         <field name="category_id" ref="document_core.doc_category_privacy_authorization"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -5122,7 +5122,7 @@
         <field name="code">privacy_document_sharing_authorization</field>
         <field name="sequence">40</field>
         <field name="category_id" ref="document_core.doc_category_privacy_authorization"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -5140,7 +5140,7 @@
         <field name="code">privacy_image_use_authorization</field>
         <field name="sequence">50</field>
         <field name="category_id" ref="document_core.doc_category_privacy_authorization"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -5158,7 +5158,7 @@
         <field name="code">privacy_data_retention_term</field>
         <field name="sequence">60</field>
         <field name="category_id" ref="document_core.doc_category_privacy_authorization"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -5176,7 +5176,7 @@
         <field name="code">privacy_revocation_request</field>
         <field name="sequence">70</field>
         <field name="category_id" ref="document_core.doc_category_privacy_authorization"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
@@ -5193,7 +5193,7 @@
         <field name="code">privacy_misc_document</field>
         <field name="sequence">999</field>
         <field name="category_id" ref="document_core.doc_category_privacy_authorization"/>
-        <field name="scope">governance</field>
+        <field name="scope">document</field>
         <field name="default_access_level">legal</field>
         <field name="allow_website_publish" eval="False"/>
         <field name="website_default_visibility">portal</field>
