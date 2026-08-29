@@ -2,7 +2,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
-class PropertyMediaBulkWizardDocumentExt(models.Model):
+class PropertyMediaBulkWizardDocumentExt(models.TransientModel):
     _inherit = "property.media.bulk.wizard"
 
     document_id = fields.Many2one("document.document", string="Documento")
