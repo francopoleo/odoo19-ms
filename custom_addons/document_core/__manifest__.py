@@ -1,6 +1,6 @@
 {
     "name": "Document Core",
-    "version": "19.0.1.16.0",
+    "version": "19.0.1.17.0",
     "category": "Real Estate/Documents",
     "summary": "Gestão documental com pré-visualização, validação, ciclos de revisão e completude",
     "author": "Franco Poleo / Manuela Silva",
