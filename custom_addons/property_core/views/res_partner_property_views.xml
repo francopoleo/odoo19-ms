@@ -82,7 +82,6 @@
         <field name="res_model">res.partner</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[("category_id", "ilike", "Corretor")]</field>
-        <field name="context">{"default_category_id": [(4, ref('res_partner_category_property_broker'))]}</field>
     </record>
 
     <!-- ==================== INQUILINOS (FILTERED VIEW) ==================== -->
@@ -127,7 +126,6 @@
         <field name="res_model">res.partner</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[("category_id", "ilike", "Corretora")]</field>
-        <field name="context">{"default_category_id": [(4, ref('res_partner_category_property_brokerage'))]}</field>
     </record>
 
     <!-- ==================== CONSTRUTORAS (FILTERED VIEW) ==================== -->
