@@ -17,7 +17,6 @@
 
                         <group name="property_identification" string="Identificação Imobiliária">
                             <field name="property_role_ids" widget="many2many_tags" readonly="1"/>
-                            <field name="cpf_cnpj"/>
                             <field name="mobile"/>
                         </group>
 
@@ -62,7 +61,6 @@
                 <field name="email"/>
                 <field name="phone"/>
                 <field name="mobile"/>
-                <field name="cpf_cnpj"/>
             </list>
         </field>
     </record>

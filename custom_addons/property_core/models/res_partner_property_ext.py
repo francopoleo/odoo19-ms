@@ -11,11 +11,6 @@ class ResPartnerPropertyExt(models.Model):
     )
 
     # ==================== CAMPOS PROPRIETÁRIO ====================
-    cpf_cnpj = fields.Char(
-        string="CPF / CNPJ",
-        help="Documento fiscal para identificação e obrigações contratuais/fiscais.",
-    )
-
     bank_name = fields.Char(
         string="Banco",
         help="Banco para repasses e pagamentos.",

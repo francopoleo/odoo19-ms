@@ -34,9 +34,6 @@
                                 <td style="width:50%; vertical-align:top;">
                                     <strong>Proprietário:</strong>
                                     <t t-out="s.owner_id.name"/><br/>
-                                    <t t-if="s.owner_id.cpf_cnpj">
-                                        CPF/CNPJ: <t t-out="s.owner_id.cpf_cnpj"/><br/>
-                                    </t>
                                     <t t-if="s.owner_id.email">
                                         E-mail: <t t-out="s.owner_id.email"/>
                                     </t>

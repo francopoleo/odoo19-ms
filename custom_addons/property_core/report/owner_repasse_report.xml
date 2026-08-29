@@ -38,9 +38,6 @@
                                 <td style="width:50%; vertical-align:top; padding-right:16px;">
                                     <strong style="font-size:11pt; color:#1a3a5c;">Proprietário</strong><br/>
                                     <t t-out="r.owner_id.name"/><br/>
-                                    <t t-if="r.owner_id.cpf_cnpj">
-                                        CPF/CNPJ: <t t-out="r.owner_id.cpf_cnpj"/><br/>
-                                    </t>
                                     <t t-if="r.owner_id.email">
                                         E-mail: <t t-out="r.owner_id.email"/><br/>
                                     </t>

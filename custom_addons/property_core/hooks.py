@@ -11,7 +11,6 @@ def _ensure_res_partner_schema(env):
     # List of columns to create: (column_name, column_type)
     columns_to_create = [
         ('mobile', 'varchar'),
-        ('cpf_cnpj', 'varchar'),
         ('creci', 'varchar'),
         ('commission_rate', 'numeric'),
         ('bank_name', 'varchar'),
