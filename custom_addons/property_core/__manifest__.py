@@ -24,7 +24,6 @@
         "data/property_rent_receipt_sequence.xml",
         "data/property_rent_payment_sequence.xml",
         "data/email_templates.xml",
-        "data/property_asset_silva.xml",
         "data/property_taxonomy_data.xml",
         "data/property_media_category_data.xml",
         "views/property_stakeholder_type_views.xml",

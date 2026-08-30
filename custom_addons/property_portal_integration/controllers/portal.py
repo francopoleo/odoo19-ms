@@ -22,10 +22,11 @@ class PropertyPortal(CustomerPortal):
                 ('status', 'not in', ['draft', 'cancelled']),
             ])
         if 'owner_asset_count' in counters:
-            owner = request.env['property.owner'].search([
-                ('partner_id', '=', partner.id)
-            ], limit=1)
-            values['owner_asset_count'] = len(owner.asset_ids) if owner else 0
+            # property_core usa res.partner como proprietário legal do imóvel.
+            # Não dependemos de um modelo opcional property.owner.
+            values['owner_asset_count'] = request.env['property.asset'].search_count([
+                ('owner_id', '=', partner.id)
+            ])
         return values
 
     # ==================== Contratos ====================
@@ -90,27 +91,25 @@ class PropertyPortal(CustomerPortal):
                 auth='user', website=True)
     def portal_my_properties(self, page=1, **kw):
         partner = request.env.user.partner_id
-        owner = request.env['property.owner'].search(
-            [('partner_id', '=', partner.id)], limit=1
-        )
-        if not owner:
-            return request.redirect('/my')
-
-        assets = owner.asset_ids
+        assets = request.env['property.asset'].search([('owner_id', '=', partner.id)])
+        active_contracts = request.env['property.contract'].search_count([
+            ('asset_id', 'in', assets.ids),
+            ('status', 'in', ('active', 'expiring', 'renewing')),
+        ]) if assets else 0
+        total_monthly_income = sum(assets.mapped('current_monthly_rent')) if assets else 0.0
         return request.render('property_portal_integration.portal_my_properties', {
-            'owner': owner,
+            'owner': partner,
             'assets': assets,
+            'active_contracts': active_contracts,
+            'total_monthly_income': total_monthly_income,
             'page_name': 'properties',
         })
 
     @http.route('/my/properties/<int:asset_id>', auth='user', website=True)
     def portal_property_detail(self, asset_id, **kw):
         partner = request.env.user.partner_id
-        owner = request.env['property.owner'].search(
-            [('partner_id', '=', partner.id)], limit=1
-        )
         asset = request.env['property.asset'].browse(asset_id)
-        if not owner or asset.owner_id != owner:
+        if not asset.exists() or asset.owner_id != partner:
             return request.redirect('/my')
 
         active_contracts = asset.contract_ids.filtered(
@@ -132,7 +131,7 @@ class PropertyPortal(CustomerPortal):
         gallery_by_role = {k: v for k, v in gallery_by_role.items() if v}
 
         return request.render('property_portal_integration.portal_property_detail', {
-            'owner': owner,
+            'owner': partner,
             'asset': asset,
             'active_contracts': active_contracts,
             'gallery': gallery,

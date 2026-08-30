@@ -28,6 +28,10 @@
             <!-- Adiciona tab Vínculos antes de Pessoas -->
             <xpath expr="//page[@name='description']" position="before">
                 <page string="Vínculos" name="links">
+                    <group string="Escopo do caso">
+                        <field name="case_scope"/>
+                        <field name="primary_asset_id"/>
+                    </group>
                     <!-- Imóveis -->
                     <group string="Imóveis Relacionados">
                         <field name="asset_ids" mode="list" nolabel="1">

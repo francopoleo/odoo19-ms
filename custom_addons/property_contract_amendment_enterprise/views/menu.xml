@@ -10,12 +10,6 @@
         a operação: Imóveis > Aditivos Contratuais.
     -->
 
-    <menuitem id="menu_property_contract_amendment_root"
-              name="Aditivos Contratuais"
-              parent="property_core.menu_property_root"
-              action="action_property_contract_amendment"
-              sequence="11"/>
-
     <menuitem id="menu_property_contract_amendments"
               name="Todos os Aditivos"
               parent="menu_property_contract_amendment_root"

@@ -54,7 +54,7 @@ Motivos:
 
 1. Evita poluir módulos produtivos com dados fictícios.
 2. Permite instalar/desinstalar a massa de teste de forma controlada.
-3. Usa o prefixo `DEMO-IMOB` para localizar e limpar os registros.
+3. Usa o sufixo `(DEMO-IMOB)` nos nomes para facilitar a leitura; a limpeza mantém compatibilidade com massas antigas que usavam prefixo.
 4. Usa XML apenas para cadastros estáveis, como templates de dossiê.
 5. Usa Python para dados relacionais e volumosos, onde CSV/XML ficariam frágeis.
 

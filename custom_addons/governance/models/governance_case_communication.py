@@ -1,4 +1,5 @@
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class GovernanceCaseCommunication(models.Model):
@@ -66,6 +67,8 @@ class GovernanceCaseCommunication(models.Model):
 
     name = fields.Char(string="Assunto", required=True, tracking=True)
     case_id = fields.Many2one("governance.case", string="Caso", required=True, ondelete="cascade", tracking=True)
+    obligation_id = fields.Many2one("governance.case.obligation", string="Solicitação/Obrigação", ondelete="set null", tracking=True)
+    response_id = fields.Many2one("governance.case.response", string="Resposta formal", ondelete="set null", tracking=True)
     company_id = fields.Many2one(related="case_id.company_id", store=True, readonly=True)
     communication_datetime = fields.Datetime(string="Data/Hora", default=fields.Datetime.now, required=True, tracking=True)
     communication_type = fields.Selection([
@@ -94,6 +97,14 @@ class GovernanceCaseCommunication(models.Model):
         ("draft", "Rascunho"),
         ("done", "Registrada"),
     ], string="Status", default="done", tracking=True)
+
+    @api.constrains("case_id", "obligation_id", "response_id")
+    def _check_related_case(self):
+        for record in self:
+            if record.obligation_id and record.obligation_id.case_id != record.case_id:
+                raise ValidationError(_("A obrigação precisa pertencer ao mesmo caso da comunicação."))
+            if record.response_id and record.response_id.case_id != record.case_id:
+                raise ValidationError(_("A resposta precisa pertencer ao mesmo caso da comunicação."))
 
     def _get_tracking_token(self):
         """Retorna o token de rastreamento, gerando um se não existir."""
@@ -164,6 +175,8 @@ class GovernanceCaseCommunication(models.Model):
                     vals["stage_id"] = partial_stage.id
             if vals:
                 case.write(vals)
+            if rec.obligation_id and rec.response_received:
+                rec.obligation_id.action_mark_received()
             partner = rec.partner_id or rec.participant_id.partner_id
             if partner and partner not in case.partner_ids:
                 case.write({"partner_ids": [(4, partner.id)]})
@@ -190,6 +203,7 @@ class GovernanceCaseCommunication(models.Model):
             "context": {
                 "default_case_id": self.case_id.id,
                 "default_communication_id": self.id,
+                "default_obligation_id": self.obligation_id.id,
                 "default_participant_id": self.participant_id.id,
                 "default_partner_id": self.partner_id.id,
                 "default_responsible_id": self.responsible_id.id or self.env.user.id,

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Catálogo de governança imobiliária. Processos operacionais detalhados ficam nos dossiês. -->
+        <record id="case_type_locacao" model="governance.case.type">
+            <field name="name">Locação e entrada do inquilino</field><field name="code">LOCACAO</field>
+            <field name="case_family">operations</field><field name="sequence">10</field><field name="color">10</field>
+            <field name="description">Acompanhar a locação desde a aprovação do interessado até a entrega das chaves, incluindo contrato, garantias e vistoria inicial.</field>
+        </record>
+        <record id="case_type_venda" model="governance.case.type">
+            <field name="name">Venda e transferência do imóvel</field><field name="code">VENDA</field>
+            <field name="case_family">operations</field><field name="sequence">11</field><field name="color">10</field>
+            <field name="description">Controlar proposta, análise documental, aprovação, assinatura, pagamento e transferência do imóvel vendido.</field>
+        </record>
+        <record id="case_type_aquisicao" model="governance.case.type">
+            <field name="name">Aquisição e entrada de imóvel</field><field name="code">AQUISICAO</field>
+            <field name="case_family">operations</field><field name="sequence">12</field><field name="color">10</field>
+            <field name="description">Organizar a avaliação, diligência, negociação, aprovação e documentação para incorporar um imóvel à carteira.</field>
+        </record>
+        <record id="case_type_contrato" model="governance.case.type">
+            <field name="name">Contrato, renovação e encerramento</field><field name="code">CONTRATO</field>
+            <field name="case_family">analysis</field><field name="sequence">20</field><field name="color">1</field>
+            <field name="description">Analisar elaboração, alteração, renovação, rescisão e encerramento de contratos imobiliários.</field>
+        </record>
+        <record id="case_type_despejo" model="governance.case.type">
+            <field name="name">Despejo e retomada da posse</field><field name="code">DESPEJO</field>
+            <field name="case_family">relationship</field><field name="sequence">21</field><field name="color">7</field>
+            <field name="description">Registrar a inadimplência ou outra causa de retomada, as notificações, a estratégia jurídica e a entrega do imóvel.</field>
+        </record>
+        <record id="case_type_cobranca" model="governance.case.type">
+            <field name="name">Cobrança de aluguel e encargos</field><field name="code">COBRANCA</field>
+            <field name="case_family">financial</field><field name="sequence">30</field><field name="color">3</field>
+            <field name="description">Acompanhar valores vencidos, contatos de cobrança, acordos, pagamentos e eventual encaminhamento jurídico.</field>
+        </record>
+        <record id="case_type_repasse" model="governance.case.type">
+            <field name="name">Repasse e prestação de contas ao proprietário</field><field name="code">REPASSE</field>
+            <field name="case_family">financial</field><field name="sequence">31</field><field name="color">3</field>
+            <field name="description">Conferir recebimentos, descontos, despesas, saldo e envio da prestação de contas ao proprietário.</field>
+        </record>
+        <record id="case_type_reajuste" model="governance.case.type">
+            <field name="name">Reajuste e revisão de valores</field><field name="code">REAJUSTE</field>
+            <field name="case_family">financial</field><field name="sequence">32</field><field name="color">3</field>
+            <field name="description">Calcular reajustes, validar o índice aplicável, comunicar as partes e atualizar o contrato e a cobrança.</field>
+        </record>
+        <record id="case_type_manutencao" model="governance.case.type">
+            <field name="name">Manutenção e reparo do imóvel</field><field name="code">MANUTENCAO</field>
+            <field name="case_family">operations</field><field name="sequence">40</field><field name="color">10</field>
+            <field name="description">Receber a solicitação, aprovar orçamento, acompanhar pintura, marcenaria, alvenaria, elétrica, hidráulica ou vidraçaria e validar a conclusão.</field>
+        </record>
+        <record id="case_type_vistoria" model="governance.case.type">
+            <field name="name">Vistoria de entrada, saída ou periódica</field><field name="code">VISTORIA</field>
+            <field name="case_family">operations</field><field name="sequence">41</field><field name="color">10</field>
+            <field name="description">Planejar a vistoria, registrar o estado do imóvel com evidências, comparar laudos e tratar divergências.</field>
+        </record>
+        <record id="case_type_condominio" model="governance.case.type">
+            <field name="name">Condomínio, taxas e serviços públicos</field><field name="code">CONDOMINIO</field>
+            <field name="case_family">operations</field><field name="sequence">42</field><field name="color">10</field>
+            <field name="description">Controlar cobranças e ocorrências de condomínio, água, energia, gás, internet e demais serviços ligados ao imóvel.</field>
+        </record>
+        <record id="case_type_sinistro" model="governance.case.type">
+            <field name="name">Sinistro e emergência predial</field><field name="code">SINISTRO</field>
+            <field name="case_family">operations</field><field name="sequence">43</field><field name="color">10</field>
+            <field name="description">Tratar vazamento, incêndio, alagamento, dano estrutural ou outra emergência, com isolamento, prestadores, seguro e evidências.</field>
+        </record>
+        <record id="case_type_diligencia" model="governance.case.type">
+            <field name="name">Diligência do proprietário, comprador ou inquilino</field><field name="code">DILIGENCIA</field>
+            <field name="case_family">analysis</field><field name="sequence">50</field><field name="color">4</field>
+            <field name="description">Verificar identidade, capacidade, titularidade, certidões, restrições e riscos antes de aprovar uma operação.</field>
+        </record>
+        <record id="case_type_licencas" model="governance.case.type">
+            <field name="name">Licenças, certidões e regularidade do imóvel</field><field name="code">REGULARIDADE</field>
+            <field name="case_family">analysis</field><field name="sequence">51</field><field name="color">4</field>
+            <field name="description">Acompanhar licenças, alvarás, habite-se, matrícula, certidões e demais requisitos de regularidade.</field>
+        </record>
+        <record id="case_type_lgpd" model="governance.case.type">
+            <field name="name">Privacidade e solicitação de dados</field><field name="code">PRIVACIDADE</field>
+            <field name="case_family">analysis</field><field name="sequence">52</field><field name="color">4</field>
+            <field name="description">Tratar solicitações de acesso, correção, eliminação ou compartilhamento de dados de clientes, moradores e proprietários.</field>
+        </record>
+        <record id="case_type_reclamacao_imovel" model="governance.case.type">
+            <field name="name">Reclamação de morador, proprietário ou fornecedor</field><field name="code">RECLAMACAO_IMOVEL</field>
+            <field name="case_family">relationship</field><field name="sequence">60</field><field name="color">7</field>
+            <field name="description">Registrar a reclamação, responder a parte, definir a solução e acompanhar o encerramento com histórico completo.</field>
+        </record>
+        <record id="case_type_fornecedor" model="governance.case.type">
+            <field name="name">Fornecedor, orçamento e aprovação de serviço</field><field name="code">FORNECEDOR</field>
+            <field name="case_family">operations</field><field name="sequence">61</field><field name="color">10</field>
+            <field name="description">Comparar propostas, aprovar fornecedor, registrar escopo, acompanhar execução e avaliar a entrega do serviço.</field>
+        </record>
+        <record id="case_type_corretagem" model="governance.case.type">
+            <field name="name">Corretagem, mandato e comissão</field><field name="code">CORRETAGEM</field>
+            <field name="case_family">financial</field><field name="sequence">62</field><field name="color">3</field>
+            <field name="description">Controlar exclusividade ou disponibilidade do mandato, corretor responsável, comissão, prazo e repasse da operação.</field>
+        </record>
+    </data>
+</odoo>

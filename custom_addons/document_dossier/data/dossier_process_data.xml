@@ -41,10 +41,10 @@
          ══════════════════════════════════════════════════════════════════ -->
 
     <record id="process_property_purchase" model="dossier.process">
-        <field name="name">Property Purchase / Compra de Imóvel</field>
+        <field name="name">Property Acquisition / Aquisição de Imóvel</field>
         <field name="domain">property</field>
         <field name="sequence">10</field>
-        <field name="description">Process for property acquisition including title verification, inspections, legal documentation, and financing.</field>
+        <field name="description">Abertura e análise da aquisição: proposta, matrícula, certidões, vistoria, financiamento, aprovação jurídica e transferência.</field>
         <field name="active">True</field>
     </record>
 
@@ -69,6 +69,54 @@
         <field name="domain">property</field>
         <field name="sequence">40</field>
         <field name="description">Process for property inspections including condition assessment, defect documentation, and remediation tracking.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_maintenance" model="dossier.process">
+        <field name="name">Property Maintenance / Manutenção do Imóvel</field>
+        <field name="domain">property</field>
+        <field name="sequence">50</field>
+        <field name="description">Registro da solicitação, diagnóstico, orçamento, aprovação, execução, comprovantes e encerramento da manutenção.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_rent_collection" model="dossier.process">
+        <field name="name">Rent Collection / Cobrança de Aluguel</field>
+        <field name="domain">property</field>
+        <field name="sequence">60</field>
+        <field name="description">Acompanhamento de parcelas vencidas, contatos, acordos, recebimentos, comprovantes e encerramento da cobrança.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_eviction" model="dossier.process">
+        <field name="name">Eviction Proceedings / Pedido de Despejo</field>
+        <field name="domain">property</field>
+        <field name="sequence">70</field>
+        <field name="description">Dossiê jurídico para inadimplência ou infração contratual: notificações, provas, análise jurídica, protocolo, decisões e cumprimento.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_owner_repasse" model="dossier.process">
+        <field name="name">Owner Settlement / Repasse ao Proprietário</field>
+        <field name="domain">property</field>
+        <field name="sequence">80</field>
+        <field name="description">Conferência das receitas, despesas, retenções, aprovação do extrato, comprovante bancário e comunicação ao proprietário.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_renewal" model="dossier.process">
+        <field name="name">Lease Renewal / Renovação de Locação</field>
+        <field name="domain">property</field>
+        <field name="sequence">90</field>
+        <field name="description">Avaliação do contrato, atualização de valores, negociação, aprovação, aditivo e coleta das assinaturas da renovação.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_termination" model="dossier.process">
+        <field name="name">Lease Termination / Encerramento de Locação</field>
+        <field name="domain">property</field>
+        <field name="sequence">100</field>
+        <field name="description">Formalização da saída, aviso prévio, vistoria final, reparos, acerto financeiro, entrega de chaves e encerramento contratual.</field>
         <field name="active">True</field>
     </record>
 

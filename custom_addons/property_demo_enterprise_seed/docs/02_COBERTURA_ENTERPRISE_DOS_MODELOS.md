@@ -48,6 +48,6 @@ Alguns modelos são dashboards, wizards, relatórios SQL ou assistentes transit�
 
 ## Critério de segurança
 
-Todos os novos registros usam o prefixo `DEMO-IMOB` em nomes, observações, códigos ou textos, permitindo limpeza pelo botão **Apagar massa DEMO-IMOB**.
+Todos os novos registros usam o sufixo `(DEMO-IMOB)` em nomes, observações, códigos ou textos, permitindo limpeza pelo botão **Apagar massa DEMO-IMOB**. O limpador também encontra o formato antigo com prefixo.
 
 O módulo continua com dependência dura apenas em `property_core`. As demais famílias são chamadas de forma condicional para evitar que uma falha temporária em `governance_documents`, `document_dossier`, `property_payment_proof`, OCR ou valuation impeça a instalação do seed.

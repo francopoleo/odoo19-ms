@@ -27,14 +27,21 @@ class PropertyAssetExt(models.Model):
         ("disabled", "Formulário Desabilitado"),
     ], string="Política do Formulário", default="open", required=True, tracking=True, help="Controla quem pode enviar interesse pelo site para este imóvel.")
     authorized_broker_ids = fields.Many2many(
-        "property.broker",
+        "res.partner",
         "property_asset_broker_rel",
         "asset_id",
         "broker_id",
         string="Corretores Autorizados",
+        domain=[("category_id.name", "ilike", "Corretor")],
         help="Corretores que podem visualizar e operar imóveis restritos."
     )
-    exclusive_broker_id = fields.Many2one("property.broker", string="Corretor Exclusivo", tracking=True, help="Corretor principal quando o imóvel estiver em regime de exclusividade.")
+    exclusive_broker_id = fields.Many2one(
+        "res.partner",
+        string="Corretor Exclusivo",
+        domain=[("category_id.name", "ilike", "Corretor")],
+        tracking=True,
+        help="Corretor principal quando o imóvel estiver em regime de exclusividade."
+    )
     is_exclusive = fields.Boolean("Imóvel Exclusivo", default=False, tracking=True, help="Marque quando a operação comercial do imóvel for exclusiva de um corretor ou grupo restrito.")
     hide_when_unavailable = fields.Boolean(
         "Ocultar quando indisponível", default=True, tracking=True,
@@ -93,8 +100,8 @@ class PropertyAssetExt(models.Model):
         self.ensure_one()
         user = user or self.env.user
         if not user or not user.exists() or user._is_public():
-            return self.env["property.broker"]
-        return self.env["property.broker"].sudo().search([("user_id", "=", user.id)], limit=1)
+            return self.env["res.partner"]
+        return self.env["res.partner"].sudo().search([("user_id", "=", user.id), ("category_id.name", "ilike", "Corretor")], limit=1)
 
     def can_user_view_on_website(self, user=None, broker=None):
         self.ensure_one()

@@ -28,7 +28,13 @@ class DocumentDocumentPortalExt(models.Model):
         if partner in document.shared_partner_ids:
             return True
 
-        return False
+        # Módulos especializados podem acrescentar vínculos de negócio
+        # (imóvel, contrato, condomínio etc.) sem duplicar esta política base.
+        return self._extend_portal_visibility(partner, document, False)
+
+    def _extend_portal_visibility(self, partner, document, is_visible):
+        """Ponto de extensão para regras de visibilidade específicas."""
+        return is_visible
 
     def get_portal_documents(self, partner=None):
         """Get documents visible to partner in portal."""

@@ -70,7 +70,7 @@
         <field name="res_model">res.partner</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[("category_id", "ilike", "Proprietário")]</field>
-        <field name="context">{"default_category_id": [(4, ref('res_partner_category_property_owner'))]}</field>
+        <field name="context" eval="{'default_category_id': [(4, ref('property_core.res_partner_category_property_owner'))]}"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Cadastre seu primeiro proprietário!</p>
         </field>
@@ -90,7 +90,7 @@
         <field name="res_model">res.partner</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[("category_id", "ilike", "Inquilino")]</field>
-        <field name="context">{"default_category_id": [(4, ref('res_partner_category_property_tenant'))]}</field>
+        <field name="context" eval="{'default_category_id': [(4, ref('property_core.res_partner_category_property_tenant'))]}"/>
     </record>
 
     <!-- ==================== COMPRADORES (FILTERED VIEW) ==================== -->
@@ -99,7 +99,7 @@
         <field name="res_model">res.partner</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[("category_id", "ilike", "Comprador")]</field>
-        <field name="context">{"default_category_id": [(4, ref('res_partner_category_property_buyer'))]}</field>
+        <field name="context" eval="{'default_category_id': [(4, ref('property_core.res_partner_category_property_buyer'))]}"/>
     </record>
 
     <!-- ==================== VENDEDORES (FILTERED VIEW) ==================== -->
@@ -108,7 +108,7 @@
         <field name="res_model">res.partner</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[("category_id", "ilike", "Vendedor")]</field>
-        <field name="context">{"default_category_id": [(4, ref('res_partner_category_property_seller'))]}</field>
+        <field name="context" eval="{'default_category_id': [(4, ref('property_core.res_partner_category_property_seller'))]}"/>
     </record>
 
     <!-- ==================== INVESTIDORES (FILTERED VIEW) ==================== -->
@@ -117,7 +117,7 @@
         <field name="res_model">res.partner</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[("category_id", "ilike", "Investidor")]</field>
-        <field name="context">{"default_category_id": [(4, ref('res_partner_category_property_investor'))]}</field>
+        <field name="context" eval="{'default_category_id': [(4, ref('property_core.res_partner_category_property_investor'))]}"/>
     </record>
 
     <!-- ==================== CORRETORAS (FILTERED VIEW) ==================== -->
@@ -134,7 +134,7 @@
         <field name="res_model">res.partner</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[("category_id", "ilike", "Construtora")]</field>
-        <field name="context">{"default_category_id": [(4, ref('res_partner_category_property_developer'))]}</field>
+        <field name="context" eval="{'default_category_id': [(4, ref('property_core.res_partner_category_property_developer'))]}"/>
     </record>
 
 </odoo>

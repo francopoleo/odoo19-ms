@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_governance_case_obligation" model="common.sequence">
+            <field name="name">Obrigação de Governança</field>
+            <field name="code">governance.case.obligation</field>
+            <field name="prefix">OBR-</field>
+            <field name="padding">5</field>
+            <field name="start_number">1</field>
+        </record>
+        <record id="seq_governance_control" model="common.sequence">
+            <field name="name">Controle de Governança</field>
+            <field name="code">governance.control</field>
+            <field name="prefix">CTL-</field>
+            <field name="padding">5</field>
+            <field name="start_number">1</field>
+        </record>
+    </data>
+</odoo>

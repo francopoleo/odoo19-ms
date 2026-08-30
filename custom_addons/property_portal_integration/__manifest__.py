@@ -7,6 +7,8 @@
     "license": "LGPL-3",
     "depends": ["portal", "property_core"],
     "data": [
+        "security/ir.model.access.csv",
+        "security/property_portal_security.xml",
         "views/portal_templates.xml",
     ],
     "installable": True,

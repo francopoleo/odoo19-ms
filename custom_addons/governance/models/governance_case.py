@@ -60,12 +60,22 @@ class GovernanceCase(models.Model):
     communication_ids = fields.One2many("governance.case.communication", "case_id", string="Comunicações")
     pending_ids = fields.One2many("governance.case.pending", "case_id", string="Pendências")
     response_ids = fields.One2many("governance.case.response", "case_id", string="Respostas")
+    obligation_ids = fields.One2many("governance.case.obligation", "case_id", string="Obrigações")
+    decision_ids = fields.One2many("governance.case.decision", "case_id", string="Decisões")
+    risk_ids = fields.One2many("governance.case.risk", "case_id", string="Riscos")
     participant_count = fields.Integer(string="Qtd Participantes", compute="_compute_participant_count")
     communication_count = fields.Integer(string="Qtd Comunicações", compute="_compute_operational_counts")
     pending_count = fields.Integer(string="Qtd Pendências", compute="_compute_operational_counts")
     pending_open_count = fields.Integer(string="Pendências Abertas", compute="_compute_operational_counts")
     case_volume = fields.Integer(string="Casos", default=1, readonly=True)
     response_count = fields.Integer(string="Qtd Respostas", compute="_compute_operational_counts")
+    obligation_count = fields.Integer(string="Qtd Obrigações", compute="_compute_enterprise_counts")
+    obligation_open_count = fields.Integer(string="Obrigações Abertas", compute="_compute_enterprise_counts")
+    obligation_overdue_count = fields.Integer(string="Obrigações Atrasadas", compute="_compute_enterprise_counts")
+    decision_count = fields.Integer(string="Qtd Decisões", compute="_compute_enterprise_counts")
+    decision_pending_count = fields.Integer(string="Decisões Pendentes", compute="_compute_enterprise_counts")
+    risk_count = fields.Integer(string="Qtd Riscos", compute="_compute_enterprise_counts")
+    critical_risk_count = fields.Integer(string="Riscos Críticos", compute="_compute_enterprise_counts")
     checklist_generated = fields.Boolean(string="Checklist Gerado", default=False, copy=False)
     checklist_progress = fields.Float(string="Progresso do Checklist (%)", compute="_compute_checklist_progress", store=True)
     primary_partner_id = fields.Many2one("res.partner", string="Contato Principal", compute="_compute_primary_partner", store=True)
@@ -183,6 +193,18 @@ class GovernanceCase(models.Model):
             case.pending_count = len(case.pending_ids)
             case.pending_open_count = len(case.pending_ids.filtered(lambda p: p.state == "open"))
             case.response_count = len(case.response_ids)
+
+    @api.depends("obligation_ids", "obligation_ids.state", "obligation_ids.is_overdue", "decision_ids", "decision_ids.state", "risk_ids", "risk_ids.risk_level", "risk_ids.state")
+    def _compute_enterprise_counts(self):
+        closed_obligation_states = {"fulfilled", "not_fulfilled", "cancelled"}
+        for case in self:
+            case.obligation_count = len(case.obligation_ids)
+            case.obligation_open_count = len(case.obligation_ids.filtered(lambda o: o.state not in closed_obligation_states))
+            case.obligation_overdue_count = len(case.obligation_ids.filtered("is_overdue"))
+            case.decision_count = len(case.decision_ids)
+            case.decision_pending_count = len(case.decision_ids.filtered(lambda d: d.state == "pending"))
+            case.risk_count = len(case.risk_ids)
+            case.critical_risk_count = len(case.risk_ids.filtered(lambda r: r.risk_level >= 6 and r.state not in ("closed", "mitigated")))
 
     @api.depends("pending_ids", "pending_ids.state", "pending_ids.required")
     def _compute_checklist_progress(self):
@@ -548,6 +570,36 @@ class GovernanceCase(models.Model):
         result["context"] = {"default_case_id": self.id, "default_partner_id": self.primary_partner_id.id, "default_responsible_id": self.responsible_id.id}
         return result
 
+    def action_view_obligations(self):
+        self.ensure_one()
+        action = self.env.ref("governance.action_governance_case_obligation", raise_if_not_found=False)
+        if not action:
+            return False
+        result = action.read()[0]
+        result["domain"] = [("case_id", "=", self.id)]
+        result["context"] = {"default_case_id": self.id, "default_responsible_id": self.responsible_id.id or self.env.user.id}
+        return result
+
+    def action_view_decisions(self):
+        self.ensure_one()
+        action = self.env.ref("governance.action_governance_case_decision", raise_if_not_found=False)
+        if not action:
+            return False
+        result = action.read()[0]
+        result["domain"] = [("case_id", "=", self.id)]
+        result["context"] = {"default_case_id": self.id}
+        return result
+
+    def action_view_risks(self):
+        self.ensure_one()
+        action = self.env.ref("governance.action_governance_case_risk", raise_if_not_found=False)
+        if not action:
+            return False
+        result = action.read()[0]
+        result["domain"] = [("case_id", "=", self.id)]
+        result["context"] = {"default_case_id": self.id, "default_owner_id": self.responsible_id.id or self.env.user.id}
+        return result
+
     def action_view_activities(self):
         self.ensure_one()
         return {
@@ -756,6 +808,17 @@ class GovernanceCase(models.Model):
             open_pendings = self.pending_ids.filtered(lambda p: p.state == "open")
             if open_pendings:
                 raise UserError(_("Não é possível encerrar com pendências abertas."))
+        if target_status in ("done", "closed"):
+            open_obligations = self.obligation_ids.filtered(
+                lambda o: o.state not in ("fulfilled", "not_fulfilled", "cancelled")
+            )
+            if open_obligations:
+                raise UserError(_("Não é possível concluir o caso com obrigações abertas: %s") % ", ".join(open_obligations.mapped("name")[:5]))
+            critical_risks = self.risk_ids.filtered(
+                lambda r: r.risk_level >= 6 and r.state not in ("closed", "mitigated")
+            )
+            if critical_risks:
+                raise UserError(_("Não é possível concluir o caso com riscos críticos sem tratamento: %s") % ", ".join(critical_risks.mapped("name")[:5]))
         return True
 
     def action_log_first_contact(self):

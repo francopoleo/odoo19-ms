@@ -16,7 +16,7 @@
                 <field name="occupancy_rate" string="Ocupação %"/>
                 <field name="total_monthly_rent"/>
                 <field name="noi_monthly"/>
-                <field name="owner_id"/>
+                <field name="owner_id" string="Proprietário legal"/>
             </list>
         </field>
     </record>
@@ -68,10 +68,10 @@
                     <group>
                         <group string="Identificação">
                             <field name="complex_type"/>
-                            <field name="owner_id"/>
+                            <field name="owner_id" string="Proprietário legal"/>
                             <field name="registration"/>
                             <field name="iptu_number"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="company_id" string="Empresa administradora" groups="base.group_multi_company"/>
                         </group>
                         <group string="Construção">
                             <field name="construction_year"/>
@@ -257,7 +257,7 @@
                                         <field name="complex_type"/>
                                     </span>
                                     <span t-if="record.owner_id.value" class="o_meta_chip">
-                                        <i class="fa fa-user-o me-1" title="Proprietário"/>
+                                        <i class="fa fa-user-o me-1" title="Proprietário legal"/>
                                         <field name="owner_id"/>
                                     </span>
                                 </div>

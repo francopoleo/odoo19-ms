@@ -7,7 +7,8 @@
     "license": "LGPL-3",
     "depends": ["governance", "property_core"],
     "data": [
-        "views/governance_case_ext_views.xml"
+        "views/governance_case_ext_views.xml",
+        "views/property_ext_views.xml",
     ],
     "installable": True,
     "application": False,

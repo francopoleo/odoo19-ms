@@ -12,6 +12,15 @@
                 <button name="action_view_dossier" type="object" class="oe_stat_button" icon="fa-folder-open" invisible="not dossier_id" groups="document_dossier.group_dossier_operator">
                     <field string="Docs. Dossiê" name="dossier_document_count" widget="statinfo"/>
                 </button>
+                <button name="action_create_collection_dossier" type="object" class="oe_stat_button" icon="fa-money" groups="document_dossier.group_dossier_operator">
+                    <span>Abrir Cobrança</span>
+                </button>
+                <button name="action_create_eviction_dossier" type="object" class="oe_stat_button" icon="fa-gavel" groups="document_dossier.group_dossier_operator">
+                    <span>Abrir Despejo</span>
+                </button>
+                <button name="action_create_renewal_dossier" type="object" class="oe_stat_button" icon="fa-refresh" groups="document_dossier.group_dossier_operator">
+                    <span>Abrir Renovação</span>
+                </button>
             </xpath>
             <xpath expr="//notebook/page[1]" position="after">
                 <page string="Dossiê" groups="document_dossier.group_dossier_operator">

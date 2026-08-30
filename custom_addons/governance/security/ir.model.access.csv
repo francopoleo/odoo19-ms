@@ -36,3 +36,15 @@ access_governance_sla_rule_manager,governance.sla.rule.manager,model_governance_
 
 access_governance_email_test_user,governance.email.test.user,model_governance_email_test,governance.group_governance_user,1,0,0,0
 access_governance_email_test_manager,governance.email.test.manager,model_governance_email_test,governance.group_governance_manager,1,1,1,1
+access_governance_case_obligation_user,governance.case.obligation.user,model_governance_case_obligation,governance.group_governance_user,1,1,1,0
+access_governance_case_obligation_manager,governance.case.obligation.manager,model_governance_case_obligation,governance.group_governance_manager,1,1,1,1
+access_governance_case_obligation_internal_read,governance.case.obligation.internal.read,model_governance_case_obligation,base.group_user,1,0,0,0
+access_governance_case_decision_user,governance.case.decision.user,model_governance_case_decision,governance.group_governance_user,1,1,1,0
+access_governance_case_decision_manager,governance.case.decision.manager,model_governance_case_decision,governance.group_governance_manager,1,1,1,1
+access_governance_case_decision_internal_read,governance.case.decision.internal.read,model_governance_case_decision,base.group_user,1,0,0,0
+access_governance_case_risk_user,governance.case.risk.user,model_governance_case_risk,governance.group_governance_user,1,1,1,0
+access_governance_case_risk_manager,governance.case.risk.manager,model_governance_case_risk,governance.group_governance_manager,1,1,1,1
+access_governance_case_risk_internal_read,governance.case.risk.internal.read,model_governance_case_risk,base.group_user,1,0,0,0
+access_governance_control_user,governance.control.user,model_governance_control,governance.group_governance_user,1,1,1,0
+access_governance_control_manager,governance.control.manager,model_governance_control,governance.group_governance_manager,1,1,1,1
+access_governance_control_internal_read,governance.control.internal.read,model_governance_control,base.group_user,1,0,0,0

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_governance_obligation_list" model="ir.ui.view">
+        <field name="name">governance.case.obligation.list</field>
+        <field name="model">governance.case.obligation</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_overdue" decoration-success="state == 'fulfilled'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="case_id"/>
+                <field name="partner_id"/>
+                <field name="responsible_id"/>
+                <field name="obligation_type" widget="badge"/>
+                <field name="due_date"/>
+                <field name="deadline_bucket" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="priority" widget="priority"/>
+                <button name="action_mark_fulfilled" type="object" string="Cumprir" icon="fa-check" invisible="state in ['fulfilled','cancelled']"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_governance_obligation_form" model="ir.ui.view">
+        <field name="name">governance.case.obligation.form</field>
+        <field name="model">governance.case.obligation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_sent" type="object" string="Enviar" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_mark_received" type="object" string="Registrar recebimento" invisible="state not in ['sent','waiting','due_soon','overdue']"/>
+                    <button name="action_start_review" type="object" string="Iniciar análise" invisible="state != 'received'"/>
+                    <button name="action_mark_fulfilled" type="object" string="Marcar cumprida" class="btn-primary" invisible="state in ['fulfilled','cancelled']"/>
+                    <button name="action_mark_not_fulfilled" type="object" string="Não cumprida" invisible="state in ['fulfilled','not_fulfilled','cancelled']"/>
+                    <button name="action_reopen" type="object" string="Reabrir" invisible="state not in ['fulfilled','not_fulfilled']"/>
+                    <button name="action_cancel" type="object" string="Cancelar" invisible="state == 'cancelled'"/>
+                    <button name="action_open_case" type="object" string="Abrir caso" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,waiting,received,in_review,fulfilled"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Uma obrigação representa algo que uma pessoa, empresa ou equipe precisa fornecer ou executar até um prazo. Use Comunicações para registrar contatos e Respostas Formais para analisar o que foi recebido.
+                    </div>
+                    <div class="oe_title"><label for="name" string="Obrigação"/><h1><field name="name" placeholder="Ex.: Enviar certidão atualizada do imóvel"/></h1><field name="reference" readonly="1"/></div>
+                    <group>
+                        <group string="Responsabilidade">
+                            <field name="case_id"/>
+                            <field name="partner_id"/>
+                            <field name="participant_id"/>
+                            <field name="responsible_id"/>
+                            <field name="obligation_type"/>
+                            <field name="is_required"/>
+                        </group>
+                        <group string="Prazo e acompanhamento">
+                            <field name="priority" widget="priority"/>
+                            <field name="requested_date"/>
+                            <field name="due_date"/>
+                            <field name="deadline_bucket" readonly="1"/>
+                            <field name="age_days" readonly="1"/>
+                            <field name="is_overdue" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Relações do processo">
+                        <field name="source_communication_id"/>
+                        <field name="response_id"/>
+                        <field name="fulfilled_date" readonly="1"/>
+                        <field name="escalation_level" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Critérios de aceite"><field name="description"/></page>
+                        <page string="Histórico"><div class="text-muted">As comunicações, atividades e decisões vinculadas aparecem no caso relacionado.</div></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_governance_decision_list" model="ir.ui.view">
+        <field name="name">governance.case.decision.list</field><field name="model">governance.case.decision</field>
+        <field name="arch" type="xml"><list decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"><field name="name"/><field name="case_id"/><field name="decision_type" widget="badge"/><field name="state" widget="badge"/><field name="approver_id"/><field name="decision_date"/></list></field>
+    </record>
+    <record id="view_governance_decision_form" model="ir.ui.view">
+        <field name="name">governance.case.decision.form</field><field name="model">governance.case.decision</field>
+        <field name="arch" type="xml"><form><header><button name="action_submit" type="object" string="Enviar para aprovação" class="btn-primary" invisible="state != 'draft'"/><button name="action_approve" type="object" string="Aprovar" class="btn-primary" invisible="state != 'pending'"/><button name="action_reject" type="object" string="Rejeitar" invisible="state != 'pending'"/><button name="action_cancel" type="object" string="Cancelar" invisible="state == 'cancelled'"/><button name="action_open_case" type="object" string="Abrir caso"/><field name="state" widget="statusbar" statusbar_visible="draft,pending,approved,rejected"/></header><sheet><div class="alert alert-info" role="alert">Use este registro para documentar uma decisão aprovada, rejeitada ou uma exceção. A fundamentação é obrigatória.</div><group><field name="name"/><field name="case_id"/><field name="decision_type"/><field name="decision_date"/><field name="requested_by_id"/><field name="approver_id"/><field name="response_id"/></group><field name="rationale"/></sheet><chatter/></form></field>
+    </record>
+    <record id="view_governance_risk_list" model="ir.ui.view">
+        <field name="name">governance.case.risk.list</field><field name="model">governance.case.risk</field>
+        <field name="arch" type="xml"><list decoration-danger="risk_level &gt;= 6"><field name="name"/><field name="case_id"/><field name="category" widget="badge"/><field name="likelihood"/><field name="impact"/><field name="risk_level" widget="badge"/><field name="owner_id"/><field name="state" widget="badge"/><field name="review_date"/></list></field>
+    </record>
+    <record id="view_governance_risk_form" model="ir.ui.view">
+        <field name="name">governance.case.risk.form</field><field name="model">governance.case.risk</field>
+        <field name="arch" type="xml"><form><header><button name="action_start_assessment" type="object" string="Avaliar" invisible="state != 'identified'"/><button name="action_accept" type="object" string="Aceitar risco" invisible="state != 'assessing'"/><button name="action_start_treatment" type="object" string="Iniciar tratamento" class="btn-primary" invisible="state not in ['accepted','reopened']"/><button name="action_mitigate" type="object" string="Mitigar" invisible="state != 'treating'"/><button name="action_close" type="object" string="Encerrar" invisible="state not in ['mitigated','accepted']"/><button name="action_reopen" type="object" string="Reabrir" invisible="state != 'closed'"/><field name="state" widget="statusbar" statusbar_visible="identified,assessing,accepted,treating,mitigated,closed"/></header><sheet><div class="alert alert-warning" role="alert">Registre o risco, sua causa, impacto e tratamento. Riscos aceitos exigem decisão formal relacionada.</div><group><field name="name"/><field name="case_id"/><field name="category"/><field name="owner_id"/><field name="likelihood"/><field name="impact"/><field name="risk_level" readonly="1"/><field name="review_date"/><field name="residual_risk"/></group><notebook><page string="Descrição"><field name="description"/></page><page string="Plano de tratamento"><field name="treatment_plan"/></page></notebook></sheet><chatter/></form></field>
+    </record>
+
+    <record id="view_governance_obligation_search" model="ir.ui.view"><field name="name">governance.case.obligation.search</field><field name="model">governance.case.obligation</field><field name="arch" type="xml"><search><field name="name"/><field name="reference"/><field name="case_id"/><field name="partner_id"/><field name="responsible_id"/><filter name="overdue" string="Atrasadas" domain="[('is_overdue','=',True)]"/><filter name="due_soon" string="Prazo próximo" domain="[('deadline_bucket','=','next_7')]"/><filter name="mine" string="Minhas" domain="[('responsible_id','=',uid)]"/><filter name="open" string="Em aberto" domain="[('state','not in',('fulfilled','not_fulfilled','cancelled'))]"/><separator/><filter name="group_case" string="Agrupar por caso" context="{'group_by':'case_id'}"/><filter name="group_state" string="Agrupar por situação" context="{'group_by':'state'}"/><filter name="group_responsible" string="Agrupar por responsável" context="{'group_by':'responsible_id'}"/></search></field></record>
+    <record id="action_governance_case_obligation" model="ir.actions.act_window"><field name="name">Obrigações e Solicitações</field><field name="res_model">governance.case.obligation</field><field name="view_mode">list,form</field><field name="domain">[('state','not in',('fulfilled','cancelled'))]</field><field name="search_view_id" ref="view_governance_obligation_search"/><field name="help" type="html"><p>Controle o que precisa ser fornecido ou executado, por quem e até quando.</p></field></record>
+    <record id="action_governance_case_decision" model="ir.actions.act_window"><field name="name">Decisões</field><field name="res_model">governance.case.decision</field><field name="view_mode">list,form</field><field name="help" type="html"><p>Registre decisões fundamentadas e aprovações do processo.</p></field></record>
+    <record id="action_governance_case_risk" model="ir.actions.act_window"><field name="name">Riscos</field><field name="res_model">governance.case.risk</field><field name="view_mode">list,form</field><field name="help" type="html"><p>Identifique, avalie, trate e revise riscos relacionados aos casos.</p></field></record>
+    <record id="view_governance_control_list" model="ir.ui.view"><field name="name">governance.control.list</field><field name="model">governance.control</field><field name="arch" type="xml"><list decoration-danger="state == 'deficient'"><field name="reference"/><field name="name"/><field name="company_id"/><field name="control_type" widget="badge"/><field name="frequency"/><field name="owner_id"/><field name="state" widget="badge"/><field name="last_test_result"/><field name="next_test_date"/></list></field></record>
+    <record id="view_governance_control_form" model="ir.ui.view"><field name="name">governance.control.form</field><field name="model">governance.control</field><field name="arch" type="xml"><form><header><button name="action_activate" type="object" string="Ativar" class="btn-primary" invisible="state != 'draft'"/><button name="action_mark_deficient" type="object" string="Registrar deficiência" invisible="state not in ['active','draft']"/><button name="action_deactivate" type="object" string="Inativar" invisible="state == 'inactive'"/><field name="state" widget="statusbar" statusbar_visible="draft,active,deficient,inactive"/></header><sheet><div class="alert alert-info" role="alert">Um controle define uma verificação repetível para reduzir um risco. Registre o procedimento, o dono e a frequência de teste.</div><div class="oe_title"><label for="name" string="Controle"/><h1><field name="name"/></h1><field name="reference" readonly="1"/></div><group><field name="company_id"/><field name="owner_id"/><field name="control_type"/><field name="frequency"/><field name="last_test_date"/><field name="next_test_date"/><field name="last_test_result"/></group><notebook><page string="Procedimento"><field name="description"/><field name="test_method"/></page><page string="Riscos e casos"><field name="risk_ids"/><field name="case_ids"/></page></notebook></sheet><chatter/></form></field></record>
+    <record id="action_governance_control" model="ir.actions.act_window"><field name="name">Controles</field><field name="res_model">governance.control</field><field name="view_mode">list,form</field><field name="help" type="html"><p>Cadastre controles preventivos, detectivos e corretivos e acompanhe seus testes.</p></field></record>
+
+    <record id="view_governance_case_form_enterprise" model="ir.ui.view">
+        <field name="name">governance.case.form.enterprise</field><field name="model">governance.case</field><field name="inherit_id" ref="governance.view_governance_case_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='communication_count']" position="after"><field name="obligation_count" invisible="1"/><field name="decision_count" invisible="1"/><field name="risk_count" invisible="1"/><field name="critical_risk_count" invisible="1"/></xpath>
+            <xpath expr="//div[@name='button_box']" position="inside"><button name="action_view_obligations" type="object" class="oe_stat_button" icon="fa-tasks"><field name="obligation_open_count" widget="statinfo" string="Obrigações"/></button><button name="action_view_decisions" type="object" class="oe_stat_button" icon="fa-gavel"><field name="decision_pending_count" widget="statinfo" string="Decisões"/></button><button name="action_view_risks" type="object" class="oe_stat_button" icon="fa-warning"><field name="critical_risk_count" widget="statinfo" string="Riscos críticos"/></button></xpath>
+            <xpath expr="//notebook/page[@name='flow']" position="attributes"><attribute name="string">Visão do Processo</attribute></xpath>
+            <xpath expr="//notebook/page[@name='flow']" position="before"><page name="obligations" string="Obrigações"><div class="alert alert-info" role="alert">Esta é a fila de coisas que alguém precisa fornecer ou executar. Comunicações são o histórico; respostas formais são a análise; atividades são as próximas tarefas.</div><field name="obligation_ids" nolabel="1"><list decoration-danger="is_overdue" decoration-success="state == 'fulfilled'"><field name="reference"/><field name="name"/><field name="partner_id"/><field name="responsible_id"/><field name="due_date"/><field name="state" widget="badge"/><field name="priority" widget="priority"/></list></field></page><page name="decisions" string="Decisões"><field name="decision_ids" nolabel="1"><list><field name="name"/><field name="decision_type"/><field name="state" widget="badge"/><field name="approver_id"/><field name="decision_date"/></list></field></page><page name="risks" string="Riscos"><field name="risk_ids" nolabel="1"><list decoration-danger="risk_level &gt;= 6"><field name="name"/><field name="category"/><field name="risk_level"/><field name="state" widget="badge"/><field name="owner_id"/><field name="review_date"/></list></field></page></xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_condominium_charge_list" model="ir.ui.view">
+        <field name="name">property.condominium.charge.list</field>
+        <field name="model">property.condominium.charge</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="complex_id"/>
+                <field name="unit_id"/>
+                <field name="partner_id"/>
+                <field name="period"/>
+                <field name="due_date"/>
+                <field name="amount_total"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_property_condominium_charge_form" model="ir.ui.view">
+        <field name="name">property.condominium.charge.form</field>
+        <field name="model">property.condominium.charge</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="complex_id"/>
+                        <field name="unit_id"/>
+                        <field name="partner_id"/>
+                        <field name="period"/>
+                        <field name="due_date"/>
+                    </group>
+                    <group>
+                        <field name="amount_base"/>
+                        <field name="amount_fine"/>
+                        <field name="amount_interest"/>
+                        <field name="amount_total" readonly="1"/>
+                        <field name="days_overdue" readonly="1"/>
+                        <field name="is_overdue" readonly="1"/>
+                        <field name="state"/>
+                        <field name="invoice_id" readonly="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_open" type="object" string="Abrir" class="btn-primary"/>
+                        <button name="action_register_invoice" type="object" string="Gerar Documento de Cobrança" class="btn-primary"/>
+                        <button name="action_recalculate_charges" type="object" string="Recalcular Encargos"/>
+                        <button name="action_mark_paid" type="object" string="Baixar como Pago" groups="property_core.group_property_manager"/>
+                        <button name="action_view_invoice" type="object" string="Ver Documento" invisible="not invoice_id"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_property_condominium_charge" model="ir.actions.act_window">
+        <field name="name">Boletos e Cobranças</field>
+        <field name="res_model">property.condominium.charge</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

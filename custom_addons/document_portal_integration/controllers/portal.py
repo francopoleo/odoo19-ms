@@ -39,7 +39,7 @@ class DocumentPortal(CustomerPortal):
         ]
 
         searchbar_sortings = {
-            "date": {"label": "Mais Recente", "order": "publication_date desc"},
+            "date": {"label": "Mais Recente", "order": "issue_date desc"},
             "name": {"label": "Nome", "order": "name asc"},
         }
 

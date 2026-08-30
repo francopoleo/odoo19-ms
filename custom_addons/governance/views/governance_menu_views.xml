@@ -63,6 +63,30 @@
               action="action_governance_case_response"
               sequence="40" groups="base.group_user"/>
 
+    <menuitem id="menu_governance_obligations"
+              name="Obrigações e Solicitações"
+              parent="menu_governance_operation_root"
+              action="action_governance_case_obligation"
+              sequence="35" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_decisions"
+              name="Decisões e Aprovações"
+              parent="menu_governance_operation_root"
+              action="action_governance_case_decision"
+              sequence="45" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_risks"
+              name="Riscos"
+              parent="menu_governance_monitoring_root"
+              action="action_governance_case_risk"
+              sequence="25" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_controls"
+              name="Controles"
+              parent="menu_governance_monitoring_root"
+              action="action_governance_control"
+              sequence="26" groups="base.group_user"/>
+
     <menuitem id="menu_governance_executive_panel"
               name="Painel Executivo"
               parent="menu_governance_monitoring_root"
@@ -122,6 +146,12 @@
               parent="menu_governance_registry_root"
               action="action_governance_case_participant"
               sequence="30" groups="base.group_user"/>
+
+    <menuitem id="menu_governance_pending_templates_registry"
+              name="Modelos de Pendência"
+              parent="menu_governance_registry_root"
+              action="action_governance_case_type_pending_template"
+              sequence="40" groups="base.group_user"/>
 
     <!-- Configurações -->
     <menuitem id="menu_governance_config"

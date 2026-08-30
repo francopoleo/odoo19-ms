@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        Catálogo de processos imobiliários usados pela massa de demonstração.
+        Cada tipo pode ser selecionado no menu Dossiês > Tipos de Processo e
+        pode receber templates de documentos, prazos e responsáveis.
+
+        Os processos básicos do módulo document_dossier continuam disponíveis.
+        Estes registros completam o ciclo operacional de uma administradora.
+    -->
+    <record id="process_property_owner_onboarding" model="dossier.process">
+        <field name="name">Cadastro e validação do proprietário</field>
+        <field name="domain">property</field>
+        <field name="sequence">5</field>
+        <field name="description">Identificação do proprietário pessoa física ou empresa, validação cadastral, dados bancários, poderes de representação e contrato de administração.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_asset_onboarding" model="dossier.process">
+        <field name="name">Cadastro e regularização do imóvel</field>
+        <field name="domain">property</field>
+        <field name="sequence">15</field>
+        <field name="description">Conferência da matrícula, endereço, características, titularidade, tributos, condomínio, seguros, fotos e documentos técnicos antes de colocar o imóvel em operação.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_purchase_review" model="dossier.process">
+        <field name="name">Análise e aquisição de imóvel</field>
+        <field name="domain">property</field>
+        <field name="sequence">25</field>
+        <field name="description">Estudo da oportunidade, proposta, análise de preço, certidões das partes e do imóvel, aprovação financeira, escritura e registro da aquisição.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_sale_closing" model="dossier.process">
+        <field name="name">Venda e transferência de imóvel</field>
+        <field name="domain">property</field>
+        <field name="sequence">35</field>
+        <field name="description">Preparação para venda, divulgação, atendimento aos interessados, proposta, análise do comprador, contrato, recebimento, escritura e transferência da propriedade.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_broker_mandate" model="dossier.process">
+        <field name="name">Mandato de corretagem e comercialização</field>
+        <field name="domain">property</field>
+        <field name="sequence">45</field>
+        <field name="description">Definição do corretor, exclusividade ou captação livre, prazo do mandato, preço, comissão, canais de divulgação, visitas e prestação de contas da comercialização.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_tenant_onboarding" model="dossier.process">
+        <field name="name">Análise e entrada do locatário</field>
+        <field name="domain">property</field>
+        <field name="sequence">55</field>
+        <field name="description">Cadastro do locatário e garantidores, análise de crédito, aprovação, assinatura, seguro ou garantia, vistoria de entrada e entrega das chaves.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_rental_operation" model="dossier.process">
+        <field name="name">Gestão da locação e do contrato</field>
+        <field name="domain">property</field>
+        <field name="sequence">65</field>
+        <field name="description">Acompanhamento do contrato ativo, parcelas, reajustes, comunicações, solicitações do locatário, documentos, garantias e obrigações periódicas.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_maintenance_request" model="dossier.process">
+        <field name="name">Solicitação e execução de manutenção</field>
+        <field name="domain">property</field>
+        <field name="sequence">75</field>
+        <field name="description">Registro do problema, vistoria, orçamento de pintura, marcenaria, alvenaria, elétrica ou vidraçaria, aprovação, execução, comprovantes e rateio da responsabilidade.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_condominium_management" model="dossier.process">
+        <field name="name">Condomínio, despesas e assembleias</field>
+        <field name="domain">property</field>
+        <field name="sequence">85</field>
+        <field name="description">Controle de boletos e despesas condominiais, atas, obras, notificações, rateios, aprovação do proprietário e arquivo das prestações de contas.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_tax_and_insurance" model="dossier.process">
+        <field name="name">Tributos, seguros e licenças do imóvel</field>
+        <field name="domain">property</field>
+        <field name="sequence">95</field>
+        <field name="description">Acompanhamento de IPTU, taxas, seguro patrimonial, seguro fiança, licenças, vencimentos, renovações e comprovantes de pagamento.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_owner_statement" model="dossier.process">
+        <field name="name">Prestação de contas e repasse ao proprietário</field>
+        <field name="domain">property</field>
+        <field name="sequence">105</field>
+        <field name="description">Conferência de aluguéis recebidos, taxas de administração, impostos, manutenção, condomínio, retenções, extrato, aprovação e comprovante do repasse.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_rent_arrears" model="dossier.process">
+        <field name="name">Cobrança de aluguel em atraso</field>
+        <field name="domain">property</field>
+        <field name="sequence">115</field>
+        <field name="description">Régua de cobrança com lembrete, contato, notificação formal, negociação, acordo, recebimento, acionamento da garantia e encaminhamento jurídico.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_formal_notice" model="dossier.process">
+        <field name="name">Notificação formal sobre imóvel ou contrato</field>
+        <field name="domain">property</field>
+        <field name="sequence">125</field>
+        <field name="description">Preparação, revisão, envio, comprovação de recebimento e acompanhamento de resposta de notificações ao proprietário, locatário, condomínio ou prestador.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_eviction_legal" model="dossier.process">
+        <field name="name">Inadimplência, despejo e recuperação da posse</field>
+        <field name="domain">property</field>
+        <field name="sequence">135</field>
+        <field name="description">Organização das provas, débitos, notificações, parecer jurídico, protocolo da ação, decisões, cumprimento, vistoria final e recuperação do imóvel.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_lease_exit" model="dossier.process">
+        <field name="name">Saída do locatário e encerramento do contrato</field>
+        <field name="domain">property</field>
+        <field name="sequence">145</field>
+        <field name="description">Aviso de saída, vistoria final, comparação com a vistoria inicial, reparos, contas finais, entrega de chaves, devolução de garantia e encerramento.</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="process_property_asset_dispute" model="dossier.process">
+        <field name="name">Divergência, reclamação ou disputa imobiliária</field>
+        <field name="domain">property</field>
+        <field name="sequence">155</field>
+        <field name="description">Registro do fato, partes envolvidas, evidências, comunicações, análise de responsabilidade, plano de solução, acordo e encerramento documentado.</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

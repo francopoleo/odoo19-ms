@@ -20,10 +20,12 @@
           'views/financial_adjustment_views.xml',
           'views/document_views.xml',
           'views/approval_views.xml',
+          'views/version_history_views.xml',
           'views/obligation_views.xml',
           'views/option_views.xml',
           'views/config_views.xml',
-          'views/menu.xml'],
+          'views/menu.xml',
+          ],
  'installable': True,
  'application': True,
  'auto_install': False}

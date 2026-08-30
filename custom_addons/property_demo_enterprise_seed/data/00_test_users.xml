@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Usuários fictícios e isolados do banco de demonstração. Senha comum: DemoPortal2026! -->
+        <record id="demo_user_admin" model="res.users">
+            <field name="name">Administrador DEMO-IMOB</field>
+            <field name="login">admin.demo@example.com</field>
+            <field name="password">DemoPortal2026!</field>
+            <field name="group_ids" eval="[(6, 0, [ref('base.group_system')])]"/>
+        </record>
+        <record id="demo_user_internal" model="res.users">
+            <field name="name">Operação DEMO-IMOB</field>
+            <field name="login">operacao.demo@example.com</field>
+            <field name="password">DemoPortal2026!</field>
+            <field name="group_ids" eval="[(6, 0, [ref('base.group_user')])]"/>
+        </record>
+        <record id="demo_user_portal_owner" model="res.users">
+            <field name="name">Proprietário Portal DEMO</field>
+            <field name="login">portal.proprietario.demo@example.com</field>
+            <field name="password">DemoPortal2026!</field>
+            <field name="group_ids" eval="[(6, 0, [ref('base.group_portal')])]"/>
+        </record>
+        <record id="demo_user_portal_tenant" model="res.users">
+            <field name="name">Locatário Portal DEMO</field>
+            <field name="login">portal.locatario.demo@example.com</field>
+            <field name="password">DemoPortal2026!</field>
+            <field name="group_ids" eval="[(6, 0, [ref('base.group_portal')])]"/>
+        </record>
+    </data>
+</odoo>

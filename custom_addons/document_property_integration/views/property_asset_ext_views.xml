@@ -5,7 +5,7 @@
     <record id="view_property_asset_form_media_ext" model="ir.ui.view">
         <field name="name">property.asset.form.media.ext</field>
         <field name="model">property.asset</field>
-        <field name="inherit_id">property_core.view_property_asset_form</field>
+        <field name="inherit_id" ref="property_core.view_property_asset_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@id='tab_notes_comms']" position="before">
                 <page string="Outras Mídias" id="tab_other_media">

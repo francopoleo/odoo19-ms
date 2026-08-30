@@ -10,6 +10,10 @@ from . import governance_case_communication
 from . import governance_case_communication_email_ext
 from . import governance_case_pending
 from . import governance_case_response
+from . import governance_case_obligation
+from . import governance_case_decision
+from . import governance_case_risk
+from . import governance_control
 from . import governance_case_type_template
 from . import governance_dashboard
 

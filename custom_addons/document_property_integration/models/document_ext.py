@@ -26,8 +26,8 @@ class DocumentPropertyExt(models.Model):
     )
     asset_count = fields.Integer("Qtd. Imóveis", compute="_compute_asset_count")
     contract_id = fields.Many2one("property.contract", string="Contrato", ondelete="set null", tracking=True)
-    owner_id = fields.Many2one("property.owner", string="Proprietário", ondelete="set null", tracking=True)
-    broker_id = fields.Many2one("property.broker", string="Corretor Responsável", ondelete="set null", tracking=True)
+    owner_id = fields.Many2one("res.partner", string="Proprietário", ondelete="set null", tracking=True, domain=[("category_id.name", "ilike", "Proprietário")])
+    broker_id = fields.Many2one("res.partner", string="Corretor Responsável", ondelete="set null", tracking=True, domain=[("category_id.name", "ilike", "Corretor")])
 
     # ==================== Vínculos com Governança ====================
     case_ids = fields.Many2many(
@@ -43,7 +43,7 @@ class DocumentPropertyExt(models.Model):
 
     # ==================== Segurança & Autorização ====================
     authorized_broker_ids = fields.Many2many(
-        "property.broker",
+        "res.partner",
         "document_broker_rel",
         "document_id",
         "broker_id",
@@ -117,8 +117,8 @@ class DocumentPropertyExt(models.Model):
     def _get_broker_for_user(self, user=None):
         user = user or self.env.user
         if not user or not user.exists() or user._is_public():
-            return self.env["property.broker"]
-        return self.env["property.broker"].sudo().search([("user_id", "=", user.id)], limit=1)
+            return self.env["res.partner"]
+        return self.env["res.partner"].sudo().search([("user_id", "=", user.id), ("category_id.name", "ilike", "Corretor")], limit=1)
 
     def _get_user_accessible_asset_ids(self, user=None):
         user = user or self.env.user

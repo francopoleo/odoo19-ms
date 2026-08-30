@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="demo_partner_manager" model="res.partner">
+        <field name="name">Administradora Demo</field>
+        <field name="email">administradora.demo@example.com</field>
+    </record>
+
+    <record id="demo_partner_owner" model="res.partner">
+        <field name="name">Proprietário Demo</field>
+        <field name="email">proprietario.demo@example.com</field>
+    </record>
+
+    <record id="demo_partner_tenant" model="res.partner">
+        <field name="name">Locatário Demo</field>
+        <field name="email">locatario001.demo@example.com</field>
+    </record>
+
+    <record id="demo_cnab_profile" model="property.condominium.cnab.profile">
+        <field name="name">Itaú Demo</field>
+        <field name="bank_code">itau</field>
+        <field name="cnab_type">240</field>
+        <field name="carteira">109</field>
+        <field name="agencia">1234</field>
+        <field name="conta_corrente">56789</field>
+        <field name="digito_conta">0</field>
+        <field name="convenio">1234567</field>
+        <field name="empresa_mae">Administradora Demo LTDA</field>
+        <field name="documento_cedente">12345678000190</field>
+    </record>
+
+    <record id="demo_complex_mall" model="property.complex">
+        <field name="name">Mall Demo</field>
+        <field name="complex_type">mall</field>
+        <field name="condominium_monthly">15000.0</field>
+        <field name="total_gla">2500.0</field>
+        <field name="cnab_profile_id" ref="demo_cnab_profile"/>
+    </record>
+
+    <record id="demo_unit_store_101" model="property.asset">
+        <field name="name">Loja 101</field>
+        <field name="asset_type">commercial</field>
+        <field name="status">rented</field>
+        <field name="complex_id" ref="demo_complex_mall"/>
+        <field name="unit_identifier">Loja 101</field>
+        <field name="unit_type">store</field>
+        <field name="gla">85.0</field>
+        <field name="condo_fraction">0.0425</field>
+        <field name="condo_fee_override">1250.0</field>
+        <field name="condo_billing_partner_id" ref="demo_partner_tenant"/>
+    </record>
+
+    <record id="demo_unit_office_201" model="property.asset">
+        <field name="name">Sala 201</field>
+        <field name="asset_type">commercial</field>
+        <field name="status">available</field>
+        <field name="complex_id" ref="demo_complex_mall"/>
+        <field name="unit_identifier">Sala 201</field>
+        <field name="unit_type">office</field>
+        <field name="gla">60.0</field>
+        <field name="condo_fraction">0.0300</field>
+    </record>
+
+    <record id="demo_relationship_tenant" model="property.condominium.relationship">
+        <field name="complex_id" ref="demo_complex_mall"/>
+        <field name="asset_id" ref="demo_unit_store_101"/>
+        <field name="partner_id" ref="demo_partner_tenant"/>
+        <field name="role">tenant</field>
+    </record>
+
+    <record id="demo_relationship_owner" model="property.condominium.relationship">
+        <field name="complex_id" ref="demo_complex_mall"/>
+        <field name="asset_id" ref="demo_unit_store_101"/>
+        <field name="partner_id" ref="demo_partner_owner"/>
+        <field name="role">owner</field>
+    </record>
+
+    <record id="demo_relationship_manager" model="property.condominium.relationship">
+        <field name="complex_id" ref="demo_complex_mall"/>
+        <field name="partner_id" ref="demo_partner_manager"/>
+        <field name="role">manager</field>
+    </record>
+
+    <record id="demo_charge_001" model="property.condominium.charge">
+        <field name="name">Boleto Condomínio - Loja 101 - Junho/2026</field>
+        <field name="complex_id" ref="demo_complex_mall"/>
+        <field name="unit_id" ref="demo_unit_store_101"/>
+        <field name="partner_id" ref="demo_partner_tenant"/>
+        <field name="due_date">2026-06-10</field>
+        <field name="period">2026-06</field>
+        <field name="amount_base">1250.0</field>
+        <field name="amount_fine">25.0</field>
+        <field name="amount_interest">3.5</field>
+        <field name="state">overdue</field>
+    </record>
+
+    <record id="demo_charge_002" model="property.condominium.charge">
+        <field name="name">Boleto Condomínio - Loja 101 - Julho/2026</field>
+        <field name="complex_id" ref="demo_complex_mall"/>
+        <field name="unit_id" ref="demo_unit_store_101"/>
+        <field name="partner_id" ref="demo_partner_tenant"/>
+        <field name="due_date">2026-07-10</field>
+        <field name="period">2026-07</field>
+        <field name="amount_base">1250.0</field>
+        <field name="state">open</field>
+    </record>
+
+    <record id="demo_ticket_001" model="property.condominium.ticket">
+        <field name="name">Ar-condicionado da área comum com falha</field>
+        <field name="complex_id" ref="demo_complex_mall"/>
+        <field name="unit_id" ref="demo_unit_store_101"/>
+        <field name="partner_id" ref="demo_partner_tenant"/>
+        <field name="category">service</field>
+        <field name="priority">2</field>
+        <field name="state">in_progress</field>
+        <field name="description">&lt;p&gt;Solicitação aberta pelo locatário para ajuste do sistema de climatização.&lt;/p&gt;</field>
+    </record>
+
+    <record id="demo_expense_001" model="property.condominium.expense">
+        <field name="name">Limpeza das áreas comuns</field>
+        <field name="complex_id" ref="demo_complex_mall"/>
+        <field name="expense_date">2026-06-05</field>
+        <field name="vendor_id" ref="demo_partner_manager"/>
+        <field name="category">cleaning</field>
+        <field name="allocation_rule">fractional</field>
+        <field name="amount">3200.0</field>
+        <field name="state">to_approve</field>
+    </record>
+
+    <record id="demo_expense_alloc_001" model="property.condominium.expense.allocation">
+        <field name="expense_id" ref="demo_expense_001"/>
+        <field name="unit_id" ref="demo_unit_store_101"/>
+        <field name="amount">2280.0</field>
+    </record>
+
+    <record id="demo_expense_alloc_002" model="property.condominium.expense.allocation">
+        <field name="expense_id" ref="demo_expense_001"/>
+        <field name="unit_id" ref="demo_unit_office_201"/>
+        <field name="amount">920.0</field>
+    </record>
+</odoo>

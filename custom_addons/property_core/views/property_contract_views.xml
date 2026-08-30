@@ -221,51 +221,74 @@
         <field name="model">property.contract</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="reference"/>
                 <field name="status"/>
+                <field name="asset_id"/>
+                <field name="partner_id"/>
                 <field name="currency_id"/>
+                <field name="monthly_rent"/>
+                <field name="end_date"/>
                 <field name="days_to_expiry"/>
                 <field name="rent_open_count"/>
                 <field name="rent_late_count"/>
                 <field name="tag_ids"/>
                 <templates>
                     <t t-name="card">
-                        <div>
-                            <div class="o_kanban_record_top mb-0">
+                        <div class="oe_kanban_global_click o_property_contract_card">
+                            <div class="o_kanban_record_top align-items-start mb-2">
                                 <div class="o_kanban_record_headings">
-                                    <strong class="o_kanban_record_title">
+                                    <strong class="o_kanban_record_title d-block text-truncate">
                                         <field name="name"/>
                                     </strong>
-                                    <small class="o_kanban_record_subtitle text-muted">
+                                    <small class="o_kanban_record_subtitle text-muted d-block">
+                                        <i class="fa fa-hashtag me-1" title="Referência"/>
                                         <field name="reference"/>
                                     </small>
                                 </div>
                                 <field name="status" widget="badge"
+                                       decoration-info="status == 'draft'"
                                        decoration-success="status == 'active'"
-                                       decoration-warning="status in ('draft','expiring','renewing')"
+                                       decoration-primary="status in ('expiring','renewing')"
                                        decoration-danger="status in ('late','defaulting')"
-                                       decoration-muted="status == 'closed'"/>
+                                       decoration-muted="status in ('closed',) or status not in ('draft','active','expiring','renewing','late','defaulting','closed')"/>
                             </div>
+
                             <div class="o_kanban_record_body">
-                                <div class="d-flex align-items-center gap-1 mb-1">
-                                    <i class="fa fa-building-o text-muted" title="Imóvel"/>
-                                    <field name="asset_id"/>
+                                <div class="d-flex align-items-center gap-2 mb-2 text-truncate">
+                                    <span class="text-muted"><i class="fa fa-building-o" title="Imóvel"/></span>
+                                    <span class="text-truncate"><field name="asset_id"/></span>
                                 </div>
-                                <div class="d-flex align-items-center gap-1 mb-1">
-                                    <i class="fa fa-user text-muted" title="Locatário"/>
-                                    <field name="partner_id"/>
+                                <div class="d-flex align-items-center gap-2 mb-3 text-truncate">
+                                    <span class="text-muted"><i class="fa fa-user-o" title="Locatário"/></span>
+                                    <span class="text-truncate"><field name="partner_id"/></span>
                                 </div>
-                                <div class="d-flex justify-content-between mt-2">
-                                    <span class="fw-bold">
+
+                                <div class="d-flex justify-content-between align-items-end border-top pt-2">
+                                    <span>
+                                        <small class="d-block text-muted">Aluguel mensal</small>
+                                        <strong class="fs-5">
                                         <field name="monthly_rent" widget="monetary"/>
-                                        <small class="text-muted">/mês</small>
+                                        </strong>
                                     </span>
-                                    <span t-if="record.days_to_expiry.raw_value &gt; 0"
-                                          t-attf-class="badge #{record.days_to_expiry.raw_value &lt;= 30 ? 'text-bg-danger' : record.days_to_expiry.raw_value &lt;= 90 ? 'text-bg-warning' : 'text-bg-secondary'}">
-                                        <i class="fa fa-calendar" title="Dias para vencer"/> <t t-esc="record.days_to_expiry.raw_value"/>d
+                                    <span class="text-end">
+                                        <small class="d-block text-muted">Vencimento</small>
+                                        <field name="end_date" widget="date"/>
                                     </span>
                                 </div>
-                                <div t-if="record.rent_late_count.raw_value &gt; 0 or record.rent_open_count.raw_value &gt; 0"
-                                     class="d-flex gap-2 mt-1">
+
+                                <div t-if="record.days_to_expiry.raw_value &gt; 0" class="mt-2">
+                                    <span t-if="record.days_to_expiry.raw_value &lt;= 30" class="badge rounded-pill text-bg-danger">
+                                        <i class="fa fa-hourglass-end me-1" title="Vencimento próximo"/><t t-esc="record.days_to_expiry.raw_value"/> dias restantes
+                                    </span>
+                                    <span t-if="record.days_to_expiry.raw_value &gt; 30 and record.days_to_expiry.raw_value &lt;= 90" class="badge rounded-pill text-bg-warning">
+                                        <i class="fa fa-calendar me-1" title="Vencimento"/><t t-esc="record.days_to_expiry.raw_value"/> dias restantes
+                                    </span>
+                                    <span t-if="record.days_to_expiry.raw_value &gt; 90" class="badge rounded-pill text-bg-light border text-dark">
+                                        <i class="fa fa-calendar me-1" title="Vencimento"/><t t-esc="record.days_to_expiry.raw_value"/> dias restantes
+                                    </span>
+                                </div>
+                                <div t-if="record.rent_late_count.raw_value &gt; 0 or record.rent_open_count.raw_value &gt; 0" class="d-flex flex-wrap gap-2 mt-2">
                                     <span t-if="record.rent_late_count.raw_value &gt; 0" class="badge text-bg-danger">
                                         <i class="fa fa-exclamation-circle" title="Parcelas atrasadas"/>
                                         <t t-esc="record.rent_late_count.raw_value"/> atrasada(s)
@@ -276,7 +299,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="o_kanban_record_bottom">
+                            <div class="o_kanban_record_bottom mt-3 pt-2 border-top">
                                 <div class="oe_kanban_bottom_left">
                                     <field name="tag_ids" widget="many2many_tags"/>
                                 </div>

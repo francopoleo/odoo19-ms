@@ -1,65 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-        <!-- INTEGRAÇÃO: Documentos vinculados aos Imóveis -->
-        <function name="write" model="property.asset" id="demo_asset_sp_paulista">
-            <field name="document_ids" eval="[(4, ref('demo_document_contract_sp_2024').id), (4, ref('demo_document_property_reg_sp').id), (4, ref('demo_document_insurance_sp').id), (4, ref('demo_document_inspection_sp').id)]"/>
-        </function>
+        <!-- INTEGRAÇÃO: Documentos vinculados aos Imóveis (Many2many) -->
+        <record id="demo_asset_sp_paulista" model="property.asset">
+            <field name="document_ids" eval="[(6, 0, [ref('demo_document_contract_sp_2024'), ref('demo_document_property_reg_sp'), ref('demo_document_insurance_sp'), ref('demo_document_inspection_sp')])]"/>
+        </record>
 
-        <function name="write" model="property.asset" id="demo_asset_rj_flamengo">
-            <field name="document_ids" eval="[(4, ref('demo_document_contract_rj_2024').id)]"/>
-        </function>
+        <record id="demo_asset_rj_flamengo" model="property.asset">
+            <field name="document_ids" eval="[(6, 0, [ref('demo_document_contract_rj_2024')])]"/>
+        </record>
 
-        <!-- INTEGRAÇÃO: Documentos vinculados aos Contratos -->
-        <function name="write" model="property.contract" id="demo_contract_sp_paulista">
-            <field name="document_ids" eval="[(4, ref('demo_document_contract_sp_2024').id), (4, ref('demo_document_rg_tenant_1').id)]"/>
-        </function>
+        <!-- INTEGRAÇÃO: Documentos vinculados aos Contratos (One2many via contract_id) -->
+        <record id="demo_document_contract_sp_2024" model="document.document">
+            <field name="contract_id" ref="demo_contract_sp_paulista"/>
+        </record>
 
-        <function name="write" model="property.contract" id="demo_contract_rj_flamengo">
-            <field name="document_ids" eval="[(4, ref('demo_document_contract_rj_2024').id)]"/>
-        </function>
+        <record id="demo_document_rg_tenant_1" model="document.document">
+            <field name="contract_id" ref="demo_contract_sp_paulista"/>
+        </record>
 
-        <!-- INTEGRAÇÃO: Casos de Governança vinculados aos Imóveis -->
-        <!-- Nota: Esta integração requer que document_governance_integration ou governance_property_integration estejam instalados -->
-        <!-- A vinculação será feita através do campo case_ids se o modelo for estendido -->
+        <record id="demo_document_bank_statement_sp" model="document.document">
+            <field name="contract_id" ref="demo_contract_sp_paulista"/>
+        </record>
 
-        <!-- INTEGRAÇÃO: Documentos Financeiros vinculados aos Contratos -->
-        <function name="write" model="property.contract" id="demo_contract_sp_paulista">
-            <field name="document_ids" eval="[(4, ref('demo_document_bank_statement_sp').id)]"/>
-        </function>
-
-        <!-- INTEGRAÇÃO: Status de Documentos refletindo na Propriedade -->
-        <!-- Documentos validados indicam que a propriedade está documentalmente em ordem -->
-
-        <!-- Exemplo de como os dados se relacionam:
-
-        demo_asset_sp_paulista (Imóvel SP)
-            ├─ document_ids:
-            │  ├─ demo_document_contract_sp_2024 (Contrato)
-            │  ├─ demo_document_property_reg_sp (Registro)
-            │  ├─ demo_document_insurance_sp (Seguro)
-            │  └─ demo_document_inspection_sp (Vistoria)
-            │
-            └─ contracts:
-               └─ demo_contract_sp_paulista
-                   ├─ document_ids:
-                   │  ├─ demo_document_contract_sp_2024
-                   │  ├─ demo_document_rg_tenant_1 (RG Locatário)
-                   │  └─ demo_document_bank_statement_sp (Extrato)
-                   │
-                   └─ monthly_rent: 2500.00
-
-        demo_case_audit_q2_2024 (Caso de Auditoria)
-            ├─ stage_id: Em Andamento
-            ├─ participants: [Admin User]
-            ├─ pending_items:
-            │  ├─ Coletar Extratos (TODO)
-            │  ├─ Revisar Políticas (IN_PROGRESS)
-            │  └─ Validar Controles (TODO)
-            │
-            └─ links_to:
-               └─ demo_document_bank_statement_sp (Extrato Bancário)
-        -->
-
+        <record id="demo_document_contract_rj_2024" model="document.document">
+            <field name="contract_id" ref="demo_contract_rj_flamengo"/>
+        </record>
     </data>
 </odoo>

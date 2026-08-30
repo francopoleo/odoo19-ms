@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_condominium_cnab_profile_list" model="ir.ui.view">
+        <field name="name">property.condominium.cnab.profile.list</field>
+        <field name="model">property.condominium.cnab.profile</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="bank_code"/>
+                <field name="cnab_type"/>
+                <field name="carteira"/>
+                <field name="agencia"/>
+                <field name="conta_corrente"/>
+                <field name="convenio"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_property_condominium_cnab_profile_form" model="ir.ui.view">
+        <field name="name">property.condominium.cnab.profile.form</field>
+        <field name="model">property.condominium.cnab.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="bank_code"/>
+                        <field name="cnab_type"/>
+                        <field name="carteira"/>
+                        <field name="agencia"/>
+                        <field name="conta_corrente"/>
+                    </group>
+                    <group>
+                        <field name="digito_conta"/>
+                        <field name="convenio"/>
+                        <field name="empresa_mae"/>
+                        <field name="documento_cedente"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_property_condominium_cnab_profile" model="ir.actions.act_window">
+        <field name="name">Perfis CNAB</field>
+        <field name="res_model">property.condominium.cnab.profile</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

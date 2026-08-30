@@ -4,30 +4,33 @@
     <!-- ===== Contadores no Home do Portal ===== -->
     <template id="portal_my_home_property" name="Portal: Imóveis"
               inherit_id="portal.portal_my_home">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+        <xpath expr="//div[@id='portal_common_category']" position="inside">
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon">/web/static/img/icons/homemenu_icon_building.svg</t>
+                <t t-set="icon" t-value="'/property_portal_integration/static/img/folder.svg'"/>
                 <t t-set="title">Contratos de Locação</t>
                 <t t-set="text">Veja seus contratos ativos, histórico e status.</t>
-                <t t-set="url">/my/contracts</t>
-                <t t-set="placeholder_count">contract_count</t>
+                <t t-set="url" t-value="'/my/contracts'"/>
                 <t t-set="count" t-value="contract_count"/>
+                <t t-set="show_count" t-value="True"/>
+                <t t-set="config_card" t-value="True"/>
             </t>
             <t t-call="portal.portal_docs_entry">
-                <t t-set="icon">/web/static/img/icons/homemenu_icon_invoice.svg</t>
+                <t t-set="icon" t-value="'/property_portal_integration/static/img/bill.svg'"/>
                 <t t-set="title">Parcelas de Aluguel</t>
                 <t t-set="text">Acompanhe vencimentos e situação dos seus aluguéis.</t>
-                <t t-set="url">/my/rents</t>
-                <t t-set="placeholder_count">rent_count</t>
+                <t t-set="url" t-value="'/my/rents'"/>
                 <t t-set="count" t-value="rent_count"/>
+                <t t-set="show_count" t-value="True"/>
+                <t t-set="config_card" t-value="True"/>
             </t>
-            <t t-if="owner_asset_count" t-call="portal.portal_docs_entry">
-                <t t-set="icon">/web/static/img/icons/homemenu_icon_building.svg</t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/property_portal_integration/static/img/portal-addresses.svg'"/>
                 <t t-set="title">Meus Imóveis</t>
                 <t t-set="text">Acompanhe seus imóveis, contratos e resultado financeiro.</t>
-                <t t-set="url">/my/properties</t>
-                <t t-set="placeholder_count">owner_asset_count</t>
+                <t t-set="url" t-value="'/my/properties'"/>
                 <t t-set="count" t-value="owner_asset_count"/>
+                <t t-set="show_count" t-value="True"/>
+                <t t-set="config_card" t-value="True"/>
             </t>
         </xpath>
     </template>
@@ -53,7 +56,7 @@
                     <div class="card border-primary">
                         <div class="card-body text-center">
                             <div class="fs-4 fw-bold text-primary">
-                                <t t-out="owner.active_contract_count"/>
+                                <t t-out="active_contracts"/>
                             </div>
                             <div class="text-muted small">Contratos Ativos</div>
                         </div>
@@ -63,7 +66,7 @@
                     <div class="card border-info">
                         <div class="card-body text-center">
                             <div class="fs-4 fw-bold text-info">
-                                <t t-out="'R$ {:,.2f}'.format(owner.total_monthly_income).replace(',','X').replace('.',',').replace('X','.')"/>
+                                <t t-out="'R$ {:,.2f}'.format(total_monthly_income).replace(',','X').replace('.',',').replace('X','.')"/>
                             </div>
                             <div class="text-muted small">Receita Mensal</div>
                         </div>

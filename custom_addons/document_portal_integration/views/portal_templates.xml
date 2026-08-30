@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- ==================== PORTAL HOME ==================== -->
-    <template id="portal_my_home_documents" name="Portal Documents Menu" inherit_id="portal.portal_breadcrumbs" priority="20">
-        <xpath expr="//ol[@class='breadcrumb']" position="inside">
-            <li t-if="page_name == 'document'" class="breadcrumb-item active">
-                <span>Documentos</span>
-            </li>
+    <!-- ==================== PORTAL HOME CARD ==================== -->
+    <template id="portal_my_home_document" name="Portal: Documentos"
+              inherit_id="portal.portal_my_home">
+        <xpath expr="//div[@id='portal_common_category']" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/document_portal_integration/static/img/rfq.svg'"/>
+                <t t-set="title">Meus Documentos</t>
+                <t t-set="text">Acesse contratos, laudos e comprovantes.</t>
+                <t t-set="url" t-value="'/my/documents'"/>
+                <t t-set="count" t-value="document_count"/>
+                <t t-set="show_count" t-value="True"/>
+                <t t-set="config_card" t-value="True"/>
+            </t>
         </xpath>
     </template>
 

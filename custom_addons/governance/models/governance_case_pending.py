@@ -14,7 +14,11 @@ class GovernanceCasePending(models.Model):
     participant_id = fields.Many2one("governance.case.participant", string="Participante")
     partner_id = fields.Many2one("res.partner", string="Contato")
     communication_id = fields.Many2one("governance.case.communication", string="Comunicação")
-    template_id = fields.Many2one("governance.case.type.pending.template", string="Modelo")
+    template_id = fields.Many2one(
+        "governance.case.type.pending.template",
+        string="Modelo de checklist",
+        help="Modelo que originou esta ação. Documentos devem ir para o dossiê; compromissos formais devem usar uma Obrigação.",
+    )
     response_id = fields.Many2one("governance.case.response", string="Resposta")
     stage_id = fields.Many2one("governance.stage", string="Etapa Relacionada")
     responsible_id = fields.Many2one("res.users", string="Responsável", default=lambda self: self.env.user, tracking=True)

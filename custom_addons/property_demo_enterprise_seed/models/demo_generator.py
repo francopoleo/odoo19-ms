@@ -5,12 +5,24 @@ from datetime import date, timedelta
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import fields, models, _
+from odoo import SUPERUSER_ID, fields, models, _
+from odoo.tools.convert import convert_file
 
 _logger = logging.getLogger(__name__)
 
 PREFIX = "DEMO-IMOB"
-SEED_VERSION = "19.0.1.0.12"
+DEMO_SUFFIX = " (DEMO-IMOB)"
+FAKE_TENANT_NAMES = [
+    "Mariana Oliveira", "Rafael Almeida", "Camila Ferreira", "Bruno Martins",
+    "Juliana Costa", "Eduardo Rodrigues", "Larissa Gomes", "Felipe Nascimento",
+]
+FAKE_OWNER_NAMES = [
+    "Patrícia Ribeiro", "Marcelo Teixeira", "Renata Carvalho", "Gustavo Mendes",
+]
+FAKE_BROKER_NAMES = [
+    "Daniela Freitas", "Rodrigo Azevedo", "Beatriz Monteiro", "Lucas Barros",
+]
+SEED_VERSION = "19.0.1.0.13"
 _OPTIONAL_SKIP_MODELS_BY_CURSOR = {}
 
 
@@ -50,7 +62,7 @@ class PropertyDemoGenerator(models.TransientModel):
     def _get_model(self, model_name):
         try:
             return self.env[model_name].sudo()
-        except KeyError:
+        except (KeyError, AttributeError):
             return False
 
 
@@ -262,6 +274,35 @@ class PropertyDemoGenerator(models.TransientModel):
             "company_id": self.company_id.id,
         }))
 
+    @staticmethod
+    def _demo_name(text):
+        """Mantém um único marcador de teste no fim do nome.
+
+        Alguns nomes são compostos a partir de parceiros que já receberam o
+        marcador. Normalizar aqui evita resultados como ``(DEMO-IMOB)
+        (DEMO-IMOB)`` e também impede que novos registros voltem a usar o
+        marcador como prefixo.
+        """
+        text = str(text or "").strip()
+        while text.endswith(DEMO_SUFFIX):
+            text = text[:-len(DEMO_SUFFIX)].rstrip()
+        if text.startswith(PREFIX):
+            text = text[len(PREFIX):].lstrip(" -:")
+        return "%s%s" % (text, DEMO_SUFFIX)
+
+    @staticmethod
+    def _demo_marker_domain(field_name):
+        """Localiza tanto massa antiga (prefixo) quanto massa nova (sufixo)."""
+        return ["|", (field_name, "ilike", PREFIX), (field_name, "ilike", DEMO_SUFFIX)]
+
+    @staticmethod
+    def _demo_marker_terms(field_name):
+        """Termos equivalentes para domínios que já combinam vários campos."""
+        return [
+            (field_name, "ilike", PREFIX),
+            (field_name, "ilike", DEMO_SUFFIX),
+        ]
+
     # ------------------------------------------------------------------
     # Ações do wizard
     # ------------------------------------------------------------------
@@ -342,7 +383,7 @@ class PropertyDemoGenerator(models.TransientModel):
                         kind="warning",
                     )
         else:
-            existing = self.env["property.contract"].sudo().search_count([("name", "ilike", PREFIX)])
+            existing = self.env["property.contract"].sudo().search_count(self._demo_marker_domain("name"))
             if existing:
                 self._safe_write(self, {"summary_html": self._format_summary({"contratos_existentes": existing})}, label="resumo do wizard")
                 return self._notify(
@@ -351,6 +392,23 @@ class PropertyDemoGenerator(models.TransientModel):
                     sticky=True,
                     kind="warning",
                 )
+
+        try:
+            # O catálogo é uma unidade única: se qualquer XML falhar, não
+            # devemos deixar usuários, tipos ou documentos parcialmente
+            # carregados na base. A geração só continua após o savepoint ser
+            # concluído com sucesso.
+            with self.env.cr.savepoint():
+                self._load_demo_catalog()
+        except Exception as exc:
+            _logger.exception("[%s] Falha ao carregar catálogo demo pelo backend", PREFIX)
+            self._safe_write(self, {"summary_html": self._format_summary({"erro_catalogo_demo": str(exc)[:500]})}, label="resumo do wizard")
+            return self._notify(
+                _("Catálogo demo não carregado"),
+                _("A geração foi interrompida para evitar registros incompletos. Veja o log do servidor."),
+                sticky=True,
+                kind="danger",
+            )
 
         stats = self._generate_demo_data()
         self._safe_write(self, {"summary_html": self._format_summary(stats)}, label="resumo do wizard")
@@ -365,6 +423,67 @@ class PropertyDemoGenerator(models.TransientModel):
             sticky=True,
         )
 
+    def _load_demo_catalog(self):
+        """Carrega os registros-base fictícios somente após ação explícita.
+
+        Esses XML ficam fora do manifest de instalação para que instalar o
+        módulo não povoe a base. O wizard os carrega no backend, antes de
+        gerar os registros relacionais, e marca seus campos identificadores
+        com ``(DEMO-IMOB)`` para facilitar auditoria e limpeza.
+        """
+        files = (
+            "data/00_test_users.xml",
+            "data/01_document_types.xml",
+            "data/02_property_processes.xml",
+            "data/03_documents.xml",
+            "data/04_governance_types.xml",
+            "data/05_governance_dossiers.xml",
+            "data/06_governance_cases.xml",
+            "data/07_property_assets.xml",
+            "data/09_integrations.xml",
+        )
+        idref = {}
+        # A carga do catálogo é uma operação técnica do wizard. O usuário que
+        # abre o wizard pode ser um operador sem ACL de cadastro para canais,
+        # tipos ou documentos, mas isso não deve impedir a massa de teste.
+        # A geração operacional continua usando as permissões do usuário da
+        # sessão; somente a importação dos XML-base usa o superusuário.
+        catalog_env = self.env(user=SUPERUSER_ID)
+        for filename in files:
+            convert_file(catalog_env, "property_demo_enterprise_seed", filename, idref, mode="init", noupdate=False)
+
+        # O XML histórico de templates de pendência não é carregado: os
+        # modelos oficiais ficam no enterprise_configuration_seed.
+        self._mark_demo_catalog_records()
+
+    def _mark_demo_catalog_records(self):
+        """Garante marcador nos registros demo carregados pelo catálogo."""
+        data = self.env["ir.model.data"].sudo().search([
+            ("module", "=", "property_demo_enterprise_seed"),
+            ("noupdate", "=", False),
+        ])
+        for item in data:
+            # O catálogo pode conter metadados técnicos gerados pelo Odoo
+            # (ir.model.fields, views, acessos etc.). Eles não são massa demo
+            # e não devem ser alterados pelo marcador.
+            if not item.model or not item.res_id or item.model.startswith("ir."):
+                continue
+            try:
+                record = self.env[item.model].sudo().browse(item.res_id).exists()
+            except (KeyError, AttributeError):
+                continue
+            if not record:
+                continue
+            values = {}
+            if "name" in record._fields and record.name and PREFIX.lower() not in record.name.lower():
+                values["name"] = "%s%s" % (record.name, DEMO_SUFFIX)
+            if "reference" in record._fields and record.reference and PREFIX.lower() not in record.reference.lower():
+                values["reference"] = "%s-%s" % (record.reference, PREFIX)
+            if "code" in record._fields and record.code and PREFIX.lower() not in record.code.lower():
+                values["code"] = "%s-%s" % (record.code, PREFIX)
+            if values:
+                self._safe_write(record, values, "catálogo demo %s" % item.model)
+
     def _format_summary(self, stats):
         rows = "".join(
             "<tr><td><b>%s</b></td><td class='text-end'>%s</td></tr>" % (key, value)
@@ -374,7 +493,7 @@ class PropertyDemoGenerator(models.TransientModel):
         <div class="alert alert-info">
           <h3>Massa de teste DEMO-IMOB</h3>
           <table class="table table-sm table-striped">%s</table>
-          <p><b>Prefixo:</b> DEMO-IMOB. Use este prefixo para filtrar contratos, locatários, dossiês, casos, parcelas e comprovantes.</p>
+          <p><b>Marcador:</b> DEMO-IMOB aparece no final dos nomes para localizar e limpar a massa de teste.</p>
         </div>
         """ % rows
 
@@ -421,13 +540,13 @@ class PropertyDemoGenerator(models.TransientModel):
         DEMO-IMOB. Por isso primeiro buscamos marcadores centrais e baratos.
         """
         checks = [
-            ("res.partner", [("name", "ilike", PREFIX)]),
-            ("property.asset", [("name", "ilike", PREFIX)]),
-            ("property.contract", [("name", "ilike", PREFIX)]),
+            ("res.partner", self._demo_marker_domain("name")),
+            ("property.asset", self._demo_marker_domain("name")),
+            ("property.contract", self._demo_marker_domain("name")),
         ]
         Contract = self._get_model("property.contract")
         if Contract is not False and "additional_clauses" in getattr(Contract, "_fields", {}):
-            checks.append(("property.contract", [("additional_clauses", "ilike", PREFIX)]))
+            checks.append(("property.contract", self._demo_marker_domain("additional_clauses")))
         for model_name, domain in checks:
             if self._safe_search_count(model_name, domain):
                 return True
@@ -448,13 +567,13 @@ class PropertyDemoGenerator(models.TransientModel):
         ids = set()
         contract_terms = []
         if "name" in Contract._fields:
-            contract_terms.append(("name", "ilike", PREFIX))
+            contract_terms.extend(self._demo_marker_terms("name"))
         if "additional_clauses" in Contract._fields:
-            contract_terms.append(("additional_clauses", "ilike", PREFIX))
+            contract_terms.extend(self._demo_marker_terms("additional_clauses"))
         if "tenant_id" in Contract._fields:
-            contract_terms.append(("tenant_id.partner_id.name", "ilike", PREFIX))
+            contract_terms.extend(self._demo_marker_terms("tenant_id.partner_id.name"))
         if "partner_id" in Contract._fields:
-            contract_terms.append(("partner_id.name", "ilike", PREFIX))
+            contract_terms.extend(self._demo_marker_terms("partner_id.name"))
 
         if contract_terms:
             try:
@@ -467,8 +586,8 @@ class PropertyDemoGenerator(models.TransientModel):
         Rent = self._get_model("property.rent")
         if Rent is not False and self._model_table_ready("property.rent", Rent):
             for domain in [
-                [("contract_id.name", "ilike", PREFIX)],
-                [("contract_id.additional_clauses", "ilike", PREFIX)],
+                self._demo_marker_domain("contract_id.name"),
+                self._demo_marker_domain("contract_id.additional_clauses"),
                 [("payment_notes", "ilike", PREFIX)] if "payment_notes" in Rent._fields else [],
                 [("receipt_number", "ilike", PREFIX)] if "receipt_number" in Rent._fields else [],
             ]:
@@ -484,8 +603,8 @@ class PropertyDemoGenerator(models.TransientModel):
         if Payment is not False and self._model_table_ready("property.rent.payment", Payment):
             for domain in [
                 [("notes", "ilike", PREFIX)] if "notes" in Payment._fields else [],
-                [("rent_id.contract_id.name", "ilike", PREFIX)] if "rent_id" in Payment._fields else [],
-                [("rent_id.contract_id.additional_clauses", "ilike", PREFIX)] if "rent_id" in Payment._fields else [],
+                self._demo_marker_domain("rent_id.contract_id.name") if "rent_id" in Payment._fields else [],
+                self._demo_marker_domain("rent_id.contract_id.additional_clauses") if "rent_id" in Payment._fields else [],
             ]:
                 if not domain:
                     continue
@@ -498,7 +617,7 @@ class PropertyDemoGenerator(models.TransientModel):
         Payer = self._get_model("property.payment.authorized.payer")
         if Payer is not False and self._model_table_ready("property.payment.authorized.payer", Payer):
             for domain in [
-                [("name", "ilike", PREFIX)] if "name" in Payer._fields else [],
+                self._demo_marker_domain("name") if "name" in Payer._fields else [],
                 [("notes", "ilike", PREFIX)] if "notes" in Payer._fields else [],
             ]:
                 if not domain:
@@ -548,22 +667,41 @@ class PropertyDemoGenerator(models.TransientModel):
             ], contract_ids), "parcelas"),
 
             # OCR / documentos / dossiês / governança antes dos contratos
-            ("property.contract.history.line", [("history_id.name", "ilike", PREFIX)], "linhas histórico OCR"),
+            ("property.contract.history.line", self._demo_marker_domain("history_id.name"), "linhas histórico OCR"),
             ("property.contract.history", ["|", ("name", "ilike", PREFIX), ("contract_filename", "ilike", PREFIX)], "históricos OCR"),
-            ("property.contract.ocr.template.line", [("template_id.name", "ilike", PREFIX)], "linhas template OCR"),
-            ("property.contract.ocr.template", [("name", "ilike", PREFIX)], "templates OCR"),
+            ("property.contract.billing.impact", self._domain_or_prefix_and_contract("property.contract.billing.impact", [("notes", "ilike", PREFIX)], contract_ids, contract_field="contract_id"), "impactos de cobrança"),
+            ("property.contract.billing.line", self._domain_or_prefix_and_contract("property.contract.billing.line", [("name", "ilike", PREFIX)], contract_ids, contract_field="billing_plan_id.contract_id"), "linhas de cobrança"),
+            ("property.contract.billing.plan", self._domain_or_prefix_and_contract("property.contract.billing.plan", [("notes", "ilike", PREFIX)], contract_ids), "planos de cobrança"),
+            ("property.contract.rent.schedule", self._domain_or_prefix_and_contract("property.contract.rent.schedule", [("notes", "ilike", PREFIX)], contract_ids), "tabelas de valores"),
+            ("property.contract.version", self._domain_or_prefix_and_contract("property.contract.version", [], contract_ids), "versões contratuais"),
+            ("property.contract.term.history", self._domain_or_prefix_and_contract("property.contract.term.history", [("reason", "ilike", PREFIX)], contract_ids), "histórico de cláusulas"),
+            ("property.contract.document", self._domain_or_prefix_and_contract("property.contract.document", [("name", "ilike", PREFIX)], contract_ids), "documentos contratuais"),
+            ("property.contract.approval", self._domain_or_prefix_and_contract("property.contract.approval", [("comments", "ilike", PREFIX)], contract_ids), "aprovações contratuais"),
+            ("property.contract.obligation", self._domain_or_prefix_and_contract("property.contract.obligation", [("name", "ilike", PREFIX)], contract_ids), "obrigações contratuais"),
+            ("property.contract.option", self._domain_or_prefix_and_contract("property.contract.option", [("name", "ilike", PREFIX)], contract_ids), "opções contratuais"),
+            ("property.contract.financial.adjustment", self._domain_or_prefix_and_contract("property.contract.financial.adjustment", [("name", "ilike", PREFIX)], contract_ids), "ajustes financeiros"),
+            ("property.complex", self._demo_marker_domain("name"), "complexos imobiliários"),
+            ("property.condominium.charge", self._demo_marker_domain("name"), "cobranças de condomínio"),
+            ("property.condominium.expense.allocation", self._demo_marker_domain("expense_id.name"), "rateios de despesas"),
+            ("property.condominium.expense", self._demo_marker_domain("name"), "despesas de condomínio"),
+            ("property.condominium.relationship", self._demo_marker_domain("complex_id.name"), "vínculos de condomínio"),
+            ("property.condominium.ticket", self._demo_marker_domain("name"), "chamados de condomínio"),
+            ("property.condominium.cnab.profile", self._demo_marker_domain("name"), "perfis bancários de condomínio"),
+            ("property.asset.communication", self._demo_marker_domain("name"), "comunicações do imóvel"),
+            ("property.contract.ocr.template.line", self._demo_marker_domain("template_id.name"), "linhas template OCR"),
+            ("property.contract.ocr.template", self._demo_marker_domain("name"), "templates OCR"),
             ("document.document", ["|", ("notes", "ilike", PREFIX), ("name", "ilike", PREFIX)], "documentos"),
-            ("dossier.dossier", [("name", "ilike", PREFIX)], "dossiês"),
-            ("governance.case", [("name", "ilike", PREFIX)], "casos"),
+            ("dossier.dossier", self._demo_marker_domain("name"), "dossiês"),
+            ("governance.case", self._demo_marker_domain("name"), "casos"),
 
             # Fluxos imobiliários vinculados ao contrato/imóvel
             ("property.owner.repasse", [("notes", "ilike", PREFIX)], "repasses proprietário"),
             ("property.rent.adjustment", [("notes", "ilike", PREFIX)], "reajustes"),
             ("property.commission", [("notes", "ilike", PREFIX)], "comissões"),
             ("property.broker.assignment", [("notes", "ilike", PREFIX)], "mandatos"),
-            ("property.lead", [("name", "ilike", PREFIX)], "leads"),
-            ("property.acquisition", [("name", "ilike", PREFIX)], "aquisições"),
-            ("property.media", [("name", "ilike", PREFIX)], "mídias"),
+            ("property.lead", self._demo_marker_domain("name"), "leads"),
+            ("property.acquisition", self._demo_marker_domain("name"), "aquisições"),
+            ("property.media", self._demo_marker_domain("name"), "mídias"),
             ("property.media.category", [("code", "ilike", PREFIX)], "categorias de mídia"),
             ("property.contract.amendment", self._domain_or_prefix_and_contract("property.contract.amendment", [
                 ("note", "ilike", PREFIX)
@@ -572,7 +710,8 @@ class PropertyDemoGenerator(models.TransientModel):
                 ("observations", "ilike", PREFIX)
             ], contract_ids), "vistorias"),
             ("property.maintenance", [("description", "ilike", PREFIX)], "manutenções"),
-            ("property.market.comparable", [("name", "ilike", PREFIX)], "comparáveis"),
+            ("property.maintenance.bill", self._or_domain([("maintenance_id.name", "ilike", PREFIX), ("maintenance_id.description", "ilike", PREFIX), ("invoice_id.ref", "ilike", PREFIX)]), "faturas de manutenção"),
+            ("property.market.comparable", self._demo_marker_domain("name"), "comparáveis"),
             ("property.price.m2.reference", [("notes", "ilike", PREFIX)], "referências m²"),
             ("property.valuation.run", [("review_notes", "ilike", PREFIX)], "estimativas"),
             ("property.payment.authorized.payer", self._domain_or_prefix_and_contract("property.payment.authorized.payer", [
@@ -580,36 +719,39 @@ class PropertyDemoGenerator(models.TransientModel):
             ], contract_ids), "pagadores autorizados"),
 
             # Help center / common
-            ("help.metric", [("path", "ilike", PREFIX)], "métricas de ajuda"),
+            ("help.metric", [("error_text", "ilike", PREFIX)], "métricas de ajuda"),
             ("help.feedback", [("comment", "ilike", PREFIX)], "feedbacks de ajuda"),
-            ("help.learning.step", [("name", "ilike", PREFIX)], "etapas de trilha"),
-            ("help.learning.path", [("name", "ilike", PREFIX)], "trilhas de aprendizado"),
-            ("help.checklist.progress", [("template_id.name", "ilike", PREFIX)], "progresso checklist"),
-            ("help.checklist.item", [("name", "ilike", PREFIX)], "itens checklist"),
-            ("help.checklist.template", [("name", "ilike", PREFIX)], "checklists de ajuda"),
-            ("help.tip", [("name", "ilike", PREFIX)], "dicas de ajuda"),
-            ("help.suggestion.rule", [("name", "ilike", PREFIX)], "regras de sugestão"),
-            ("help.context", [("name", "ilike", PREFIX)], "contextos de ajuda"),
-            ("help.article", [("name", "ilike", PREFIX)], "artigos de ajuda"),
+            ("help.learning.step", self._demo_marker_domain("name"), "etapas de trilha"),
+            ("help.learning.path", self._demo_marker_domain("name"), "trilhas de aprendizado"),
+            ("help.checklist.progress", self._demo_marker_domain("template_id.name"), "progresso checklist"),
+            ("help.checklist.item", self._demo_marker_domain("name"), "itens checklist"),
+            ("help.checklist.template", self._demo_marker_domain("name"), "checklists de ajuda"),
+            ("help.tip", self._demo_marker_domain("name"), "dicas de ajuda"),
+            ("help.suggestion.rule", self._demo_marker_domain("name"), "regras de sugestão"),
+            ("help.context", self._demo_marker_domain("name"), "contextos de ajuda"),
+            ("help.article", self._demo_marker_domain("name"), "artigos de ajuda"),
             ("help.category", [("code", "ilike", PREFIX)], "categorias de ajuda"),
-            ("help.tag", [("name", "ilike", PREFIX)], "tags de ajuda"),
-            ("common.agenda.event", [("name", "ilike", PREFIX)], "eventos de agenda"),
+            ("help.tag", self._demo_marker_domain("name"), "tags de ajuda"),
+            ("common.agenda.event", self._demo_marker_domain("name"), "eventos de agenda"),
             ("common.communication.base", [("channel_origin", "ilike", PREFIX)], "comunicações comuns"),
 
             # Contratos e cadastros-base por último
-            ("property.contract", [("id", "in", contract_ids)] if contract_ids else [("name", "ilike", PREFIX)], "contratos"),
-            ("property.tenant", [("partner_id.name", "ilike", PREFIX)], "locatários"),
-            ("property.buyer", [("partner_id.name", "ilike", PREFIX)], "compradores"),
-            ("property.seller", [("partner_id.name", "ilike", PREFIX)], "vendedores"),
-            ("property.investor", [("partner_id.name", "ilike", PREFIX)], "investidores"),
-            ("property.developer", [("partner_id.name", "ilike", PREFIX)], "incorporadoras"),
-            ("property.broker", [("name", "ilike", PREFIX)], "corretores"),
-            ("property.brokerage", [("partner_id.name", "ilike", PREFIX)], "imobiliárias"),
-            ("property.owner", [("name", "ilike", PREFIX)], "proprietários"),
-            ("property.stakeholder.profile", [("partner_id.name", "ilike", PREFIX)], "perfis imobiliários"),
-            ("res.partner", [("name", "ilike", PREFIX)], "contatos"),
-            ("property.asset", [("name", "ilike", PREFIX)], "imóveis fallback"),
-            ("property.valuation.source", [("name", "ilike", PREFIX)], "fontes de avaliação"),
+            # Usuários demo precisam sair antes dos contatos: Odoo bloqueia a
+            # remoção de parceiros vinculados a usuários ativos.
+            ("res.users", ["|", ("name", "ilike", PREFIX), ("login", "ilike", ".demo@example.com")], "usuários demo"),
+            ("property.contract", [("id", "in", contract_ids)] if contract_ids else self._demo_marker_domain("name"), "contratos"),
+            ("property.tenant", self._demo_marker_domain("partner_id.name"), "locatários"),
+            ("property.buyer", self._demo_marker_domain("partner_id.name"), "compradores"),
+            ("property.seller", self._demo_marker_domain("partner_id.name"), "vendedores"),
+            ("property.investor", self._demo_marker_domain("partner_id.name"), "investidores"),
+            ("property.developer", self._demo_marker_domain("partner_id.name"), "incorporadoras"),
+            ("property.broker", self._demo_marker_domain("name"), "corretores"),
+            ("property.brokerage", self._demo_marker_domain("partner_id.name"), "imobiliárias"),
+            ("property.owner", self._demo_marker_domain("name"), "proprietários"),
+            ("property.stakeholder.profile", self._demo_marker_domain("partner_id.name"), "perfis imobiliários"),
+            ("res.partner", self._demo_marker_domain("name"), "contatos"),
+            ("property.asset", self._demo_marker_domain("name"), "imóveis fallback"),
+            ("property.valuation.source", self._demo_marker_domain("name"), "fontes de avaliação"),
         ]
 
         for model_name, domain, label in models_domains:
@@ -636,6 +778,122 @@ class PropertyDemoGenerator(models.TransientModel):
                 PREFIX, stats["contratos_apagados"], stats["contratos_encontrados"]
             )
         return stats
+
+    def _create_billing_impact(self, amendment, contract, idx, today):
+        """Registra o efeito financeiro do aditivo sobre a primeira cobrança.
+
+        O impacto é simulado, nunca aplicado automaticamente. Assim a massa
+        demonstra a trilha correta: aditivo -> impacto -> aprovação/aplicação.
+        """
+        Impact = self._get_model("property.contract.billing.impact")
+        if Impact is False:
+            return 0
+        plan = contract.billing_plan_ids[:1] if "billing_plan_ids" in contract._fields else False
+        schedule = contract.rent_schedule_ids.filtered(lambda r: r.is_base_rent)[:1] if "rent_schedule_ids" in contract._fields else False
+        old_amount = plan.base_rent_amount if plan else contract.monthly_rent or 0.0
+        new_amount = round(old_amount * 1.08, 2)
+        vals = self._filter_vals(Impact, {
+            "amendment_id": amendment.id,
+            "billing_plan_id": plan.id if plan else False,
+            "rent_schedule_id": schedule.id if schedule else False,
+            "impact_source_type": "rent_schedule",
+            "impact_type": "base_rent_change",
+            "application_rule": "future_recalculation",
+            "status": "simulated",
+            "period_start": today + relativedelta(months=1),
+            "period_end": today + relativedelta(months=2, days=-1),
+            "due_date": today + relativedelta(months=1, days=10),
+            "original_amount": old_amount,
+            "new_amount": new_amount,
+            "delta_amount": new_amount - old_amount,
+            "original_base_rent_amount": old_amount,
+            "new_base_rent_amount": new_amount,
+            "is_retroactive": False,
+            "notes": "Impacto simulado do reajuste previsto no aditivo; aguarda aplicação pelo responsável financeiro.",
+        })
+        return 1 if self._safe_create_optional("property.contract.billing.impact", vals, "property.contract.billing.impact") else 0
+
+    def _create_condominium_scenarios(self, assets, today):
+        """Cria um ciclo de condomínio ligado a complexos e unidades reais."""
+        Complex = self._get_model("property.complex")
+        Charge = self._get_model("property.condominium.charge")
+        Expense = self._get_model("property.condominium.expense")
+        Relationship = self._get_model("property.condominium.relationship")
+        Ticket = self._get_model("property.condominium.ticket")
+        Profile = self._get_model("property.condominium.cnab.profile")
+        if Complex is False or Charge is False:
+            return 0
+        owner = assets.filtered(lambda a: a.owner_id)[:1].owner_id if "owner_id" in assets._fields else False
+        manager = self.company_id.partner_id
+        complexes = Complex.search([("company_id", "=", self.company_id.id)], order="id asc", limit=2)
+        specs = [
+            ("Mall Reserva do Tamboré", "mall", "Avenida Marcos Penteado de Ulhôa Rodrigues", 22000.0, 6800.0, 125000.0),
+            ("Edifício Jardins Empresarial", "office", "Alameda Santos", 9500.0, 3200.0, 54000.0),
+        ]
+        for name, kind, address, land, gla, budget in specs:
+            if not complexes.filtered(lambda c, n=name: n in (c.name or "")):
+                complex_rec = self._safe_create_optional("property.complex", self._filter_vals(Complex, {
+                    "name": self._demo_name(name), "complex_type": kind, "complex_mode": "mall" if kind == "mall" else "condominium",
+                    "owner_id": owner.id if owner else self.company_id.partner_id.id,
+                    "company_id": self.company_id.id, "address": address, "address_number": "1000",
+                    "neighborhood": "Tamboré" if kind == "mall" else "Jardins", "city": "Barueri" if kind == "mall" else "São Paulo",
+                    "state_name": "SP", "zip_code": "06460-000" if kind == "mall" else "01419-000",
+                    "land_area": land, "total_gla": gla, "construction_year": 2020 if kind == "mall" else 2018,
+                    "floors": 3 if kind == "mall" else 18, "parking_total": 420 if kind == "mall" else 180,
+                    "asset_value": budget * 12, "condominium_monthly": budget,
+                    "condo_active": True, "condo_manager_id": manager.id,
+                    "condo_rent_day": 10, "condo_advance_days": 10, "condo_fee_amount": 850.0,
+                    "common_area_budget": budget, "common_area_rateio_key": "fractional", "charge_model": "automatic",
+                    "legal_description": "Complexo imobiliário de demonstração com unidades, áreas comuns, cobranças, despesas e chamados.",
+                }), "property.complex")
+            else:
+                complex_rec = complexes.filtered(lambda c, n=name: n in (c.name or ""))[:1]
+            if not complex_rec:
+                continue
+            units = assets.filtered(lambda a: not a.complex_id)[:12] if "complex_id" in assets._fields else assets[:12]
+            if units and "complex_id" in assets._fields:
+                units.write({"complex_id": complex_rec.id})
+            if Profile is not False and not complex_rec.cnab_profile_id:
+                profile = self._safe_create_optional("property.condominium.cnab.profile", self._filter_vals(Profile, {
+                    "name": self._demo_name("Perfil bancário - " + name), "bank_code": "itau", "cnab_type": "240",
+                    "carteira": "109", "agencia": "1234", "conta_corrente": "98765", "digito_conta": "0",
+                    "convenio": "CONV-%03d" % complex_rec.id, "empresa_mae": name,
+                    "documento_cedente": "12.345.678/0001-90", "active": True,
+                }), "property.condominium.cnab.profile")
+                if profile:
+                    complex_rec.cnab_profile_id = profile.id
+            for unit in complex_rec.asset_ids[:12]:
+                partner = unit.owner_id or unit.active_contract_id.partner_id
+                if Relationship is not False and partner:
+                    self._safe_create_optional("property.condominium.relationship", self._filter_vals(Relationship, {
+                        "complex_id": complex_rec.id, "asset_id": unit.id, "partner_id": partner.id,
+                        "role": "tenant" if unit.active_contract_id else "owner", "active": True,
+                    }), "property.condominium.relationship")
+                self._safe_create_optional("property.condominium.charge", self._filter_vals(Charge, {
+                    "name": self._demo_name("Cota condominial - %s" % (unit.unit_identifier or unit.name)),
+                    "complex_id": complex_rec.id, "unit_id": unit.id, "partner_id": partner.id if partner else False,
+                    "due_date": today - timedelta(days=12), "period": (today - relativedelta(months=1)).strftime("%Y-%m"),
+                    "amount_base": unit.condo_fee_override or 850.0, "amount_fine": 0.0, "amount_interest": 0.0,
+                    "state": "paid" if unit.id % 3 else "overdue", "remittance_state": "returned" if unit.id % 3 else "sent",
+                    "remittance_reference": "RET-%s-%s" % (complex_rec.id, unit.id),
+                }), "property.condominium.charge")
+                if Ticket is not False and unit.id % 4 == 0:
+                    self._safe_create_optional("property.condominium.ticket", self._filter_vals(Ticket, {
+                        "name": self._demo_name("Chamado - iluminação da área comum"), "complex_id": complex_rec.id,
+                        "unit_id": unit.id, "partner_id": partner.id if partner else False, "category": "maintenance",
+                        "priority": "2", "state": "in_progress", "description": "Luminária do corredor precisa ser substituída; fornecedor já foi acionado.",
+                    }), "property.condominium.ticket")
+            if Expense is not False:
+                vendors = self.env["res.partner"].search([], limit=1)
+                for category, name_exp, amount in [("cleaning", "Limpeza das áreas comuns", 4800.0), ("maintenance", "Manutenção preventiva dos elevadores", 7350.0), ("security", "Monitoramento e controle de acesso", 6200.0)]:
+                    expense = self._safe_create_optional("property.condominium.expense", self._filter_vals(Expense, {
+                        "name": self._demo_name(name_exp), "complex_id": complex_rec.id, "expense_date": today - timedelta(days=20),
+                        "vendor_id": vendors.id if vendors else False, "category": category, "allocation_rule": "fractional",
+                        "amount": amount, "state": "approved",
+                    }), "property.condominium.expense")
+                    if expense:
+                        expense.action_generate_allocation()
+        return sum(1 for model in (Charge, Expense, Relationship, Ticket, Profile) if model is not False)
 
     # ------------------------------------------------------------------
     # Geração principal
@@ -678,6 +936,9 @@ class PropertyDemoGenerator(models.TransientModel):
             "ocr_templates": 0,
             "contract_histories": 0,
             "model_families_seeded": 0,
+            "condominium_records": 0,
+            "billing_impacts": 0,
+            "portal_users": 0,
         }
 
         stats["dossier_templates"] = self._ensure_real_estate_dossier_templates()
@@ -689,10 +950,15 @@ class PropertyDemoGenerator(models.TransientModel):
         assets = self._get_or_create_assets(self.contract_count)
         if not assets:
             return stats
+        asset_owners = self._ensure_demo_asset_ownership(assets)
+        stats["owners"] += self._optional_records_count(asset_owners)
+
+        if self.create_operations:
+            stats["condominium_records"] += self._create_condominium_scenarios(assets, today)
 
         network = {}
         if self.create_commercial_network or self.create_owner_repasses or self.create_leads_acquisitions:
-            network = self._create_property_business_network(assets, today)
+            network = self._create_property_business_network(assets, today, asset_owners)
             self._merge_stats(stats, network.get("stats", {}))
 
         for idx in range(1, self.contract_count + 1):
@@ -710,6 +976,7 @@ class PropertyDemoGenerator(models.TransientModel):
             stats["contracts"] += 1
 
             self._merge_stats(stats, self._enrich_contract_with_business_flow(contract, idx, today, network))
+            self._merge_stats(stats, self._create_advanced_contract_records(contract, idx, today))
 
             if self._create_authorized_payer(contract, partner, idx):
                 stats["authorized_payers"] += 1
@@ -722,7 +989,12 @@ class PropertyDemoGenerator(models.TransientModel):
             stats["payments"] += payments_created
             stats["proofs"] += proofs_created
 
-            if self.create_dossiers and idx <= max(10, self.contract_count // 2):
+            # Todo caso de governança precisa ter um dossiê navegável. Além do
+            # lote principal, criamos dossiês para os contratos que recebem caso.
+            if self.create_dossiers and (
+                idx <= max(10, self.contract_count // 2)
+                or (self.create_governance_cases and idx % 5 == 0)
+            ):
                 dossier, docs = self._create_contract_dossier(contract, idx, today)
                 if dossier:
                     stats["dossiers"] += 1
@@ -733,8 +1005,10 @@ class PropertyDemoGenerator(models.TransientModel):
                     stats["governance_cases"] += 1
 
             if self.create_amendments and idx % 7 == 0:
-                if self._create_amendment(contract, idx, today):
+                amendment = self._create_amendment(contract, idx, today)
+                if amendment:
                     stats["amendments"] += 1
+                    stats["billing_impacts"] += self._create_billing_impact(amendment, contract, idx, today)
 
             if self.create_operations and idx % 6 == 0:
                 stats["operations"] += self._create_operations(contract, idx, today)
@@ -748,12 +1022,169 @@ class PropertyDemoGenerator(models.TransientModel):
         if self.create_owner_repasses:
             self._merge_stats(stats, self._create_owner_repasses_for_demo(today, network))
 
+        if self.create_operations:
+            stats["maintenance_bills"] = self._create_maintenance_bills()
+        if self.create_payment_proofs:
+            stats["proof_matches"] = self._create_payment_match_suggestions()
+        stats["portal_users"] = self._create_portal_test_users(assets)
+
         stats["model_families_seeded"] = len([v for v in [
             stats.get("contracts"), stats.get("rents"), stats.get("payments"), stats.get("proofs"),
             stats.get("owners"), stats.get("brokers"), stats.get("mandates"), stats.get("commissions"),
             stats.get("dossiers"), stats.get("documents"), stats.get("governance_cases"), stats.get("valuation_records"),
             stats.get("media"), stats.get("help_records"), stats.get("contract_histories"), stats.get("agenda_events"),
         ] if v])
+        return stats
+
+    def _create_advanced_contract_records(self, contract, idx, today):
+        """Popula o ciclo empresarial do contrato com relações consistentes.
+
+        O contrato continua sendo o registro central. Cada modelo abaixo
+        representa uma etapa diferente: valores, cobrança, evidência,
+        aprovação, obrigação ou opção. O método usa as APIs de criação dos
+        módulos para respeitar defaults e constraints.
+        """
+        stats = {
+            "contract_versions": 0, "rent_schedules": 0, "billing_plans": 0,
+            "billing_lines": 0, "contract_documents": 0, "contract_approvals": 0,
+            "contract_obligations": 0, "contract_options": 0,
+            "financial_adjustments": 0,
+        }
+        start = contract.start_date or today
+        end = contract.end_date or (start + relativedelta(years=1))
+        amendment = contract.amendment_ids[:1] if "amendment_ids" in contract._fields else False
+
+        Version = self._get_model("property.contract.version")
+        if Version is not False:
+            version = self._safe_create_optional("property.contract.version", {
+                "contract_id": contract.id, "version_number": 1,
+                "effective_date": start, "is_current": True,
+                "created_by": self.env.user.id,
+                "terms_snapshot_html": "<p>Versão vigente do contrato de locação, com aluguel, prazo, garantias e responsabilidades das partes.</p>",
+                "terms_snapshot_json": '{"origem":"contrato_demo","aluguel":%s,"prazo_meses":12}' % (contract.monthly_rent or 0),
+            }, "property.contract.version")
+            stats["contract_versions"] += 1 if version else 0
+
+        History = self._get_model("property.contract.term.history")
+        if History is not False:
+            history = self._safe_create_optional("property.contract.term.history", {
+                "contract_id": contract.id, "source_type": "original_contract",
+                "field_name": "monthly_rent", "field_label": "Aluguel mensal",
+                "old_value": "0", "new_value": str(contract.monthly_rent or 0),
+                "effective_date": start, "applied_date": fields.Datetime.now(),
+                "applied_by": self.env.user.id, "reason": "Constituição do contrato original.",
+            }, "property.contract.term.history")
+            stats["term_history"] = 1 if history else 0
+
+        Schedule = self._get_model("property.contract.rent.schedule")
+        schedules = []
+        if Schedule is not False:
+            for sequence, values in enumerate([
+                ("Aluguel-base mensal", "base_rent", contract.monthly_rent or 0.0),
+                ("Condomínio previsto", "condominium", 650.0 + (idx % 5) * 25.0),
+            ], start=1):
+                schedule = self._safe_create_optional("property.contract.rent.schedule", {
+                    "contract_id": contract.id, "name": values[0], "sequence": sequence * 10,
+                    "charge_type": values[1], "amount_type": "fixed", "amount": values[2],
+                    "base_amount": values[2], "start_date": start, "end_date": end,
+                    "due_day": 10, "billing_frequency": "monthly", "billing_period_type": "competence",
+                    "is_base_rent": values[1] == "base_rent", "is_extra_charge": values[1] != "base_rent",
+                    "is_recurring": True, "is_proratable": True, "status": "active",
+                    "notes": "Linha de valores demonstrativa vinculada ao contrato.",
+                }, "property.contract.rent.schedule")
+                if schedule:
+                    schedules.append(schedule)
+                    stats["rent_schedules"] += 1
+
+        BillingPlan = self._get_model("property.contract.billing.plan")
+        BillingLine = self._get_model("property.contract.billing.line")
+        plan = False
+        if BillingPlan is not False:
+            period_end = start + relativedelta(months=1, days=-1)
+            plan = self._safe_create_optional("property.contract.billing.plan", {
+                "contract_id": contract.id, "period_start": start, "period_end": period_end,
+                "due_date": start + relativedelta(days=10),
+                "base_rent_amount": contract.monthly_rent or 0.0,
+                "extra_charge_amount": 650.0 + (idx % 5) * 25.0,
+                "tax_amount": 0.0, "status": "approved",
+                "original_total_amount": (contract.monthly_rent or 0.0) + 650.0,
+                "notes": "Plano demonstrativo: aluguel-base e despesas recorrentes do primeiro período.",
+            }, "property.contract.billing.plan")
+            stats["billing_plans"] += 1 if plan else 0
+        if plan and BillingLine is not False:
+            for sequence, name, line_type, amount, schedule in [
+                (10, "Aluguel-base", "base_rent", contract.monthly_rent or 0.0, schedules[0] if schedules else False),
+                (20, "Condomínio previsto", "condominium", 650.0 + (idx % 5) * 25.0, schedules[1] if len(schedules) > 1 else False),
+            ]:
+                line = self._safe_create_optional("property.contract.billing.line", {
+                    "billing_plan_id": plan.id, "rent_schedule_id": schedule.id if schedule else False,
+                    "sequence": sequence, "line_type": line_type, "name": name,
+                    "amount": amount, "quantity": 1.0, "period_start": start, "period_end": period_end,
+                }, "property.contract.billing.line")
+                stats["billing_lines"] += 1 if line else 0
+
+        Document = self._get_model("property.contract.document")
+        if Document is not False:
+            for document_type, name, status in [
+                ("original_contract", "Contrato de locação assinado", "completed"),
+                ("invoice_support", "Comprovante de garantia e primeira cobrança", "completed"),
+            ]:
+                document = self._safe_create_optional("property.contract.document", {
+                    "contract_id": contract.id, "document_type": document_type,
+                    "name": self._demo_name(name), "issuer": "Administradora do imóvel",
+                    "signature_provider": "manual", "signature_status": status,
+                    "version": 1, "is_final": True,
+                    "certificate_html": "<p>Documento de demonstração vinculado ao contrato e ao dossiê imobiliário.</p>",
+                }, "property.contract.document")
+                stats["contract_documents"] += 1 if document else 0
+
+        Approval = self._get_model("property.contract.approval")
+        if Approval is not False:
+            approval = self._safe_create_optional("property.contract.approval", {
+                "contract_id": contract.id, "amendment_id": amendment.id if amendment else False,
+                "approval_type": "asset_manager", "approver_id": self.env.user.id,
+                "status": "approved", "requested_at": fields.Datetime.now(),
+                "approved_at": fields.Datetime.now(), "sequence": 10,
+                "comments": "Aprovação demonstrativa após conferência do contrato, imóvel e partes.",
+            }, "property.contract.approval")
+            stats["contract_approvals"] += 1 if approval else 0
+
+        Obligation = self._get_model("property.contract.obligation")
+        if Obligation is not False:
+            for obligation_type, name, responsible, due_date in [
+                ("insurance_renewal", "Renovar seguro do imóvel", "landlord", end - relativedelta(days=30)),
+                ("condominium_payment", "Comprovar pagamento do condomínio", "tenant", today + timedelta(days=15)),
+            ]:
+                obligation = self._safe_create_optional("property.contract.obligation", {
+                    "contract_id": contract.id, "amendment_id": amendment.id if amendment else False,
+                    "obligation_type": obligation_type, "responsible_party": responsible,
+                    "name": self._demo_name(name), "description": "Obrigação contratual acompanhada pela administradora.",
+                    "due_date": due_date, "recurrence": "annual" if "insurance" in obligation_type else "monthly",
+                    "status": "pending", "source_clause": "Cláusula demonstrativa de responsabilidades.",
+                }, "property.contract.obligation")
+                stats["contract_obligations"] += 1 if obligation else 0
+
+        Option = self._get_model("property.contract.option")
+        if Option is not False:
+            option = self._safe_create_optional("property.contract.option", {
+                "contract_id": contract.id, "amendment_id": amendment.id if amendment else False,
+                "option_type": "renewal", "name": self._demo_name("Opção de renovação do contrato"),
+                "notice_start_date": end - relativedelta(days=120), "notice_deadline": end - relativedelta(days=60),
+                "exercise_deadline": end - relativedelta(days=45), "status": "available",
+                "notes": "A parte deve manifestar interesse dentro da janela de renovação prevista.",
+            }, "property.contract.option")
+            stats["contract_options"] += 1 if option else 0
+
+        Adjustment = self._get_model("property.contract.financial.adjustment")
+        if Adjustment is not False and idx % 3 == 0:
+            adjustment = self._safe_create_optional("property.contract.financial.adjustment", {
+                "contract_id": contract.id, "amendment_id": amendment.id if amendment else False,
+                "adjustment_type": "retroactive_credit", "name": self._demo_name("Crédito por ajuste de cobrança"),
+                "amount": 125.00 + idx, "reference_period_start": start,
+                "reference_period_end": end, "apply_method": "next_invoice", "status": "approved",
+                "notes": "Ajuste demonstrativo após conferência de valores do contrato.",
+            }, "property.contract.financial.adjustment")
+            stats["financial_adjustments"] += 1 if adjustment else 0
         return stats
 
     def _contract_bucket(self, idx):
@@ -796,7 +1227,7 @@ class PropertyDemoGenerator(models.TransientModel):
         country = self._ref("base.br")
         for i in range(1, count - len(assets) + 1):
             vals = {
-                "name": "%s Imóvel Fallback %03d" % (PREFIX, i),
+                "name": self._demo_name("Imóvel de teste %03d - Unidade comercial" % i),
                 "asset_type": "commercial" if i % 3 else "residential",
                 "permitted_use": "commercial" if i % 3 else "residential",
                 "construction_standard": "medium",
@@ -831,10 +1262,16 @@ class PropertyDemoGenerator(models.TransientModel):
 
     def _create_tenant(self, idx):
         Partner = self.env["res.partner"].sudo()
-        Tenant = self.env["property.tenant"].sudo()
+        try:
+            Tenant = self._get_model("property.tenant")
+        except KeyError:
+            # Compatibilidade com versões antigas do helper em processos long-lived.
+            Tenant = False
         is_company = idx % 3 != 0
         partner = Partner.create(self._filter_vals(Partner, {
-            "name": "%s Locatário %03d %s" % (PREFIX, idx, "Ltda" if is_company else "Pessoa Física"),
+            "name": self._demo_name(
+                ("Horizonte Serviços Administrativos Ltda." if is_company else FAKE_TENANT_NAMES[(idx - 1) % len(FAKE_TENANT_NAMES)])
+            ),
             "is_company": bool(is_company),
             "email": "locatario%03d.demo@example.com" % idx,
             "phone": "+55 11 4000-%04d" % idx,
@@ -845,11 +1282,13 @@ class PropertyDemoGenerator(models.TransientModel):
             "vat": self._cpf(idx),
             "company_id": self.company_id.id,
         }))
-        tenant = Tenant.create(self._filter_vals(Tenant, {
-            "partner_id": partner.id,
-            "notes": "%s - locatário criado para massa de testes enterprise." % PREFIX,
-            "company_id": self.company_id.id,
-        }))
+        tenant = False
+        if Tenant is not False:
+            tenant = self._safe_create_optional("property.tenant", {
+                "partner_id": partner.id,
+                "notes": "%s - locatário criado para massa de testes enterprise." % PREFIX,
+                "company_id": self.company_id.id,
+            }, "property.tenant")
         return partner, tenant
 
     def _create_contract(self, asset, tenant, partner, idx, bucket, start_date, end_date, monthly_rent):
@@ -857,7 +1296,13 @@ class PropertyDemoGenerator(models.TransientModel):
         asset_type = getattr(asset, "asset_type", False)
         contract_type = "commercial" if asset_type in ("commercial", "industrial", "land", "mixed") else "residential"
         vals = {
-            "name": "%s Contrato %03d - %s" % (PREFIX, idx, (asset.display_name or asset.name or "Imóvel")[:55]),
+            "name": self._demo_name(
+                "Contrato de locação %s - %s - %s" % (
+                    "comercial" if contract_type == "commercial" else "residencial",
+                    (asset.display_name or asset.name or "imóvel")[:48],
+                    partner.name if partner else "locatário não informado",
+                )
+            ),
             "asset_id": asset.id,
             "tenant_id": tenant.id if tenant else False,
             "partner_id": partner.id if partner else False,
@@ -883,6 +1328,11 @@ class PropertyDemoGenerator(models.TransientModel):
     def _activate_or_generate_rents(self, contract):
         try:
             contract.action_activate()
+            # Algumas versões do fluxo ativam o contrato sem gerar parcelas
+            # quando a data inicial já passou. O seed precisa garantir que o
+            # portal tenha um cronograma navegável.
+            if not contract.rent_ids:
+                contract.action_generate_rents()
         except Exception as exc:
             _logger.warning("[%s] action_activate falhou no contrato %s: %s. Tentando gerar parcelas diretamente.", PREFIX, contract.display_name, exc)
             try:
@@ -911,7 +1361,7 @@ class PropertyDemoGenerator(models.TransientModel):
         return self._safe_create("property.payment.authorized.payer", {
             "contract_id": contract.id,
             "partner_id": partner.id if partner else False,
-            "name": "%s Pagador Autorizado %03d" % (PREFIX, idx),
+            "name": self._demo_name("Pagador autorizado - %s" % (partner.name if partner else "Contato")),
             "vat": self._cpf(1000 + idx),
             "pix_key": "pix.demo.%03d@example.com" % idx,
             "bank_name": "Banco Demo",
@@ -988,7 +1438,7 @@ class PropertyDemoGenerator(models.TransientModel):
         })
 
     def _create_payment_proof(self, rent, payment, amount, pay_date, idx, seq, offset, partial=False):
-        payer_name = rent.partner_id.name if not partial else "%s Pagador Autorizado %03d" % (PREFIX, idx)
+        payer_name = rent.partner_id.name if not partial else self._demo_name("Paulo Henrique Moura")
         transaction_id = "%s-E2E-%03d-%03d" % (PREFIX, idx, seq)
         raw_text = """
 {prefix} COMPROVANTE PIX DEMO
@@ -1155,7 +1605,7 @@ Parcela: {rent}
         for spec in specs:
             template = Template.search([("code", "=", spec["code"])], limit=1)
             vals = {
-                "name": spec["name"],
+                "name": self._demo_name(spec["name"]),
                 "code": spec["code"],
                 "sequence": spec["sequence"],
                 "description": spec["description"],
@@ -1195,11 +1645,20 @@ Parcela: {rent}
         Dossier = self._get_model("dossier.dossier")
         if Dossier is False:
             return False, 0
-        process = self._ref("document_dossier.process_property_lease") or self.env["dossier.process"].sudo().search([("domain", "=", "property")], limit=1)
+        process = self._ref("document_dossier.process_property_lease")
+        if not process:
+            Process = self._get_model("dossier.process")
+            process = Process.search([("domain", "=", "property")], limit=1) if Process is not False else False
         if not process:
             return False, 0
         dossier = Dossier.create(self._filter_vals(Dossier, {
-            "name": "%s Dossiê Contrato %03d - %s" % (PREFIX, idx, contract.partner_id.name[:40]),
+            "name": self._demo_name(
+                "Dossiê do contrato de locação %03d - %s - %s" % (
+                    idx,
+                    contract.reference or ("Contrato %03d" % idx),
+                    (contract.partner_id.name if contract.partner_id else "Locatário")[:45],
+                )
+            ),
             "description": "%s - dossiê criado para testar pendências, documentos obrigatórios e vínculo com contrato." % PREFIX,
             "process_id": process.id,
             "target_model": "property.contract",
@@ -1218,6 +1677,10 @@ Parcela: {rent}
         docs = dossier.document_ids
         for doc_seq, doc in enumerate(docs, start=1):
             vals = {"notes": "%s - documento de dossiê gerado em massa de teste." % PREFIX}
+            if "name" in doc._fields and doc.name and PREFIX.lower() not in doc.name.lower():
+                vals["name"] = self._demo_name(doc.name)
+            if "reference" in doc._fields and doc.reference and PREFIX.lower() not in doc.reference.lower():
+                vals["reference"] = "%s-%s" % (doc.reference, PREFIX)
             if doc_seq % 3 != 0:
                 vals.update({
                     "issue_date": today - timedelta(days=30 + doc_seq),
@@ -1259,10 +1722,17 @@ Parcela: {rent}
         Case = self._get_model("governance.case")
         if Case is False:
             return False
+        dossier = False
+        Dossier = self._get_model("dossier.dossier")
+        if Dossier is not False and "dossier_id" in Case._fields:
+            dossier = Dossier.search([
+                ("target_model", "=", "property.contract"),
+                ("target_res_id", "=", contract.id),
+            ], limit=1)
         case_type = self._ref("governance.case_type_financeiro") if idx % 2 else self._ref("governance.case_type_juridico")
         stage = self._ref("governance.stage_waiting") if idx % 2 else self._ref("governance.stage_planned")
         vals = {
-            "name": "%s Caso %03d - %s" % (PREFIX, idx, contract.partner_id.name[:50]),
+            "name": self._demo_name("Acompanhamento jurídico e operacional - %s" % contract.partner_id.name[:50]),
             "description": "<p>%s - caso vinculado ao contrato para testar governança + imóveis + documentos.</p>" % PREFIX,
             "origin_date": today - timedelta(days=idx % 30),
             "case_type_id": case_type.id if case_type else False,
@@ -1273,8 +1743,121 @@ Parcela: {rent}
             "asset_ids": [(6, 0, [contract.asset_id.id])],
             "contract_ids": [(6, 0, [contract.id])],
             "company_id": self.company_id.id,
+            "case_scope": "single_property",
+            "primary_asset_id": contract.asset_id.id if contract.asset_id else False,
+            "dossier_id": dossier.id if dossier else False,
         }
-        return Case.with_context(skip_participant_partner_sync=True).create(self._filter_vals(Case, vals))
+        case = Case.with_context(skip_participant_partner_sync=True).create(self._filter_vals(Case, vals))
+        self._create_governance_enterprise_records(case, contract, idx, today)
+        return case
+
+    def _create_governance_enterprise_records(self, case, contract, idx, today):
+        """Cria um caso navegável: checklist, obrigação, comunicação e resposta.
+
+        Dossiês guardam os arquivos; pendências registram ações; obrigações
+        registram compromissos externos. O encadeamento abaixo deixa os três
+        conceitos visíveis no seed sem duplicar o mesmo registro.
+        """
+        Obligation = self._get_model("governance.case.obligation")
+        Decision = self._get_model("governance.case.decision")
+        Risk = self._get_model("governance.case.risk")
+        Control = self._get_model("governance.control")
+        Communication = self._get_model("governance.case.communication")
+        Response = self._get_model("governance.case.response")
+        Participant = self._get_model("governance.case.participant")
+        formal_obligation = False
+
+        if Participant is not False:
+            Participant.create(self._filter_vals(Participant, {
+                "case_id": case.id,
+                "partner_id": contract.partner_id.id,
+                "role": "tenant",
+                "is_primary": True,
+                "note": "Locatário relacionado ao imóvel e ao contrato do caso.",
+            }))
+        if Obligation is not False:
+            for title, kind, days, state in [
+                ("Enviar comprovante de pagamento do aluguel", "document", 3, "waiting"),
+                ("Confirmar vistoria e providências de manutenção", "action", -2, "overdue"),
+                ("Apresentar posição formal sobre o contrato", "response", 7, "waiting"),
+            ]:
+                obligation = Obligation.create(self._filter_vals(Obligation, {
+                    "name": self._demo_name("%s - %s" % (title, contract.asset_id.name[:45])),
+                    "case_id": case.id, "partner_id": contract.partner_id.id,
+                    "responsible_id": self.env.user.id, "obligation_type": kind,
+                    "requested_date": today - timedelta(days=5), "due_date": today + timedelta(days=days),
+                    "state": state, "priority": "2" if days < 0 else "1",
+                    "description": "<p>Solicitação vinculada ao imóvel e ao contrato. Confirme o documento ou a providência no caso.</p>",
+                }))
+                if kind == "response":
+                    formal_obligation = obligation
+
+        if Communication is not False:
+            # A comunicação e eventual resposta nunca podem anteceder a
+            # origem do caso. Isso é importante para os casos gerados no
+            # início do mês, quando ``today - 2`` ainda ficaria antes da
+            # data de origem.
+            communication_date = max(case.origin_date or today, today - timedelta(days=2))
+            communication = Communication.create(self._filter_vals(Communication, {
+                "name": self._demo_name("Solicitação de posição sobre a locação - %s" % contract.asset_id.name[:45]),
+                "case_id": case.id,
+                "obligation_id": formal_obligation.id if formal_obligation else False,
+                "partner_id": contract.partner_id.id,
+                "responsible_id": self.env.user.id,
+                "channel_type": "email",
+                "communication_type": "email",
+                "direction": "out",
+                "communication_datetime": communication_date,
+                "requires_response": True,
+                "response_deadline": today + timedelta(days=5),
+                "response_received": bool(idx % 2 == 0),
+                "status": "done",
+                "note": "Solicitação objetiva sobre valores, vistoria e providências do imóvel. A resposta deve ser vinculada ao caso.",
+            }))
+            if Response is not False and idx % 2 == 0:
+                response_date = max(case.origin_date or today, communication_date)
+                Response.create(self._filter_vals(Response, {
+                    "name": self._demo_name("Resposta formal sobre a locação - %s" % contract.asset_id.name[:45]),
+                    "case_id": case.id,
+                    "communication_id": communication.id,
+                    "obligation_id": formal_obligation.id if formal_obligation else False,
+                    "partner_id": contract.partner_id.id,
+                    "responsible_id": self.env.user.id,
+                    "response_date": response_date,
+                    "response_type": "formal",
+                    "outcome": "accepted",
+                    "state": "approved",
+                    "note": "Resposta recebida, conferida e aceita para fins de demonstração. Evidências ficam no dossiê do caso.",
+                }))
+        decision = False
+        if Decision is not False:
+            decision = Decision.create(self._filter_vals(Decision, {
+                "name": self._demo_name("Aprovação da providência do contrato %03d" % idx),
+                "case_id": case.id, "decision_type": "other", "state": "approved",
+                "requested_by_id": self.env.user.id, "approver_id": self.env.user.id,
+                "rationale": "<p>Decisão de demonstração: a providência atende ao histórico do imóvel e aos documentos disponíveis.</p>",
+                "decision_date": today - timedelta(days=1),
+            }))
+        if Risk is not False:
+            Risk.create(self._filter_vals(Risk, {
+                "name": self._demo_name("Risco de atraso na manutenção do imóvel"),
+                "case_id": case.id, "category": "operational", "state": "treating",
+                "likelihood": "2", "impact": "3", "owner_id": self.env.user.id,
+                "decision_id": decision.id if decision else False,
+                "description": "<p>Atraso pode afetar a ocupação, a satisfação do locatário e o repasse ao proprietário.</p>",
+                "treatment_plan": "<p>Acompanhar fornecedor, registrar orçamento e validar conclusão com evidência fotográfica.</p>",
+                "review_date": today + timedelta(days=7),
+            }))
+        if Control is not False:
+            Control.create(self._filter_vals(Control, {
+                "name": self._demo_name("Conferência mensal de manutenção e repasse"),
+                "company_id": self.company_id.id, "owner_id": self.env.user.id,
+                "control_type": "detective", "frequency": "monthly", "state": "active",
+                "description": "<p>Conferir ordens de manutenção, comprovantes e valores repassados ao proprietário.</p>",
+                "test_method": "Checklist do contrato, nota fiscal, pagamento e aprovação do responsável.",
+                "last_test_date": today - timedelta(days=10), "next_test_date": today + timedelta(days=20),
+                "last_test_result": "effective",
+            }))
 
     def _create_amendment(self, contract, idx, today):
         Amendment = self._get_model("property.contract.amendment")
@@ -1282,7 +1865,7 @@ Parcela: {rent}
         if Amendment is False:
             return False
         amendment = Amendment.create(self._filter_vals(Amendment, {
-            "name": "%s Aditivo %03d" % (PREFIX, idx),
+            "name": self._demo_name("Aditivo de contrato de locação %03d" % idx),
             "contract_id": contract.id,
             "amendment_type": self._selection(Amendment, "amendment_type", "rent_increase", "other") if idx % 2 else self._selection(Amendment, "amendment_type", "term_extension", "other"),
             "amendment_scope": "financial" if idx % 2 else "term",
@@ -1321,6 +1904,7 @@ Parcela: {rent}
         total = 0
         Inspection = self._get_model("property.inspection")
         Maintenance = self._get_model("property.maintenance")
+        AssetCommunication = self._get_model("property.asset.communication")
         if Inspection is not False:
             Inspection.create(self._filter_vals(Inspection, {
                 "inspection_type": "periodic" if idx % 2 else "entry",
@@ -1338,23 +1922,45 @@ Parcela: {rent}
             }))
             total += 1
         if Maintenance is not False:
-            Maintenance.create(self._filter_vals(Maintenance, {
-                "name": "%s Manutenção %03d" % (PREFIX, idx),
-                "description": "%s - manutenção sintética para testar fluxo operacional." % PREFIX,
-                "maintenance_type": ["preventive", "corrective", "emergency", "improvement"][idx % 4],
-                "priority": str(idx % 4),
-                "responsible_party": ["owner", "tenant", "condominium"][idx % 3],
+            activities = [
+                ("Pintura interna e correção de paredes", "improvement", 1850.00),
+                ("Reparo de marcenaria e portas", "corrective", 1280.00),
+                ("Ajustes de alvenaria e impermeabilização", "preventive", 2450.00),
+                ("Revisão de vidraçaria e esquadrias", "corrective", 1680.00),
+            ]
+            for activity_index, (activity, activity_type, estimate) in enumerate(activities):
+                done = (idx + activity_index) % 4 == 0
+                Maintenance.create(self._filter_vals(Maintenance, {
+                    "name": self._demo_name("%s - imóvel %03d" % (activity, idx)),
+                    "description": "%s. Inclui vistoria, orçamento do prestador, materiais e acompanhamento da execução." % activity,
+                    "maintenance_type": activity_type,
+                    "priority": str((idx + activity_index) % 4),
+                    "responsible_party": ["owner", "tenant", "condominium"][(idx + activity_index) % 3],
+                    "asset_id": contract.asset_id.id,
+                    "contract_id": contract.id,
+                    "company_id": self.company_id.id,
+                    "request_date": today - timedelta(days=(idx + activity_index) % 30),
+                    "scheduled_date": today + timedelta(days=(idx + activity_index) % 12),
+                    "completion_date": today - timedelta(days=2) if done else False,
+                    "cost_estimate": estimate + idx * 35,
+                    "cost_actual": estimate - 80 + idx * 25 if done else 0.0,
+                    "status": "done" if done else ("scheduled" if activity_index % 2 else "quoted"),
+                }))
+                total += 1
+        if AssetCommunication is not False and contract.asset_id:
+            AssetCommunication.create(self._filter_vals(AssetCommunication, {
                 "asset_id": contract.asset_id.id,
                 "contract_id": contract.id,
-                "company_id": self.company_id.id,
-                "request_date": today - timedelta(days=idx % 30),
-                "scheduled_date": today + timedelta(days=idx % 12),
-                "completion_date": today - timedelta(days=2) if idx % 3 == 0 else False,
-                "cost_estimate": 600 + idx * 35,
-                "cost_actual": 550 + idx * 25 if idx % 3 == 0 else 0.0,
-                "status": "done" if idx % 3 == 0 else ("scheduled" if idx % 2 else "quoted"),
+                "partner_id": contract.partner_id.id,
+                "responsible_id": self.env.user.id,
+                "name": self._demo_name("Atualização sobre o imóvel e a manutenção"),
+                "description": "<p>Comunicação registrada sobre prazo, acesso ao imóvel e acompanhamento do serviço solicitado.</p>",
+                "communication_date": today - timedelta(days=min(idx, 10)),
+                "channel_type": "email" if idx % 2 else "call",
+                "status": "registered",
+                "requires_action": bool(idx % 3 == 0),
+                "action_deadline": today + timedelta(days=5) if idx % 3 == 0 else False,
             }))
-            total += 1
         return total
 
     # ------------------------------------------------------------------
@@ -1368,47 +1974,58 @@ Parcela: {rent}
         total = 0
         source = False
         if Source is not False:
-            source = Source.search([("name", "=", "%s Fonte Pesquisa Mercado" % PREFIX)], limit=1)
+            source = Source.search([("name", "=", self._demo_name("Fonte de pesquisa de preços de mercado"))], limit=1)
             if not source:
                 source = Source.create(self._filter_vals(Source, {
-                    "name": "%s Fonte Pesquisa Mercado" % PREFIX,
-                    "source_type": "manual_research",
-                    "reliability_score": 75,
-                    "notes": "%s - fonte criada para avaliação de teste." % PREFIX,
+                    "name": self._demo_name("Fonte de pesquisa de preços de mercado"),
+                    "source_type": "market_index",
+                    "url": "https://www.datazap.com.br/indice-fipezap/",
+                    "reliability_score": 86,
+                    "notes": "%s - referência pública FipeZAP para homologação. Os valores são indicativos e não substituem avaliação profissional." % PREFIX,
                     "company_id": self.company_id.id,
                 }))
                 total += 1
 
-        base_price = 55.0 + (idx % 20) * 2.5
+        # Referências ancoradas no FipeZAP (fev./mar. 2026): venda média de
+        # SP ~R$ 11.945/m², RJ ~R$ 10.865/m² e BH ~R$ 10.595/m²; locação
+        # residencial média monitorada ~R$ 51,89/m². Os ajustes abaixo
+        # representam bairro, padrão e uso comercial do imóvel.
+        asset_use_type = "commercial" if getattr(asset, "asset_type", False) != "residential" else "residential"
+        city_sale = {"São Paulo": 11945.0, "Rio de Janeiro": 10865.0, "Belo Horizonte": 10595.0}
+        city_rent = {"São Paulo": 64.0, "Rio de Janeiro": 52.0, "Belo Horizonte": 45.0, "Barueri": 48.0, "Santana de Parnaíba": 58.0}
+        base_sale_price = city_sale.get(asset.city, 8500.0) * (1.12 if asset_use_type == "commercial" else 1.0)
+        base_rent_price = city_rent.get(asset.city, 51.89) * (1.18 if asset_use_type == "commercial" else 1.0)
         standard = "medium"
         if getattr(asset, "construction_standard", False) in ("simple", "medium", "high"):
             standard = asset.construction_standard
         if getattr(asset, "construction_standard", False) == "luxury":
             standard = "premium"
-        asset_use_type = "commercial" if getattr(asset, "asset_type", False) != "residential" else "residential"
 
         if Ref is not False:
-            Ref.create(self._filter_vals(Ref, {
-                "valuation_type": "rent",
-                "asset_use_type": asset_use_type,
-                "standard": standard,
-                "city": asset.city or "Barueri",
-                "neighborhood": asset.neighborhood or "Alphaville",
-                "price_m2": base_price,
-                "valid_from": today - timedelta(days=30),
-                "source_id": source.id if source else False,
-                "confidence_score": 72,
-                "notes": "%s - referência m² de teste." % PREFIX,
-                "company_id": self.company_id.id,
-            }))
-            total += 1
+            for valuation_type, price_m2 in (("rent", base_rent_price), ("sale", base_sale_price)):
+                Ref.create(self._filter_vals(Ref, {
+                    "valuation_type": valuation_type,
+                    "asset_use_type": asset_use_type,
+                    "standard": standard,
+                    "city": asset.city or "Barueri",
+                    "neighborhood": asset.neighborhood or "Alphaville",
+                    "price_m2": round(price_m2, 2),
+                    "valid_from": today - timedelta(days=30),
+                    "source_id": source.id if source else False,
+                    "confidence_score": 82 if valuation_type == "sale" else 78,
+                    "notes": "%s - referência de mercado baseada no FipeZAP; valor indicativo para homologação, não laudo oficial." % PREFIX,
+                    "company_id": self.company_id.id,
+                }))
+                total += 1
+
+        base_price = base_rent_price
 
         comparables = Comp.browse() if Comp is not False else False
         if Comp is not False:
             for n in range(1, 4):
                 area = max(getattr(asset, "useful_area", 0.0) or getattr(asset, "total_area", 0.0) or 80.0, 30.0) + n * 10
                 comp = Comp.create(self._filter_vals(Comp, {
-                    "name": "%s Comparável %03d-%d" % (PREFIX, idx, n),
+                    "name": self._demo_name("Imóvel comparável para avaliação %03d-%d" % (idx, n)),
                     "asset_id": asset.id,
                     "source_id": source.id if source else False,
                     "date_observed": today - timedelta(days=10 + n),
@@ -1452,7 +2069,7 @@ Parcela: {rent}
                     try:
                         run.action_calculate()
                     except Exception as exc:
-                        _logger.info("[%s] cálculo de valuation ignorado: %s", PREFIX, exc)
+                        _logger.info("[%s] cálculo de avaliação ignorado: %s", PREFIX, exc)
                 total += 1
             except Exception as exc:
                 _logger.info("[%s] criação de valuation.run ignorada: %s", PREFIX, exc)
@@ -1462,7 +2079,7 @@ Parcela: {rent}
     # Cobertura ampliada: stakeholders, corretores, mandatos, leads,
     # comissões, repasses, histórico OCR, ajuda, agenda e comunicação.
     # ------------------------------------------------------------------
-    def _create_property_business_network(self, assets, today):
+    def _create_property_business_network(self, assets, today, asset_owners=False):
         stats = {
             "owners": 0,
             "brokers": 0,
@@ -1477,17 +2094,25 @@ Parcela: {rent}
         network = {"stats": stats}
 
         stats["common_tags"] += self._ensure_common_tags()
-        owners = self._create_demo_owners(max(4, min(12, max(1, self.contract_count // 6)))) if self.create_owner_repasses else self.env["property.owner"].browse()
+        owners = asset_owners or self._safe_browse("res.partner")
         brokerages, brokers = self._create_demo_brokerages_and_brokers(max(2, min(6, max(1, self.contract_count // 12))), max(4, min(18, max(2, self.contract_count // 4)))) if self.create_commercial_network else (self._safe_browse("property.brokerage"), self._safe_browse("property.broker"))
         buyers, sellers, investors, developers = self._create_demo_market_parties(max(3, min(10, max(1, self.contract_count // 8)))) if self.create_leads_acquisitions else (self._safe_browse("property.buyer"), self._safe_browse("property.seller"), self._safe_browse("property.investor"), self._safe_browse("property.developer"))
 
-        stats["owners"] += len(owners)
-        stats["brokerages"] += len(brokerages)
-        stats["brokers"] += len(brokers)
-        stats["buyers"] += len(buyers)
-        stats["sellers"] += len(sellers)
-        stats["investors"] += len(investors)
-        stats["developers"] += len(developers)
+        owners = self._normalize_optional_records("property.owner", owners)
+        brokerages = self._normalize_optional_records("property.brokerage", brokerages)
+        brokers = self._normalize_optional_records("property.broker", brokers)
+        buyers = self._normalize_optional_records("property.buyer", buyers)
+        sellers = self._normalize_optional_records("property.seller", sellers)
+        investors = self._normalize_optional_records("property.investor", investors)
+        developers = self._normalize_optional_records("property.developer", developers)
+
+        stats["owners"] += self._optional_records_count(owners)
+        stats["brokerages"] += self._optional_records_count(brokerages)
+        stats["brokers"] += self._optional_records_count(brokers)
+        stats["buyers"] += self._optional_records_count(buyers)
+        stats["sellers"] += self._optional_records_count(sellers)
+        stats["investors"] += self._optional_records_count(investors)
+        stats["developers"] += self._optional_records_count(developers)
 
         if assets:
             self._assign_assets_to_network(assets, owners, brokers)
@@ -1509,17 +2134,33 @@ Parcela: {rent}
         Model = self._get_model(model_name)
         return Model.browse() if Model is not False else False
 
+    def _normalize_optional_records(self, model_name, value):
+        """Converte retornos booleanos de módulos opcionais em recordsets vazios."""
+        if isinstance(value, bool):
+            return self._safe_browse(model_name)
+        return value
+
+    @staticmethod
+    def _optional_records_count(value):
+        """Conta resultados opcionais sem executar len() sobre booleanos."""
+        if isinstance(value, bool) or not value:
+            return 0
+        try:
+            return len(value)
+        except TypeError:
+            return 0
+
     def _ensure_common_tags(self):
         Tag = self._get_model("common.tag")
         if Tag is False:
             return 0
         created = 0
         for seq, (name, category, desc) in enumerate([
-            ("%s Alta prioridade" % PREFIX, "general", "Usado para testar filtros e indicadores de urgência."),
-            ("%s Comercial" % PREFIX, "property", "Fluxos comerciais, corretores, leads e mandatos."),
-            ("%s Documentação pendente" % PREFIX, "governance", "Pendências de documentos e dossiês."),
-            ("%s Financeiro" % PREFIX, "financial", "Parcelas, repasses, cobrança e conciliação."),
-            ("%s Manutenção" % PREFIX, "maintenance", "Vistorias, chamados técnicos e orçamento."),
+            (self._demo_name("Alta prioridade"), "general", "Usado para testar filtros e indicadores de urgência."),
+            (self._demo_name("Comercial"), "property", "Fluxos comerciais, corretores, leads e mandatos."),
+            (self._demo_name("Documentação pendente"), "governance", "Pendências de documentos e dossiês."),
+            (self._demo_name("Financeiro"), "financial", "Parcelas, repasses, cobrança e conciliação."),
+            (self._demo_name("Manutenção"), "maintenance", "Vistorias, chamados técnicos e orçamento."),
         ], start=1):
             tag = Tag.search([("name", "=", name)], limit=1)
             if not tag:
@@ -1539,7 +2180,7 @@ Parcela: {rent}
             return False
         owners = Owner.browse()
         for i in range(1, count + 1):
-            name = "%s Proprietário %02d %s" % (PREFIX, i, "Holding" if i % 2 else "Pessoa Física")
+            name = self._demo_name(FAKE_OWNER_NAMES[(i - 1) % len(FAKE_OWNER_NAMES)])
             owner = Owner.search([("name", "=", name)], limit=1)
             if not owner:
                 owner = self._safe_create_optional("property.owner", {
@@ -1563,44 +2204,127 @@ Parcela: {rent}
                 owners |= owner
         return owners
 
-    def _create_demo_brokerages_and_brokers(self, brokerage_count, broker_count):
-        Brokerage = self._get_model("property.brokerage")
-        Broker = self._get_model("property.broker")
-        if Broker is False:
-            return False, False
-        brokerages = Brokerage.browse() if Brokerage is not False else False
-        brokers = Broker.browse()
-        if Brokerage is not False:
-            for i in range(1, brokerage_count + 1):
-                partner = self._demo_partner("BROKERAGE%02d" % i, "%s Imobiliária Parceira %02d" % (PREFIX, i), True, 21000 + i, "brokerage%02d" % i)
-                brokerage = Brokerage.search([("partner_id", "=", partner.id)], limit=1)
-                if not brokerage:
-                    brokerage = self._safe_create_optional("property.brokerage", {
-                        "partner_id": partner.id,
-                        "notes": "%s - imobiliária/parceira para testar corretores e mandatos." % PREFIX,
-                        "company_id": self.company_id.id,
-                    }, "property.brokerage")
-                if brokerage:
-                    brokerages |= brokerage
-        for i in range(1, broker_count + 1):
-            name = "%s Corretor %02d" % (PREFIX, i)
-            broker = Broker.search([("name", "=", name)], limit=1)
-            if not broker:
-                brokerage = brokerages[(i - 1) % len(brokerages)] if brokerages else False
-                broker = self._safe_create_optional("property.broker", {
+    def _ensure_demo_asset_ownership(self, assets):
+        """Populate legal ownership without confusing it with administration.
+
+        ``property.asset.company_id`` is the company operating the portfolio;
+        ``owner_id`` is the legal owner and may be a person, another company,
+        or the partner of the current Odoo company itself.
+        """
+        Asset = self._get_model("property.asset")
+        Partner = self._get_model("res.partner")
+        owner_category = self._ref("property_core.res_partner_category_property_owner")
+        if Asset is False or Partner is False or owner_category is False:
+            return 0
+
+        owners = self.env["res.partner"].sudo().browse()
+        company_partner = self.company_id.partner_id
+        if company_partner:
+            owners |= company_partner
+            if owner_category not in company_partner.category_id:
+                company_partner.write({"category_id": [(4, owner_category.id)]})
+
+        owner_specs = [
+            ("Carlos Eduardo Almeida (DEMO-IMOB)", False, 7101),
+            ("Grupo Reserva do Tamboré Participações Ltda. (DEMO-IMOB)", True, 7102),
+            ("Família Ribeiro Patrimonial Ltda. (DEMO-IMOB)", True, 7103),
+        ]
+        for name, is_company, seed in owner_specs:
+            owner = Partner.search([("name", "=", name)], limit=1)
+            if not owner:
+                owner = Partner.create(self._filter_vals(Partner, {
                     "name": name,
+                    "is_company": is_company,
+                    "company_type": "company" if is_company else "person",
+                    "email": "proprietario.%s.demo@example.com" % seed,
+                    "phone": "+55 11 4400-%04d" % seed,
+                    "vat": self._cpf(seed),
+                    "city": "São Paulo" if not is_company else "Santana de Parnaíba",
+                    "category_id": [(4, owner_category.id)],
+                }))
+            elif owner_category not in owner.category_id:
+                owner.write({"category_id": [(4, owner_category.id)]})
+            owners |= owner
+
+        fixed_assets = self.env["property.asset"].sudo().browse()
+        for xmlid in (
+            "demo_asset_sp_paulista", "demo_asset_rj_flamengo",
+            "demo_asset_sp_vila_mariana", "demo_asset_mg_savassi",
+        ):
+            asset = self._ref("property_demo_enterprise_seed.%s" % xmlid)
+            if asset:
+                fixed_assets |= asset
+        demo_assets = assets.filtered(lambda asset: PREFIX.lower() in (asset.name or "").lower())
+        targets = (fixed_assets | demo_assets).exists()
+        assigned = 0
+        for index, asset in enumerate(targets):
+            values = {}
+            if not asset.owner_id and owners:
+                values["owner_id"] = owners[index % len(owners)].id
+                assigned += 1
+            area = asset.useful_area or asset.total_area or (70.0 + index * 5.0)
+            city_sale = {"São Paulo": 11945.0, "Rio de Janeiro": 10865.0, "Belo Horizonte": 10595.0}
+            sale_m2 = city_sale.get(asset.city, 8500.0)
+            if asset.asset_type == "commercial":
+                sale_m2 *= 1.12
+            rent_m2 = {"São Paulo": 64.0, "Rio de Janeiro": 52.0, "Belo Horizonte": 45.0, "Barueri": 48.0, "Santana de Parnaíba": 58.0}.get(asset.city, 51.89)
+            if asset.asset_type == "commercial":
+                rent_m2 *= 1.18
+            if not asset.asset_value:
+                values["asset_value"] = round(area * sale_m2, 2)
+            if not asset.market_value:
+                values["market_value"] = round(area * sale_m2 * 1.03, 2)
+            if not asset.rental_value:
+                values["rental_value"] = round(area * rent_m2, 2)
+            if values:
+                self._safe_write(asset, values)
+        # Retorna os parceiros legais para que mandatos e repasses usem o
+        # mesmo proprietário do imóvel, sem depender de um modelo opcional.
+        return owners
+
+    def _create_demo_brokerages_and_brokers(self, brokerage_count, broker_count):
+        # O property_core não possui um model property.broker separado:
+        # corretores e imobiliárias são contatos (res.partner) classificados
+        # por categorias, e os mandatos/comissões apontam para esse contato.
+        Partner = self._get_model("res.partner")
+        if Partner is False:
+            return False, False
+        broker_category = self._ref("property_core.res_partner_category_property_broker")
+        brokerage_category = self._ref("property_core.res_partner_category_property_brokerage")
+        brokerages = Partner.browse()
+        brokers = Partner.browse()
+
+        for i in range(1, brokerage_count + 1):
+            agency = self._demo_partner(
+                "BROKERAGE%02d" % i,
+                self._demo_name("Imobiliária Horizonte %02d" % i),
+                True, 21000 + i, "brokerage%02d" % i,
+            )
+            if brokerage_category and brokerage_category not in agency.category_id:
+                agency.write({"category_id": [(4, brokerage_category.id)]})
+            brokerages |= agency
+
+        for i in range(1, broker_count + 1):
+            name = self._demo_name(FAKE_BROKER_NAMES[(i - 1) % len(FAKE_BROKER_NAMES)])
+            broker = Partner.search([("name", "=", name)], limit=1)
+            agency = brokerages[(i - 1) % len(brokerages)] if brokerages else False
+            if not broker:
+                broker = Partner.create(self._filter_vals(Partner, {
+                    "name": name,
+                    "is_company": False,
+                    "company_type": "person",
                     "email": "corretor%02d.demo@example.com" % i,
                     "phone": "+55 11 4300-%04d" % i,
                     "mobile": "+55 11 99300-%04d" % i,
                     "creci": "CRECI-SP %06d-F" % (9000 + i),
-                    "company_name": brokerage.name if brokerage else "DEMO Imobiliária",
-                    "brokerage_id": brokerage.id if brokerage else False,
                     "commission_rate": [4.0, 5.0, 6.0][i % 3],
-                    "notes": "%s - corretor sintético para testar autorização, leads e comissões." % PREFIX,
+                    "category_id": [(4, broker_category.id)] if broker_category else False,
+                    "notes": "%s - corretor vinculado à %s para testar autorização, mandatos e comissões." % (PREFIX, agency.name if agency else "imobiliária administradora"),
                     "company_id": self.company_id.id,
-                }, "property.broker")
-            if broker:
-                brokers |= broker
+                }))
+            elif broker_category and broker_category not in broker.category_id:
+                broker.write({"category_id": [(4, broker_category.id)]})
+            brokers |= broker
         return brokerages, brokers
 
     def _create_demo_market_parties(self, count):
@@ -1614,19 +2338,19 @@ Parcela: {rent}
         developers = Developer.browse() if Developer is not False else False
         for i in range(1, count + 1):
             if Buyer is not False:
-                partner = self._demo_partner("BUYER%02d" % i, "%s Comprador %02d" % (PREFIX, i), i % 2 == 0, 22000 + i, "buyer%02d" % i)
+                partner = self._demo_partner("BUYER%02d" % i, self._demo_name(FAKE_TENANT_NAMES[(i + 1) % len(FAKE_TENANT_NAMES)]), i % 2 == 0, 22000 + i, "buyer%02d" % i)
                 rec = Buyer.search([("partner_id", "=", partner.id)], limit=1) or self._safe_create_optional("property.buyer", {"partner_id": partner.id, "notes": "%s - comprador para funil de aquisição/venda." % PREFIX, "company_id": self.company_id.id}, "property.buyer")
                 if rec: buyers |= rec
             if Seller is not False:
-                partner = self._demo_partner("SELLER%02d" % i, "%s Vendedor %02d" % (PREFIX, i), i % 3 == 0, 23000 + i, "seller%02d" % i)
+                partner = self._demo_partner("SELLER%02d" % i, self._demo_name("Roberto Cavalcanti %02d" % i), i % 3 == 0, 23000 + i, "seller%02d" % i)
                 rec = Seller.search([("partner_id", "=", partner.id)], limit=1) or self._safe_create_optional("property.seller", {"partner_id": partner.id, "notes": "%s - vendedor para oportunidades de aquisição." % PREFIX, "company_id": self.company_id.id}, "property.seller")
                 if rec: sellers |= rec
             if Investor is not False:
-                partner = self._demo_partner("INVESTOR%02d" % i, "%s Investidor %02d" % (PREFIX, i), True, 24000 + i, "investor%02d" % i)
+                partner = self._demo_partner("INVESTOR%02d" % i, self._demo_name("Teresa Vasconcelos %02d" % i), True, 24000 + i, "investor%02d" % i)
                 rec = Investor.search([("partner_id", "=", partner.id)], limit=1) or self._safe_create_optional("property.investor", {"partner_id": partner.id, "investment_profile": ["income", "growth", "mixed"][i % 3], "notes": "%s - investidor para análise de aquisição." % PREFIX, "company_id": self.company_id.id}, "property.investor")
                 if rec: investors |= rec
             if Developer is not False:
-                partner = self._demo_partner("DEVELOPER%02d" % i, "%s Incorporadora %02d" % (PREFIX, i), True, 25000 + i, "developer%02d" % i)
+                partner = self._demo_partner("DEVELOPER%02d" % i, self._demo_name("Construtora Vale Verde %02d" % i), True, 25000 + i, "developer%02d" % i)
                 rec = Developer.search([("partner_id", "=", partner.id)], limit=1) or self._safe_create_optional("property.developer", {"partner_id": partner.id, "notes": "%s - incorporadora para fluxo de aquisição/desenvolvimento." % PREFIX, "company_id": self.company_id.id}, "property.developer")
                 if rec: developers |= rec
         return buyers, sellers, investors, developers
@@ -1729,7 +2453,7 @@ Parcela: {rent}
         count = 0
         for n in range(1, 3 if idx % 3 == 0 else 2):
             lead = self._safe_create_optional("property.lead", {
-                "name": "%s Lead %03d-%d" % (PREFIX, idx, n),
+                "name": self._demo_name("Interesse de locação - %s - contato %d" % (asset.name[:45], n)),
                 "email": "lead%03d_%d.demo@example.com" % (idx, n),
                 "phone": "+55 11 4400-%04d" % (idx * 10 + n),
                 "asset_id": asset.id,
@@ -1756,7 +2480,7 @@ Parcela: {rent}
         offer = asking * 0.92
         agreed = asking * 0.95 if idx % 2 == 0 else 0.0
         return self._safe_create_optional("property.acquisition", {
-            "name": "%s Aquisição %03d - %s" % (PREFIX, idx, asset.name[:40] if asset else "Imóvel"),
+            "name": self._demo_name("Oportunidade de compra - %s" % (asset.name[:55] if asset else "Imóvel")),
             "priority": str(idx % 3),
             "asset_type": getattr(asset, "asset_type", False) or "commercial",
             "address": getattr(asset, "address", False) or "Rua Demo Aquisição",
@@ -1810,9 +2534,20 @@ Parcela: {rent}
 
     def _create_owner_repasses_for_demo(self, today, network):
         stats = {"owner_repasses": 0}
-        owners = (network or {}).get("owners")
+        # O proprietário legal é res.partner e é obtido diretamente dos
+        # imóveis. Isso funciona mesmo quando o modelo opcional de rede
+        # imobiliária não está instalado ou retorna False.
+        owner_assets = self._safe_search("property.asset", [("owner_id", "!=", False)], limit=self.contract_count)
+        owners = owner_assets.mapped("owner_id") if owner_assets else False
+        # A rede de proprietários opcional pode devolver um booleano ou uma
+        # entidade incompatível; os imóveis continuam sendo a fonte oficial.
         if not owners:
-            owners = self._safe_search("property.owner", [("name", "ilike", PREFIX)])
+            owners = (network or {}).get("owners")
+        if isinstance(owners, bool):
+            owners = False
+        if not owners:
+            owner_category = self._ref("property_core.res_partner_category_property_owner")
+            owners = self._safe_search("res.partner", [("category_id", "in", owner_category.ids)]) if owner_category else False
         Repasse = self._get_model("property.owner.repasse")
         if Repasse is False or not owners:
             return stats
@@ -1821,11 +2556,12 @@ Parcela: {rent}
                 ref_date = today - relativedelta(months=months_back)
                 first = ref_date.replace(day=1)
                 last = first + relativedelta(months=1, days=-1)
-                domain = [("contract_id.asset_id.owner_id", "=", owner.id), ("status", "=", "paid"), ("due_date", ">=", first), ("due_date", "<=", last)]
+                asset_ids = owner_assets.filtered(lambda a, owner=owner: a.owner_id == owner).ids if owner_assets else []
+                domain = [("asset_id", "in", asset_ids), ("status", "=", "paid"), ("due_date", ">=", first), ("due_date", "<=", last)]
                 rents = self._safe_search("property.rent", domain)
-                commissions = self._safe_search("property.commission", [("contract_id.asset_id.owner_id", "=", owner.id), ("status", "=", "paid")])
+                commissions = self._safe_search("property.commission", [("asset_id", "in", asset_ids), ("status", "=", "paid")])
                 maintenance = self._safe_search("property.maintenance", [("asset_id.owner_id", "=", owner.id), ("status", "=", "done")])
-                repasse = self._safe_create_optional("property.owner.repasse", {
+                repasse = self._safe_create_optional("property.owner.repasse", self._filter_vals(Repasse, {
                     "owner_id": owner.id,
                     "period_month": first.month,
                     "period_year": first.year,
@@ -1839,9 +2575,221 @@ Parcela: {rent}
                     "payment_date": last + timedelta(days=5) if months_back >= 2 else False,
                     "notes": "%s - repasse mensal sintético ao proprietário." % PREFIX,
                     "company_id": self.company_id.id,
-                }, "property.owner.repasse")
+                }), "property.owner.repasse")
                 stats["owner_repasses"] += 1 if repasse else 0
         return stats
+
+    def _create_maintenance_bills(self):
+        """Cria algumas compras reais de manutenção, ainda em rascunho.
+
+        A fatura é criada em ``account.move`` e ligada ao registro de
+        manutenção; não é contabilizada automaticamente no seed.
+        """
+        Maintenance = self._get_model("property.maintenance")
+        Bill = self._get_model("property.maintenance.bill")
+        Move = self._get_model("account.move")
+        Account = self._get_model("account.account")
+        if any(model is False for model in (Maintenance, Bill, Move, Account)):
+            return 0
+        maintenance = Maintenance.search(self._or_domain([("name", "ilike", PREFIX), ("description", "ilike", PREFIX)]), order="id asc")
+        vendor = self.env["res.partner"].search([("is_company", "=", True)], order="id asc", limit=1)
+        account = Account.search([("account_type", "in", ("expense", "expense_direct_cost"))], limit=1)
+        if not vendor or not account:
+            return 0
+        created = 0
+        for item in maintenance.filtered(lambda m: not m.bill_ids)[:12]:
+            try:
+                with self.env.cr.savepoint():
+                    move = Move.create(self._filter_vals(Move, {
+                        "move_type": "in_invoice", "partner_id": vendor.id,
+                        "invoice_date": item.completion_date or date.today(),
+                        "ref": self._demo_name("NF manutenção %03d" % item.id),
+                        "company_id": self.company_id.id, "maintenance_id": item.id,
+                        "invoice_line_ids": [(0, 0, {
+                            "name": item.name or "Serviço de manutenção do imóvel",
+                            "quantity": 1.0, "price_unit": item.cost_actual or item.cost_estimate or 1500.0,
+                            "account_id": account.id,
+                        })],
+                    }))
+                    bill = Bill.create({"maintenance_id": item.id, "invoice_id": move.id})
+                    created += 1 if bill else 0
+            except Exception as exc:
+                _logger.warning("[%s] Fatura de manutenção ignorada: %s", PREFIX, exc)
+        return created
+
+    def _create_payment_match_suggestions(self):
+        """Deixa exemplos de conciliação para revisão, sem alterar pagamentos."""
+        Proof = self._get_model("property.payment.proof")
+        Match = self._get_model("property.payment.proof.match")
+        if Proof is False or Match is False:
+            return 0
+        created = 0
+        for proof in Proof.search([("raw_text", "ilike", PREFIX)], order="id asc"):
+            if not proof.rent_id or proof.match_line_ids:
+                continue
+            match = self._safe_create_optional("property.payment.proof.match", {
+                "proof_id": proof.id, "rent_id": proof.rent_id.id,
+                "contract_id": proof.contract_id.id if proof.contract_id else proof.rent_id.contract_id.id,
+                "partner_id": proof.rent_id.contract_id.partner_id.id if proof.rent_id.contract_id.partner_id else False,
+                "amount_due": proof.rent_id.amount_due or proof.amount or 0.0,
+                "score": 91.5,
+                "reason": "Sugestão baseada no valor, vencimento, contrato e identificação do pagador; requer conferência humana antes da seleção.",
+            }, "property.payment.proof.match")
+            created += 1 if match else 0
+            if created >= 20:
+                break
+        return created
+
+    def _create_portal_test_users(self, assets):
+        """Cria usuários de demonstração com escopo coerente por portal."""
+        User = self._get_model("res.users")
+        Partner = self._get_model("res.partner")
+        Profile = self._get_model("property.stakeholder.profile")
+        Type = self._get_model("property.stakeholder.type")
+        portal_group = self._ref("base.group_portal")
+        if any(model is False for model in (User, Partner, Profile, Type)) or not portal_group:
+            return 0
+        contracts = self._safe_search("property.contract", self._demo_marker_domain("name"), order="id asc")
+        tenant = contracts[:1].partner_id if contracts else False
+        owner = assets.filtered(lambda a: a.owner_id)[:1].owner_id if assets else False
+        case = self._safe_search("governance.case", self._demo_marker_domain("name"), order="id asc", limit=1)
+        governance_partner = case[:1].participant_ids[:1].partner_id if case else tenant
+        condo_rel = self._safe_search("property.condominium.relationship", [("active", "=", True)], order="id asc", limit=1)
+        condo_partner = condo_rel[:1].partner_id if condo_rel else owner
+        specs = [
+            ("locatario", "Portal — Locatário", tenant, "tenant", "portal.locatario.demo@example.com"),
+            ("proprietario", "Portal — Proprietário", owner, "owner", "portal.proprietario.demo@example.com"),
+            ("governanca", "Portal — Participante de Governança", governance_partner, "tenant", "portal.governanca.demo@example.com"),
+            ("condominio", "Portal — Condômino", condo_partner, "owner", "portal.condominio.demo@example.com"),
+        ]
+        created = 0
+        for role, display, partner, type_code, login in specs:
+            if not partner:
+                continue
+            # O mesmo parceiro pode possuir acessos de demonstração distintos;
+            # o login é a identidade do usuário e deve ser priorizado.
+            user = User.search([("login", "=", login)], limit=1) or User.search([("partner_id", "=", partner.id)], limit=1)
+            if not user:
+                try:
+                    user = User.with_context(no_reset_password=True).create({
+                        "name": display,
+                        "login": login,
+                        "email": partner.email or login,
+                        "partner_id": partner.id,
+                        "password": "DemoPortal2026!",
+                        "group_ids": [(6, 0, [portal_group.id])],
+                        "share": True,
+                    })
+                    created += 1
+                except Exception as exc:
+                    _logger.warning("[%s] Usuário de portal %s ignorado: %s", PREFIX, role, exc)
+                    continue
+            else:
+                # 00_test_users.xml cria a identidade do usuário antes de
+                # existirem os parceiros do catálogo e, por isso, o Odoo pode
+                # gerar um parceiro automático. Quando reutilizamos a conta
+                # pelo login, ela precisa ser religada ao parceiro que possui
+                # o contrato/imóvel demo; caso contrário o portal fica sem
+                # contratos, parcelas e documentos visíveis.
+                self._safe_write(user, {
+                    "partner_id": partner.id,
+                    "group_ids": [(4, portal_group.id)],
+                    "share": True,
+                    "active": True,
+                })
+            stakeholder_type = Type.search([("code", "=", type_code)], limit=1)
+            if stakeholder_type:
+                if not stakeholder_type.can_have_portal_access:
+                    self._safe_write(stakeholder_type, {"can_have_portal_access": True})
+                profile = Profile.search([
+                    ("partner_id", "=", partner.id),
+                    ("stakeholder_type_id", "=", stakeholder_type.id),
+                ], limit=1)
+                profile_vals = {
+                    "partner_id": partner.id, "stakeholder_type_id": stakeholder_type.id,
+                    "role_status": "active", "company_id": self.company_id.id,
+                    "user_id": user.id,
+                    "notes": "Perfil de portal do seed: acesso limitado aos contratos, imóveis, documentos, governança ou condomínio relacionados ao contato.",
+                }
+                if profile:
+                    self._safe_write(profile, profile_vals)
+                else:
+                    self._safe_create_optional("property.stakeholder.profile", profile_vals, "property.stakeholder.profile")
+
+            Document = self._get_model("document.document")
+            if Document is not False and "shared_partner_ids" in Document._fields:
+                docs = Document.search(self._or_domain([("name", "ilike", PREFIX), ("notes", "ilike", PREFIX)]), limit=5)
+                # O tipo documental controla se a publicação é permitida.
+                # Para documentos DEMO compartilhados no portal, habilitamos
+                # explicitamente a publicação do tipo, sem tornar o documento
+                # público.
+                for document_type in docs.mapped("document_type_id"):
+                    if "allow_website_publish" in document_type._fields and not document_type.allow_website_publish:
+                        self._safe_write(document_type, {"allow_website_publish": True})
+                for doc in docs:
+                    self._safe_write(doc, {
+                        "website_published": True,
+                        "website_visibility": "portal",
+                        "access_level": "portal",
+                        # O portal exibe somente documentos validados. O seed
+                        # precisa representar o fluxo concluído de publicação,
+                        # e não apenas marcar o documento como disponível.
+                        "document_workflow_state": "validated",
+                        "validated_by": self.env.user.id,
+                        "validation_date": fields.Date.context_today(self),
+                        "approved_by_id": self.env.user.id,
+                        "approval_date": fields.Date.context_today(self),
+                        "shared_partner_ids": [(4, partner.id)],
+                    })
+
+        # Cenário multi-perfil: o mesmo contato pode ser proprietário de uma
+        # unidade, locatário de outro imóvel, participante de governança e
+        # condômino. Isso é comum em uma administradora de portfólio e valida
+        # os cards do portal na mesma sessão, sem criar um contato artificial.
+        if owner:
+            tenant_type = Type.search([("code", "=", "tenant")], limit=1)
+            if tenant_type:
+                self._safe_write(tenant_type, {"can_have_portal_access": True})
+                owner_user = User.search([("partner_id", "=", owner.id)], limit=1)
+                if owner_user:
+                    owner_profile = Profile.search([
+                        ("partner_id", "=", owner.id),
+                        ("stakeholder_type_id", "=", tenant_type.id),
+                    ], limit=1)
+                    profile_vals = {
+                        "partner_id": owner.id,
+                        "stakeholder_type_id": tenant_type.id,
+                        "role_status": "active",
+                        "company_id": self.company_id.id,
+                        "user_id": owner_user.id,
+                        "notes": "Perfil multiuso do portal: proprietário e locatário em imóveis distintos.",
+                    }
+                    if owner_profile:
+                        self._safe_write(owner_profile, profile_vals)
+                    else:
+                        self._safe_create_optional("property.stakeholder.profile", profile_vals, "property.stakeholder.profile")
+
+                    # Preserve o contrato do locatário especializado. O
+                    # proprietário pode locar outra unidade sem apagar o
+                    # cenário específico de locação do portal.
+                    multi_contract = contracts.filtered(
+                        lambda c: c.partner_id not in (owner, tenant)
+                    )[:1]
+                    if multi_contract:
+                        self._safe_write(multi_contract, {"partner_id": owner.id}, "property.contract multi-perfil")
+                        self._safe_write(multi_contract.rent_ids, {"partner_id": owner.id}, "property.rent multi-perfil")
+
+                    multi_case = case[:1] if case else False
+                    Participant = self._get_model("governance.case.participant")
+                    if multi_case and Participant is not False and not multi_case.participant_ids.filtered(lambda p: p.partner_id == owner):
+                        self._safe_create_optional("governance.case.participant", {
+                            "case_id": multi_case.id,
+                            "partner_id": owner.id,
+                            "role": "owner",
+                            "is_primary": False,
+                            "note": "Proprietário do imóvel relacionado ao caso; participante do acompanhamento.",
+                        }, "governance.case.participant")
+        return created
 
     def _create_media_for_assets(self, assets, today):
         Media = self._get_model("property.media")
@@ -1850,10 +2798,10 @@ Parcela: {rent}
             return 0
         created = 0
         cat_specs = [
-            ("DEMO_GALLERY", "%s Galeria Comercial" % PREFIX, "asset_gallery", "image"),
-            ("DEMO_TECH_DOC", "%s Documento Técnico" % PREFIX, "document_support", "document"),
-            ("DEMO_INSPECTION", "%s Vistoria" % PREFIX, "inspection", "image"),
-            ("DEMO_MAINTENANCE", "%s Manutenção" % PREFIX, "maintenance", "image"),
+            ("DEMO_GALLERY", self._demo_name("Galeria Comercial"), "asset_gallery", "image"),
+            ("DEMO_TECH_DOC", self._demo_name("Documento Técnico"), "document_support", "document"),
+            ("DEMO_INSPECTION", self._demo_name("Vistoria"), "inspection", "image"),
+            ("DEMO_MAINTENANCE", self._demo_name("Manutenção"), "maintenance", "image"),
         ]
         categories = {}
         for code, name, purpose, kind in cat_specs:
@@ -1874,7 +2822,7 @@ Parcela: {rent}
         text_data = base64.b64encode(("%s arquivo técnico sintético" % PREFIX).encode("utf-8")).decode("ascii")
         for idx, asset in enumerate(assets[:min(len(assets), max(10, self.contract_count // 2))], start=1):
             media = self._safe_create_optional("property.media", {
-                "name": "%s Foto Fachada %03d" % (PREFIX, idx),
+                "name": self._demo_name("Foto da fachada do imóvel %03d" % idx),
                 "asset_id": asset.id,
                 "purpose": "asset_gallery",
                 "category_id": categories.get("asset_gallery").id if categories.get("asset_gallery") else False,
@@ -1893,7 +2841,7 @@ Parcela: {rent}
             }, "property.media")
             created += 1 if media else 0
             media_doc = self._safe_create_optional("property.media", {
-                "name": "%s Memorial Técnico %03d" % (PREFIX, idx),
+                "name": self._demo_name("Memorial técnico do imóvel %03d" % idx),
                 "asset_id": asset.id,
                 "purpose": "document_support",
                 "category_id": categories.get("document_support").id if categories.get("document_support") else False,
@@ -1926,14 +2874,14 @@ Parcela: {rent}
         tag = False
         category = False
         if Tag is not False:
-            tag = Tag.search([("name", "=", "%s Imobiliário" % PREFIX)], limit=1) or self._safe_create_optional("help.tag", {"name": "%s Imobiliário" % PREFIX, "description": "Tag demo para artigos de imóveis."}, "help.tag")
+            tag = Tag.search([("name", "=", self._demo_name("Imobiliário"))], limit=1) or self._safe_create_optional("help.tag", {"name": self._demo_name("Imobiliário"), "description": "Tag de teste para artigos de imóveis."}, "help.tag")
             stats["help_records"] += 1 if tag else 0
         if Category is not False:
-            category = Category.search([("code", "=", "%s_HELP_IMOB" % PREFIX)], limit=1) or self._safe_create_optional("help.category", {"name": "%s Ajuda Imobiliária" % PREFIX, "code": "%s_HELP_IMOB" % PREFIX, "sequence": 900}, "help.category")
+            category = Category.search([("code", "=", "%s_HELP_IMOB" % PREFIX)], limit=1) or self._safe_create_optional("help.category", {"name": self._demo_name("Ajuda Imobiliária"), "code": "%s_HELP_IMOB" % PREFIX, "sequence": 900}, "help.category")
             stats["help_records"] += 1 if category else 0
         if Article is not False:
             vals = {
-                "name": "%s Como testar massa imobiliária" % PREFIX,
+                "name": self._demo_name("Como testar os fluxos imobiliários"),
                 "code": "%s.HELP.MASSA.IMOB" % PREFIX,
                 "category_id": category.id if category else False,
                 "tag_ids": [(6, 0, [tag.id])] if tag else False,
@@ -1949,38 +2897,38 @@ Parcela: {rent}
             if not Article.search([("code", "=", vals["code"])], limit=1):
                 stats["help_records"] += 1 if self._safe_create_optional("help.article", vals, "help.article") else 0
         if ChecklistTemplate is not False:
-            checklist = ChecklistTemplate.search([("name", "=", "%s Checklist Homologação" % PREFIX)], limit=1) or self._safe_create_optional("help.checklist.template", {"name": "%s Checklist Homologação" % PREFIX, "audience": self._selection(ChecklistTemplate, "audience", "user", "all"), "description": "%s - checklist demo." % PREFIX}, "help.checklist.template")
+            checklist = ChecklistTemplate.search([("name", "=", self._demo_name("Checklist de homologação"))], limit=1) or self._safe_create_optional("help.checklist.template", {"name": self._demo_name("Checklist de homologação"), "audience": self._selection(ChecklistTemplate, "audience", "user", "all"), "description": "%s - checklist demo." % PREFIX}, "help.checklist.template")
             if checklist:
                 stats["help_records"] += 1
                 if ChecklistItem is not False:
                     for seq, name in enumerate(["Verificar contratos", "Verificar parcelas", "Verificar conciliação", "Verificar governança"], start=1):
-                        if not ChecklistItem.search([("template_id", "=", checklist.id), ("name", "=", "%s %s" % (PREFIX, name))], limit=1):
-                            stats["help_records"] += 1 if self._safe_create_optional("help.checklist.item", {"template_id": checklist.id, "name": "%s %s" % (PREFIX, name), "sequence": seq * 10}, "help.checklist.item") else 0
+                        if not ChecklistItem.search([("template_id", "=", checklist.id), ("name", "=", self._demo_name(name))], limit=1):
+                            stats["help_records"] += 1 if self._safe_create_optional("help.checklist.item", {"template_id": checklist.id, "name": self._demo_name(name), "sequence": seq * 10}, "help.checklist.item") else 0
         if Tip is not False:
-            tip_vals = {"name": "%s Dica Dados de Teste" % PREFIX, "content": "Use o prefixo DEMO-IMOB para filtrar todos os registros de homologação.", "audience": self._selection(Tip, "audience", "user", "all"), "module_name": "property_core", "model_name": "property.contract"}
+            tip_vals = {"name": self._demo_name("Dica para revisar dados de teste"), "content": "Use o marcador DEMO-IMOB, que aparece no final dos nomes, para filtrar os registros de homologação.", "audience": self._selection(Tip, "audience", "user", "all"), "module_name": "property_core", "model_name": "property.contract"}
             if not Tip.search([("name", "=", tip_vals["name"])], limit=1):
                 stats["help_records"] += 1 if self._safe_create_optional("help.tip", tip_vals, "help.tip") else 0
         if Context is not False:
-            ctx_vals = {"name": "%s Contexto Contratos" % PREFIX, "context_kind": self._selection(Context, "context_kind", "model", "other"), "model_name": "property.contract", "description": "%s - contexto de ajuda criado pelo seed." % PREFIX}
+            ctx_vals = {"name": self._demo_name("Contexto de contratos de locação"), "context_kind": self._selection(Context, "context_kind", "model", "other"), "model_name": "property.contract", "description": "%s - contexto de ajuda criado pelo seed." % PREFIX}
             if not Context.search([("name", "=", ctx_vals["name"])], limit=1):
                 stats["help_records"] += 1 if self._safe_create_optional("help.context", ctx_vals, "help.context") else 0
         if Rule is not False:
-            rule_vals = {"name": "%s Regra Sugestão Contratos" % PREFIX, "rule_type": self._selection(Rule, "rule_type", "model", "keyword"), "model_name": "property.contract", "keyword": "DEMO-IMOB", "active": True}
+            rule_vals = {"name": self._demo_name("Regra de sugestão para contratos"), "rule_type": self._selection(Rule, "rule_type", "model", "keyword"), "model_name": "property.contract", "keyword": "DEMO-IMOB", "active": True}
             if not Rule.search([("name", "=", rule_vals["name"])], limit=1):
                 stats["help_records"] += 1 if self._safe_create_optional("help.suggestion.rule", rule_vals, "help.suggestion.rule") else 0
         if Learning is not False:
-            path = Learning.search([("name", "=", "%s Trilha Imobiliária" % PREFIX)], limit=1) or self._safe_create_optional("help.learning.path", {"name": "%s Trilha Imobiliária" % PREFIX, "audience": self._selection(Learning, "audience", "user", "all"), "description": "%s - trilha demo." % PREFIX}, "help.learning.path")
+            path = Learning.search([("name", "=", self._demo_name("Trilha de fluxos imobiliários"))], limit=1) or self._safe_create_optional("help.learning.path", {"name": self._demo_name("Trilha de fluxos imobiliários"), "audience": self._selection(Learning, "audience", "user", "all"), "description": "%s - trilha demo." % PREFIX}, "help.learning.path")
             if path:
                 stats["help_records"] += 1
-                if Step is not False and not Step.search([("learning_path_id", "=", path.id), ("name", "=", "%s Abrir contratos" % PREFIX)], limit=1):
-                    stats["help_records"] += 1 if self._safe_create_optional("help.learning.step", {"learning_path_id": path.id, "name": "%s Abrir contratos" % PREFIX, "sequence": 10, "description": "Filtre DEMO-IMOB e percorra os contratos."}, "help.learning.step") else 0
+                if Step is not False and not Step.search([("learning_path_id", "=", path.id), ("name", "=", self._demo_name("Abrir contratos de locação"))], limit=1):
+                    stats["help_records"] += 1 if self._safe_create_optional("help.learning.step", {"learning_path_id": path.id, "name": self._demo_name("Abrir contratos de locação"), "sequence": 10, "description": "Filtre pelo marcador DEMO-IMOB e percorra os contratos."}, "help.learning.step") else 0
 
         Agenda = self._get_model("common.agenda.event")
         if Agenda is not False and self._model_table_ready("common.agenda.event", Agenda):
             for i in range(1, 5):
                 start_dt = fields.Datetime.to_datetime(today + timedelta(days=i)) + relativedelta(hours=9 + i)
                 event = self._safe_create_optional("common.agenda.event", {
-                    "name": "%s Agenda Homologação %02d" % (PREFIX, i),
+                    "name": self._demo_name("Agenda de homologação %02d" % i),
                     "agenda_module": ["property", "governance", "document", "financial"][i - 1],
                     "agenda_type": ["contract", "governance_followup", "dossier", "rent"][i - 1],
                     "state": "scheduled",
@@ -2015,10 +2963,10 @@ Parcela: {rent}
         Line = self._get_model("property.contract.ocr.template.line")
         Field = self._get_model("ir.model.fields")
         if Template is not False:
-            template = Template.search([("name", "=", "%s Template Locação Quadro Resumo" % PREFIX)], limit=1)
+            template = Template.search([("name", "=", self._demo_name("Modelo de quadro-resumo de locação"))], limit=1)
             if not template:
                 template = self._safe_create_optional("property.contract.ocr.template", {
-                    "name": "%s Template Locação Quadro Resumo" % PREFIX,
+                    "name": self._demo_name("Modelo de quadro-resumo de locação"),
                     "sequence": 900,
                     "company_id": self.company_id.id,
                     "document_kind": self._selection(Template, "document_kind", "lease_contract", "contract"),
@@ -2046,7 +2994,7 @@ Parcela: {rent}
                         line = self._safe_create_optional("property.contract.ocr.template.line", {
                             "template_id": template.id,
                             "sequence": seq * 10,
-                            "name": "%s %s" % (PREFIX, label),
+                            "name": self._demo_name(label),
                             "field_id": fld.id,
                             "value_type": self._selection(Line, "value_type", "regex", "regex"),
                             "value_mode": self._selection(Line, "value_mode", "first", "first"),
@@ -2083,7 +3031,7 @@ TÉRMINO: 04/01/2029
                     "asset_id": asset.id,
                     "party1_name": self.company_id.name,
                     "party1_vat": self.company_id.vat,
-                    "party2_name": "%s Locatário OCR %03d" % (PREFIX, idx),
+                    "party2_name": self._demo_name(FAKE_TENANT_NAMES[(idx - 1) % len(FAKE_TENANT_NAMES)]),
                     "party2_vat": self._cpf(60000 + idx),
                     "sign_date": today - timedelta(days=30),
                     "start_date": today - relativedelta(months=6),
@@ -2101,7 +3049,7 @@ TÉRMINO: 04/01/2029
                 if hist:
                     stats["contract_histories"] += 1
                     if HistoryLine is not False:
-                        for seq, (field_name, label, value) in enumerate([("party1_name", "Locadora", self.company_id.name), ("party2_name", "Locatária", "%s Locatário OCR %03d" % (PREFIX, idx)), ("monthly_amount", "Aluguel", str(3500 + idx * 300))], start=1):
+                        for seq, (field_name, label, value) in enumerate([("party1_name", "Locadora", self.company_id.name), ("party2_name", "Locatária", self._demo_name(FAKE_TENANT_NAMES[(idx - 1) % len(FAKE_TENANT_NAMES)])), ("monthly_amount", "Aluguel", str(3500 + idx * 300))], start=1):
                             self._safe_create_optional("property.contract.history.line", {
                                 "history_id": hist.id,
                                 "field_name": field_name,

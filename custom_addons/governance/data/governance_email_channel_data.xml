@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
 
         <record id="case_type_triagem_geral" model="governance.case.type">
+            <field name="case_family">intake</field>
             <field name="name">Triagem Geral</field>
             <field name="code">TRIAGEM</field>
             <field name="default_priority">1</field>

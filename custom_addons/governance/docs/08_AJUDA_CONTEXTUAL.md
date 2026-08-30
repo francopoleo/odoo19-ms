@@ -40,6 +40,19 @@ Um usuário precisa encontrar registros pendentes. Ele abre a lista, aplica o fi
 > Consulte também a seção **Campos, opções e filtros desta tela**. Ela mostra automaticamente campos obrigatórios, opções reais, categorias/tipos relacionados e filtros disponíveis no Odoo.
 <!-- /HELP:ARTICLE -->
 
+## Processo profissional de governança
+
+Um **caso** é o processo completo. Dentro dele, registre cada obrigação, comunicação, resposta formal, decisão, risco e controle separadamente.
+
+- **Obrigação:** o que deve ser entregue ou executado, por quem e até quando.
+- **Comunicação:** o histórico do contato, como e-mail, carta, reunião ou telefone.
+- **Resposta formal:** a análise do conteúdo recebido; não é apenas o e-mail.
+- **Decisão:** aprovação, rejeição ou aceitação de exceção, sempre com fundamentação.
+- **Risco:** evento que pode afetar o resultado, com probabilidade, impacto e tratamento.
+- **Controle:** verificação repetível que reduz um risco e possui responsável e frequência.
+
+O caso só deve ser concluído quando não houver obrigações abertas nem riscos críticos sem tratamento. O encerramento é uma decisão do processo, não apenas uma mudança visual de etapa.
+
 <!-- HELP:ARTICLE
 code: governance.governance_case.form.fill
 module: governance

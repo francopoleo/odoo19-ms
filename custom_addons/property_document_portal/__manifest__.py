@@ -10,7 +10,7 @@
         - Document visibility via active property contracts
         - Document visibility via broker assignments
         - Group documents by property in portal
-        - Integration with property.contract and property.broker_assignment
+        - Integration with property.contract and property.broker.assignment
 
         Requires:
         - document_portal_integration (provides portal base)

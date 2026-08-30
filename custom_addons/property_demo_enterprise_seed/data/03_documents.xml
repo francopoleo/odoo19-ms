@@ -8,8 +8,8 @@
             <field name="reference">CT-SP-2024-001</field>
             <field name="issue_date">2024-01-15</field>
             <field name="expiry_date">2025-01-14</field>
-            <field name="document_state">active</field>
-            <field name="document_workflow_state">validated</field>
+            <field name="document_state">draft</field>
+            <field name="document_workflow_state">draft</field>
             <field name="access_level">legal</field>
             <field name="source">internal</field>
             <field name="description">Contrato padrão de locação residencial</field>
@@ -22,8 +22,8 @@
             <field name="reference">CT-RJ-2024-001</field>
             <field name="issue_date">2024-03-20</field>
             <field name="expiry_date">2025-03-19</field>
-            <field name="document_state">active</field>
-            <field name="document_workflow_state">validated</field>
+            <field name="document_state">draft</field>
+            <field name="document_workflow_state">draft</field>
             <field name="access_level">legal</field>
             <field name="source">internal</field>
         </record>
@@ -35,8 +35,8 @@
             <field name="reference">RG-001-2024</field>
             <field name="issue_date">2020-05-10</field>
             <field name="expiry_date">2030-05-09</field>
-            <field name="document_state">active</field>
-            <field name="document_workflow_state">validated</field>
+            <field name="document_state">draft</field>
+            <field name="document_workflow_state">draft</field>
             <field name="access_level">internal</field>
             <field name="source">internal</field>
             <field name="is_sensitive">True</field>
@@ -48,8 +48,8 @@
             <field name="document_type_id" ref="demo_doc_type_bank_statement"/>
             <field name="reference">EXTR-SP-2024-06</field>
             <field name="issue_date">2024-06-01</field>
-            <field name="document_state">active</field>
-            <field name="document_workflow_state">validated</field>
+            <field name="document_state">draft</field>
+            <field name="document_workflow_state">draft</field>
             <field name="access_level">finance</field>
             <field name="source">internal</field>
             <field name="is_sensitive">True</field>
@@ -62,8 +62,8 @@
             <field name="document_type_id" ref="demo_doc_type_property_reg"/>
             <field name="reference">RI-SP-001</field>
             <field name="issue_date">2015-02-14</field>
-            <field name="document_state">active</field>
-            <field name="document_workflow_state">validated</field>
+            <field name="document_state">draft</field>
+            <field name="document_workflow_state">draft</field>
             <field name="access_level">legal</field>
             <field name="source">registry</field>
             <field name="description">Matrícula imobiliária número 123456</field>
@@ -76,8 +76,8 @@
             <field name="reference">APO-2024-001</field>
             <field name="issue_date">2024-01-10</field>
             <field name="expiry_date">2025-01-09</field>
-            <field name="document_state">active</field>
-            <field name="document_workflow_state">validated</field>
+            <field name="document_state">draft</field>
+            <field name="document_workflow_state">draft</field>
             <field name="access_level">finance</field>
             <field name="source">internal</field>
         </record>
@@ -88,14 +88,14 @@
             <field name="document_type_id" ref="demo_doc_type_inspection"/>
             <field name="reference">VIST-SP-2024-06</field>
             <field name="issue_date">2024-06-15</field>
-            <field name="document_state">active</field>
-            <field name="document_workflow_state">validated</field>
+            <field name="document_state">draft</field>
+            <field name="document_workflow_state">draft</field>
             <field name="access_level">internal</field>
             <field name="source">internal</field>
             <field name="description">Vistoria realizada em junho - sem pendências</field>
         </record>
 
-        <!-- DOCUMENT: Contrato Anteropor -->
+        <!-- DOCUMENTO: Contrato anterior arquivado -->
         <record id="demo_document_contract_anterior" model="document.document">
             <field name="name">Contrato Locação Anterior - Arquivo</field>
             <field name="document_type_id" ref="demo_doc_type_contract"/>

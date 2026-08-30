@@ -40,6 +40,46 @@ class PropertyContractExt(models.Model):
     )
 
     # ── Action Methods ────────────────────────────────────────────────
+    def _open_process_dossier_wizard(self, process_xmlid, title):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _(title),
+            "res_model": "dossier.assign.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_target_model": self._name,
+                "default_target_id": self.id,
+                "default_process_xmlid": process_xmlid,
+            },
+        }
+
+    def action_create_collection_dossier(self):
+        return self._open_process_dossier_wizard(
+            "document_dossier.process_property_rent_collection", "Abrir dossiê de cobrança de aluguel"
+        )
+
+    def action_create_eviction_dossier(self):
+        return self._open_process_dossier_wizard(
+            "document_dossier.process_property_eviction", "Abrir dossiê de pedido de despejo"
+        )
+
+    def action_create_renewal_dossier(self):
+        return self._open_process_dossier_wizard(
+            "document_dossier.process_property_renewal", "Abrir dossiê de renovação de locação"
+        )
+
+    def action_create_termination_dossier(self):
+        return self._open_process_dossier_wizard(
+            "document_dossier.process_property_termination", "Abrir dossiê de encerramento de locação"
+        )
+
+    def action_create_owner_repasse_dossier(self):
+        return self._open_process_dossier_wizard(
+            "document_dossier.process_property_owner_repasse", "Abrir dossiê de repasse ao proprietário"
+        )
+
     def action_assign_dossier_template(self):
         """Abre o wizard único de atribuição de dossiê."""
         self.ensure_one()

@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models, _
 
 
 class GovernanceCaseType(models.Model):
@@ -7,8 +7,16 @@ class GovernanceCaseType(models.Model):
     _order = "sequence, name"
 
     name = fields.Char("Nome", required=True)
-    code = fields.Char("Código")
-    description = fields.Text("Descrição")
+    code = fields.Char("Código interno", help="Identificador curto para integrações e relatórios. Ex.: JUR, FIN ou DOC.")
+    description = fields.Text("Descrição", help="Explique quando este tipo deve ser usado e qual resultado o caso precisa produzir.")
+    case_family = fields.Selection([
+        ("intake", "Entrada e triagem"),
+        ("analysis", "Análise e conformidade"),
+        ("financial", "Financeiro e valores"),
+        ("operations", "Operação do imóvel"),
+        ("relationship", "Relacionamento e disputas"),
+    ], string="Grupo de trabalho", default="operations", required=True, index=True,
+        help="Agrupa os tipos na lista por finalidade. Não altera o fluxo nem substitui o Tipo de Processo do dossiê.")
     color = fields.Integer("Cor", default=0)
     sequence = fields.Integer("Sequência", default=10)
     active = fields.Boolean("Ativo", default=True)
@@ -51,6 +59,45 @@ class GovernanceCaseType(models.Model):
         compute="_compute_pending_template_count",
     )
 
+    case_count = fields.Integer(string="Casos", compute="_compute_case_count")
+
+    _name_unique = models.Constraint(
+        "UNIQUE(name)",
+        "Já existe um Tipo de Caso com este nome. Use o tipo existente ou escolha outro nome.",
+    )
+    _code_unique = models.Constraint(
+        "UNIQUE(code)",
+        "Já existe um Tipo de Caso com este código interno.",
+    )
+
     def _compute_pending_template_count(self):
         for record in self:
             record.pending_template_count = len(record.pending_template_ids)
+
+    @api.depends()
+    def _compute_case_count(self):
+        Case = self.env["governance.case"]
+        counts = {}
+        if self.ids:
+            data = Case.read_group(
+                [("case_type_id", "in", self.ids)],
+                ["case_type_id"],
+                ["case_type_id"],
+            )
+            counts = {
+                row["case_type_id"][0]: row["case_type_id_count"]
+                for row in data if row.get("case_type_id")
+            }
+        for record in self:
+            record.case_count = counts.get(record.id, 0)
+
+    def action_view_cases(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Casos: %s") % self.name,
+            "res_model": "governance.case",
+            "view_mode": "list,form",
+            "domain": [("case_type_id", "=", self.id)],
+            "context": {"default_case_type_id": self.id},
+        }

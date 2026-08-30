@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_property_condominium_root" name="Condomínios" parent="property_core.menu_property_root" sequence="25" groups="property_core.group_property_manager"/>
+    <menuitem id="menu_property_condominium_operations" name="Operação" parent="menu_property_condominium_root" sequence="10" groups="property_core.group_property_manager"/>
+    <menuitem id="menu_property_condominium_registry" name="Cadastros" parent="menu_property_condominium_root" sequence="20" groups="property_core.group_property_manager"/>
+    <menuitem id="menu_property_condominium_cnab_profile" name="Perfis CNAB" parent="menu_property_condominium_registry" action="action_property_condominium_cnab_profile" sequence="10" groups="property_core.group_property_manager"/>
+    <menuitem id="menu_property_condominium_relationship" name="Vínculos" parent="menu_property_condominium_registry" action="action_property_condominium_relationship" sequence="20" groups="property_core.group_property_manager"/>
+
+    <menuitem id="menu_property_condominium_charges" name="Boletos e Cobranças" parent="menu_property_condominium_operations" action="action_property_condominium_charge" sequence="10" groups="property_core.group_property_manager"/>
+    <menuitem id="menu_property_condominium_tickets" name="Chamados" parent="menu_property_condominium_operations" action="action_property_condominium_ticket" sequence="20" groups="property_core.group_property_manager"/>
+    <menuitem id="menu_property_condominium_expenses" name="Despesas Comuns" parent="menu_property_condominium_operations" action="action_property_condominium_expense" sequence="30" groups="property_core.group_property_manager"/>
+    <menuitem id="menu_property_condominium_return" name="Importar Retorno" parent="menu_property_condominium_operations" action="action_property_condominium_return_wizard" sequence="40" groups="property_core.group_property_manager"/>
+    <menuitem id="menu_property_condominium_reports" name="Resumo" parent="menu_property_condominium_operations" action="action_property_condominium_report_wizard" sequence="50" groups="property_core.group_property_manager"/>
+</odoo>

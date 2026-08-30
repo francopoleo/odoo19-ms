@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_condominium_relationship_list" model="ir.ui.view">
+        <field name="name">property.condominium.relationship.list</field>
+        <field name="model">property.condominium.relationship</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="complex_id"/>
+                <field name="asset_id"/>
+                <field name="partner_id"/>
+                <field name="role"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_property_condominium_relationship_form" model="ir.ui.view">
+        <field name="name">property.condominium.relationship.form</field>
+        <field name="model">property.condominium.relationship</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="complex_id"/>
+                        <field name="asset_id"/>
+                        <field name="partner_id"/>
+                        <field name="role"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_property_condominium_relationship" model="ir.actions.act_window">
+        <field name="name">Vínculos do Condomínio</field>
+        <field name="res_model">property.condominium.relationship</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

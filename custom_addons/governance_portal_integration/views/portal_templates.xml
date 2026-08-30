@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== PORTAL HOME CARD ==================== -->
+    <template id="portal_my_home_governance" name="Portal: Governança"
+              inherit_id="portal.portal_my_home">
+        <xpath expr="//div[@id='portal_common_category']" position="inside">
+            <t t-if="governance_case_count" t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/governance_portal_integration/static/img/manufacturing.svg'"/>
+                <t t-set="title">Casos de Governança</t>
+                <t t-set="text">Acompanhe casos em que você é responsável ou participante.</t>
+                <t t-set="url" t-value="'/my/governance'"/>
+                <t t-set="count" t-value="governance_case_count"/>
+                <t t-set="show_count" t-value="True"/>
+                <t t-set="config_card" t-value="True"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- ===== GOVERNANCE CASES LIST ===== -->
+    <template id="portal_my_governance_cases" name="My Governance Cases">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_json" t-value="json.dumps([{'label': 'Portal', 'url': '/my/home'}, {'label': 'Casos de Governança'}])"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Casos de Governança</t>
+            </t>
+
+            <t t-if="not cases">
+                <div class="alert alert-warning" role="alert">
+                    Você não tem nenhum caso de governança atribuído.
+                </div>
+            </t>
+
+            <t t-if="cases">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Assunto</th>
+                                <th>Tipo</th>
+                                <th>Etapa</th>
+                                <th>Prioridade</th>
+                                <th>Data</th>
+                                <th/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="cases" t-as="case">
+                                <tr>
+                                    <td>
+                                        <a t-attf-href="/my/governance/#{case.id}">
+                                            <t t-out="case.name"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            <t t-out="case.case_type_id.name or 'N/A'"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span t-attf-class="badge #{case.stage_id.color_class or 'bg-secondary'}">
+                                            <t t-out="case.stage_id.name or 'N/A'"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <t t-set="priority_color" t-value="'danger' if case.priority == '3' else 'warning' if case.priority == '2' else 'info' if case.priority == '1' else 'secondary'"/>
+                                        <span t-attf-class="badge bg-#{priority_color}">
+                                            <t t-out="dict(case._fields['priority'].selection).get(case.priority, case.priority)"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            <t t-out="case.create_date.strftime('%d/%m/%Y')"/>
+                                        </small>
+                                    </td>
+                                    <td class="text-end">
+                                        <a t-attf-href="/my/governance/#{case.id}" class="btn btn-sm btn-outline-info">
+                                            <i class="fa fa-eye"/> Detalhes
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+
+                <t t-call="portal.portal_pagination">
+                    <t t-set="url" t-value="'/my/governance'"/>
+                    <t t-set="url_args" t-value="{'sortby': sortby}"/>
+                    <t t-set="pager" t-value="pager"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- ===== GOVERNANCE CASE DETAIL ===== -->
+    <template id="portal_governance_case_detail" name="Governance Case Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_json" t-value="json.dumps([{'label': 'Portal', 'url': '/my/home'}, {'label': 'Casos', 'url': '/my/governance'}, {'label': case.name}])"/>
+
+            <div class="container mt-4">
+                <div class="row g-4">
+
+                    <!-- Main Content -->
+                    <div class="col-lg-8">
+
+                        <!-- Header -->
+                        <div class="card mb-4 border-0 shadow-sm">
+                            <div class="card-header bg-light border-bottom-0">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h1 class="card-title mb-2">
+                                            <t t-out="case.name"/>
+                                        </h1>
+                                        <small class="text-muted">
+                                            <i class="fa fa-calendar"/> Criado em <t t-out="case.create_date.strftime('%d/%m/%Y às %H:%M')"/>
+                                        </small>
+                                    </div>
+                                    <div>
+                                        <span t-attf-class="badge #{case.stage_id.color_class or 'bg-secondary'} fs-6">
+                                            <t t-out="case.stage_id.name"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-bold">Tipo</label>
+                                        <p class="mb-0">
+                                            <t t-out="case.case_type_id.name or 'N/A'"/>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-bold">Prioridade</label>
+                                        <p class="mb-0">
+                                            <t t-set="prio" t-value="dict(case._fields['priority'].selection).get(case.priority, case.priority)"/>
+                                            <t t-out="prio"/>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-bold">Responsável</label>
+                                        <p class="mb-0">
+                                            <t t-out="case.responsible_id.name or 'Não atribuído'"/>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-bold">Etapa</label>
+                                        <p class="mb-0">
+                                            <t t-out="case.stage_id.name or 'N/A'"/>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <t t-if="case.description">
+                            <div class="card mb-4 border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="card-title mb-0">Descrição</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted" style="white-space: pre-line;">
+                                        <t t-out="case.description"/>
+                                    </p>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Pending Items / Checklist -->
+                        <t t-if="pending_items">
+                            <div class="card mb-4 border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="card-title mb-0">Pendências</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group list-group-flush">
+                                        <t t-foreach="pending_items" t-as="item">
+                                            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                                                <div>
+                                                    <input type="checkbox" disabled="disabled" t-att-checked="item.state == 'done'" class="form-check-input me-2"/>
+                                                    <span t-attf-class="#{item.state == 'done' and 'text-decoration-line-through text-muted' or ''}">
+                                                        <t t-out="item.name"/>
+                                                    </span>
+                                                    <t t-if="item.due_date">
+                                                        <small class="text-muted ms-2">
+                                                            Prazo: <t t-out="item.due_date.strftime('%d/%m/%Y')"/>
+                                                        </small>
+                                                    </t>
+                                                </div>
+                                                <span t-attf-class="badge #{item.state == 'done' and 'bg-success' or item.state == 'in_progress' and 'bg-warning' or 'bg-secondary'}">
+                                                    <t t-out="dict(item._fields['state'].selection).get(item.state, item.state)"/>
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Communications -->
+                        <t t-if="communications">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="card-title mb-0">Comunicações</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="timeline">
+                                        <t t-foreach="communications" t-as="comm">
+                                            <div class="timeline-item mb-3 pb-3 border-bottom">
+                                                <small class="text-muted d-block">
+                                                    <t t-out="comm.create_date.strftime('%d/%m/%Y %H:%M')"/>
+                                                </small>
+                                                <p class="mb-0 mt-2">
+                                                    <t t-out="comm.body or comm.name"/>
+                                                </p>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-lg-4">
+
+                        <!-- Documents -->
+                        <t t-if="documents">
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="card-title mb-0">Documentos Anexados</h5>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <t t-foreach="documents" t-as="doc">
+                                        <a href="#" class="list-group-item list-group-item-action py-3 d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fa fa-file me-2 text-primary"/>
+                                                <strong>
+                                                    <t t-out="doc.name"/>
+                                                </strong>
+                                                <small class="d-block text-muted">
+                                                    <t t-out="doc.document_type_id.name or 'Documento'"/>
+                                                </small>
+                                            </div>
+                                            <i class="fa fa-download text-muted"/>
+                                        </a>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Properties Related -->
+                        <t t-if="case.asset_ids or case.contract_ids">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="card-title mb-0">Relacionados</h5>
+                                </div>
+                                <div class="card-body">
+                                    <t t-if="case.asset_ids">
+                                        <label class="form-label text-muted small fw-bold">Imóveis</label>
+                                        <ul class="list-unstyled mb-3">
+                                            <t t-foreach="case.asset_ids[:5]" t-as="asset">
+                                                <li>
+                                                    <i class="fa fa-building me-2 text-info"/>
+                                                    <t t-out="asset.name"/>
+                                                </li>
+                                            </t>
+                                        </ul>
+                                    </t>
+                                    <t t-if="case.contract_ids">
+                                        <label class="form-label text-muted small fw-bold">Contratos</label>
+                                        <ul class="list-unstyled">
+                                            <t t-foreach="case.contract_ids[:5]" t-as="contract">
+                                                <li>
+                                                    <i class="fa fa-file-contract me-2 text-success"/>
+                                                    <t t-out="contract.name"/>
+                                                </li>
+                                            </t>
+                                        </ul>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </t>
+    </template>
+
+</odoo>

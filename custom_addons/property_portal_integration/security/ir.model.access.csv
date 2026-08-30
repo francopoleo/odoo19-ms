@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_create,perm_read,perm_write,perm_unlink
+access_property_contract_portal,Contratos de locação - Portal,property_core.model_property_contract,base.group_portal,0,1,0,0
+access_property_rent_portal,Parcelas de aluguel - Portal,property_core.model_property_rent,base.group_portal,0,1,0,0
+access_property_asset_portal,Imóveis próprios - Portal,property_core.model_property_asset,base.group_portal,0,1,0,0

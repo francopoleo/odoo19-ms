@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_condominium_expense_list" model="ir.ui.view">
+        <field name="name">property.condominium.expense.list</field>
+        <field name="model">property.condominium.expense</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="complex_id"/>
+                <field name="expense_date"/>
+                <field name="vendor_id"/>
+                <field name="category"/>
+                <field name="allocation_rule"/>
+                <field name="amount"/>
+                <field name="move_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_property_condominium_expense_form" model="ir.ui.view">
+        <field name="name">property.condominium.expense.form</field>
+        <field name="model">property.condominium.expense</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="complex_id"/>
+                        <field name="expense_date"/>
+                        <field name="vendor_id"/>
+                    </group>
+                    <group>
+                        <field name="category"/>
+                        <field name="allocation_rule"/>
+                        <field name="amount"/>
+                        <field name="allocated_amount" readonly="1"/>
+                        <field name="allocation_total" readonly="1"/>
+                        <field name="move_id" readonly="1"/>
+                        <field name="state"/>
+                    </group>
+                    <notebook>
+                        <page string="Rateio">
+                            <field name="allocation_line_ids" readonly="1">
+                                <list>
+                                    <field name="unit_id"/>
+                                    <field name="amount"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="action_request_approval" type="object" string="Enviar para Aprovação" class="btn-primary"/>
+                        <button name="action_approve" type="object" string="Aprovar" class="btn-primary"/>
+                        <button name="action_post" type="object" string="Lançar" class="btn-primary"/>
+                        <button name="action_create_account_move" type="object" string="Criar Lançamento Contábil" class="btn-primary"/>
+                        <button name="action_view_move" type="object" string="Ver Lançamento" invisible="not move_id"/>
+                        <button name="action_generate_allocation" type="object" string="Gerar Rateio"/>
+                        <button name="action_cancel" type="object" string="Cancelar"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_property_condominium_expense_search" model="ir.ui.view">
+        <field name="name">property.condominium.expense.search</field>
+        <field name="model">property.condominium.expense</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="complex_id"/>
+                <field name="expense_date"/>
+                <field name="vendor_id"/>
+                <filter name="draft" string="Rascunho" domain="[('state', '=', 'draft')]"/>
+                <filter name="to_approve" string="Em Aprovação" domain="[('state', '=', 'to_approve')]"/>
+                <filter name="approved" string="Aprovadas" domain="[('state', '=', 'approved')]"/>
+                <filter name="posted" string="Lançadas" domain="[('state', '=', 'posted')]"/>
+                <filter name="cancelled" string="Canceladas" domain="[('state', '=', 'cancelled')]"/>
+                <filter string="Condomínio" name="group_complex" context="{'group_by': 'complex_id'}"/>
+                <filter string="Categoria" name="group_category" context="{'group_by': 'category'}"/>
+                <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_property_condominium_expense" model="ir.actions.act_window">
+        <field name="name">Despesas Comuns</field>
+        <field name="res_model">property.condominium.expense</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

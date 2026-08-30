@@ -11,7 +11,7 @@ A melhor forma não é usar importação manual de CSV para este caso. Contratos
 1. **Cadastros estáveis em Python idempotente** para templates de dossiê, central de ajuda, OCR e categorias de mídia.
 2. **Wizard administrativo** para regenerar, limpar e controlar volume.
 3. **Uso condicional dos módulos opcionais**: se governança, dossiê, OCR, comprovantes ou valuation não estiverem instalados, o seed pula aquela família sem derrubar o ambiente.
-4. **Prefixo único `DEMO-IMOB`** para filtrar e apagar a massa de teste com segurança.
+4. **Sufixo único `(DEMO-IMOB)`** para filtrar e apagar a massa de teste com segurança; a limpeza também reconhece registros antigos que ainda tenham o marcador no início.
 
 ## O que o módulo cria
 
@@ -24,6 +24,8 @@ A melhor forma não é usar importação manual de CSV para este caso. Contratos
 - Dossiês de contratos com documentos completos e pendentes.
 - Templates de dossiês para locação comercial, locação residencial, regularidade do imóvel, aditivos, cobrança e vistoria.
 - Casos de governança vinculados a imóveis e contratos.
+- Modelos de pendência para triagem, jurídico, financeiro, documental, compliance, operação e reclamações.
+- Casos demonstrativos com pendências automáticas, obrigações formais, comunicações com prazo e respostas formais.
 - Aditivos contratuais com alteração controlada.
 - Vistorias e manutenções.
 - Dados de valuation, incluindo fontes, referências por m², comparáveis e execuções.
@@ -87,4 +89,14 @@ Antes da instalação, estes parâmetros podem ser definidos por shell/script ou
 
 Não instale este módulo em produção. Ele cria registros fictícios e deve ficar restrito a ambientes de desenvolvimento, demonstração e homologação.
 
-A limpeza busca registros pelo prefixo `DEMO-IMOB`, mas sempre faça backup antes de reconstruir a massa em uma base compartilhada.
+A limpeza busca o marcador em qualquer posição, priorizando o sufixo `(DEMO-IMOB)`, mas sempre faça backup antes de reconstruir a massa em uma base compartilhada.
+
+## Como interpretar a governança imobiliária
+
+O fluxo usa três camadas complementares:
+
+- **Dossiê e documentos:** arquivos e evidências do imóvel, contrato ou processo. Um dossiê pode ser relacionado a um caso e a documentos de diferentes etapas.
+- **Pendência:** ação operacional do checklist, como conferir matrícula, solicitar orçamento ou registrar vistoria. Os modelos são copiados automaticamente quando um caso é criado.
+- **Obrigação:** compromisso formal de uma parte ou responsável, com prazo, cobrança, situação e possível resposta formal.
+
+Assim, “anexar a matrícula” é uma evidência do dossiê, “conferir a matrícula” é uma pendência e “o proprietário enviar a matrícula até sexta-feira” é uma obrigação. A comunicação registra a solicitação e a resposta formal registra o retorno, sem criar um segundo dossiê para o mesmo assunto.

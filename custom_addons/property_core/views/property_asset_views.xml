@@ -121,8 +121,8 @@
                             <field name="permitted_use"/>
                             <field name="registration"/>
                             <field name="iptu_number"/>
-                            <field name="owner_id"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="owner_id" string="Proprietário legal"/>
+                            <field name="company_id" string="Empresa administradora" groups="base.group_multi_company"/>
                         </group>
                         <group string="Complexo / Unidade">
                             <field name="complex_id" onchange="_onchange_complex_id"/>

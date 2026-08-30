@@ -21,3 +21,7 @@ Gestão de casos de governança, SLA, pendências, comunicações institucionais
 ## Padrão enterprise
 
 Este módulo segue o padrão de documentação viva do projeto. A Central de Ajuda importa os arquivos `docs/*.md`, exibe documentos completos na Biblioteca e usa `docs/08_AJUDA_CONTEXTUAL.md` para alimentar o drawer contextual. Opções configuráveis, categorias e filtros são exibidos dinamicamente pela Central.
+
+## Arquitetura enterprise
+
+O desenho atual está documentado em `docs/09_ARQUITETURA_ENTERPRISE.md`. O caso é o contexto central; obrigações, comunicações, respostas formais, decisões, riscos e evidências possuem responsabilidades separadas e relacionamentos explícitos.

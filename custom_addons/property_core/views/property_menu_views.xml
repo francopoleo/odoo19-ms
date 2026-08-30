@@ -12,6 +12,7 @@
 
     <menuitem id="menu_property_complex" name="Complexos" parent="menu_property_cadastros" action="action_property_complex" sequence="10"/>
     <menuitem id="menu_property_asset" name="Imóveis" parent="menu_property_cadastros" action="action_property_asset" sequence="20"/>
+    <menuitem id="menu_property_owner" name="Proprietários" parent="menu_property_cadastros" action="action_res_partner_property_owner" sequence="30"/>
 
     <menuitem id="menu_property_contract" name="Contratos" parent="menu_property_comercial" action="action_property_contract" sequence="10"/>
     <menuitem id="menu_property_rent" name="Parcelas" parent="menu_property_comercial" action="action_property_rent" sequence="20"/>

@@ -7,8 +7,8 @@ class PropertyWebsite(http.Controller):
     def _get_current_broker(self):
         user = request.env.user
         if not user or user._is_public():
-            return request.env["property.broker"]
-        return request.env["property.broker"].sudo().search([("user_id", "=", user.id)], limit=1)
+            return request.env["res.partner"]
+        return request.env["res.partner"].sudo().search([("user_id", "=", user.id), ("category_id.name", "ilike", "Corretor")], limit=1)
 
     def _base_website_domain(self):
         return [("website_published", "=", True)]
@@ -28,7 +28,7 @@ class PropertyWebsite(http.Controller):
         all_assets = Asset.search(self._base_website_domain()).filtered(lambda a: a.can_user_view_on_website(user=user, broker=broker))
         cities = sorted(set(filter(None, all_assets.mapped("city"))))
 
-        return request.render("property_core.website_property_catalog", {
+        return request.render("property_website_integration.website_property_catalog", {
             "assets": assets,
             "cities": cities,
             "tipo": tipo,
@@ -73,7 +73,7 @@ class PropertyWebsite(http.Controller):
         if not cover_media and gallery:
             cover_media = gallery[0:1]
 
-        return request.render("property_core.website_property_detail", {
+        return request.render("property_website_integration.website_property_detail", {
             "asset": asset,
             "success": bool(kw.get("success")),
             "denied": bool(kw.get("denied")),

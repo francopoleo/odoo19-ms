@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_contract_version_list" model="ir.ui.view">
+        <field name="name">property.contract.version.list</field>
+        <field name="model">property.contract.version</field>
+        <field name="arch" type="xml">
+            <list default_order="effective_date desc, id desc">
+                <field name="contract_id"/>
+                <field name="version_number"/>
+                <field name="effective_date"/>
+                <field name="created_by"/>
+                <field name="is_current"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_property_contract_version_form" model="ir.ui.view">
+        <field name="name">property.contract.version.form</field>
+        <field name="model">property.contract.version</field>
+        <field name="arch" type="xml">
+            <form string="Versão do Contrato" create="0">
+                <sheet>
+                    <group>
+                        <field name="contract_id"/>
+                        <field name="version_number"/>
+                        <field name="effective_date"/>
+                        <field name="created_by"/>
+                        <field name="is_current"/>
+                    </group>
+                    <notebook>
+                        <page string="Termos congelados"><field name="terms_snapshot_html" widget="html"/></page>
+                        <page string="Dados técnicos"><field name="terms_snapshot_json" widget="text"/></page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_property_contract_version" model="ir.actions.act_window">
+        <field name="name">Versões de Contrato</field>
+        <field name="res_model">property.contract.version</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_property_contract_term_history_list" model="ir.ui.view">
+        <field name="name">property.contract.term.history.list</field>
+        <field name="model">property.contract.term.history</field>
+        <field name="arch" type="xml">
+            <list default_order="effective_date desc, id desc">
+                <field name="contract_id"/>
+                <field name="field_label"/>
+                <field name="old_value"/>
+                <field name="new_value"/>
+                <field name="effective_date"/>
+                <field name="reason"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_property_contract_term_history_form" model="ir.ui.view">
+        <field name="name">property.contract.term.history.form</field>
+        <field name="model">property.contract.term.history</field>
+        <field name="arch" type="xml">
+            <form string="Histórico de Cláusula" create="0">
+                <sheet>
+                    <group>
+                        <field name="contract_id"/>
+                        <field name="field_label"/>
+                        <field name="field_name"/>
+                        <field name="old_value"/>
+                        <field name="new_value"/>
+                        <field name="effective_date"/>
+                        <field name="applied_date"/>
+                        <field name="applied_by"/>
+                    </group>
+                    <field name="reason"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_property_contract_term_history" model="ir.actions.act_window">
+        <field name="name">Histórico de Cláusulas</field>
+        <field name="res_model">property.contract.term.history</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_property_contract_amendment_root"
+              name="Aditivos Contratuais"
+              parent="property_core.menu_property_root"
+              action="action_property_contract_amendment"
+              sequence="11"/>
+    <menuitem id="menu_property_contract_approvals" name="Aprovações" parent="menu_property_contract_amendment_root" action="action_property_contract_approval" sequence="45"/>
+    <menuitem id="menu_property_contract_versions" name="Versões do Contrato" parent="menu_property_contract_amendment_root" action="action_property_contract_version" sequence="80"/>
+    <menuitem id="menu_property_contract_term_history" name="Histórico de Cláusulas" parent="menu_property_contract_amendment_root" action="action_property_contract_term_history" sequence="90"/>
+</odoo>

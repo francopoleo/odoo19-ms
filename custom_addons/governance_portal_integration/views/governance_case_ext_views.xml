@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Governance Case Form Extension -->
+    <record id="view_governance_case_form_portal_ext" model="ir.ui.view">
+        <field name="name">governance.case.form.portal.ext</field>
+        <field name="model">governance.case</field>
+        <field name="inherit_id" ref="governance.view_governance_case_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='case_type_id']" position="after">
+                <field name="portal_visibility" widget="boolean_toggle" readonly="1"
+                       help="Automatically set to visible in portal for case participants"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

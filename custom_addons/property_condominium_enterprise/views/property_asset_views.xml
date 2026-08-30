@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_asset_condo_form_ext" model="ir.ui.view">
+        <field name="name">property.asset.condo.form.ext</field>
+        <field name="model">property.asset</field>
+        <field name="inherit_id" ref="property_core.view_property_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@id='tab_characteristics']" position="inside">
+                <group string="Condomínio">
+                    <field name="condo_fraction"/>
+                    <field name="condo_fee_override"/>
+                    <field name="condo_billing_partner_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

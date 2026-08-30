@@ -24,6 +24,11 @@
             <form>
                 <header>
                     <button name="action_open_case" type="object" string="Abrir Caso" class="btn-secondary"/>
+                    <button name="action_start_review" type="object" string="Iniciar análise" class="btn-primary" invisible="state != 'received'"/>
+                    <button name="action_mark_approved" type="object" string="Aprovar" class="btn-primary" invisible="state != 'in_review'"/>
+                    <button name="action_mark_partial" type="object" string="Aceitar parcialmente" invisible="state != 'in_review'"/>
+                    <button name="action_mark_rejected" type="object" string="Rejeitar" invisible="state != 'in_review'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="received,in_review,approved,partial,rejected,closed"/>
                 </header>
                 <sheet>
                     <group>
@@ -33,11 +38,14 @@
                             <field name="response_date"/>
                             <field name="response_type"/>
                             <field name="outcome"/>
+                            <field name="state" readonly="1"/>
                         </group>
                         <group>
                             <field name="participant_id"/>
                             <field name="partner_id"/>
                             <field name="communication_id"/>
+                            <field name="obligation_id"/>
+                            <field name="decision_id"/>
                             <field name="responsible_id"/>
                             <field name="close_open_pendings"/>
                         </group>

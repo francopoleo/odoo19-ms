@@ -25,7 +25,7 @@
             <field name="name">Contrato de Locação</field>
             <field name="code">CONTRACT</field>
             <field name="category_id" ref="demo_doc_category_legal"/>
-            <field name="scope">property</field>
+            <field name="scope">asset</field>
             <field name="requires_expiry">True</field>
             <field name="requires_validation">True</field>
             <field name="is_sensitive">False</field>
@@ -36,7 +36,7 @@
             <field name="name">RG/Identidade</field>
             <field name="code">RG</field>
             <field name="category_id" ref="demo_doc_category_legal"/>
-            <field name="scope">property</field>
+            <field name="scope">asset</field>
             <field name="requires_expiry">True</field>
             <field name="is_sensitive">True</field>
             <field name="sequence">20</field>
@@ -46,7 +46,7 @@
             <field name="name">Extrato Bancário</field>
             <field name="code">BANK_STMT</field>
             <field name="category_id" ref="demo_doc_category_financial"/>
-            <field name="scope">property</field>
+            <field name="scope">asset</field>
             <field name="is_sensitive">True</field>
             <field name="sequence">30</field>
         </record>
@@ -75,6 +75,84 @@
             <field name="category_id" ref="demo_doc_category_operational"/>
             <field name="scope">asset</field>
             <field name="sequence">60</field>
+        </record>
+
+        <!-- CONTATOS DEMO usados pelos contratos e pela governança -->
+        <record id="demo_partner_joao_silva" model="res.partner">
+            <field name="name">João Silva</field>
+            <field name="is_company">False</field>
+            <field name="email">joao.silva.demo@example.com</field>
+            <field name="phone">+55 11 98888-1001</field>
+            <field name="city">São Paulo</field>
+            <field name="zip">01414-001</field>
+            <field name="category_id" eval="[(6, 0, [ref('property_core.res_partner_category_property_tenant')])]"/>
+        </record>
+        <record id="demo_partner_maria_santos" model="res.partner">
+            <field name="name">Maria Santos</field>
+            <field name="is_company">False</field>
+            <field name="email">maria.santos.demo@example.com</field>
+            <field name="phone">+55 21 97777-2002</field>
+            <field name="city">Rio de Janeiro</field>
+            <field name="zip">22230-001</field>
+            <field name="category_id" eval="[(6, 0, [ref('property_core.res_partner_category_property_tenant')])]"/>
+        </record>
+        <record id="demo_partner_clinica_horizonte" model="res.partner">
+            <field name="name">Clínica Horizonte Saúde Ltda.</field>
+            <field name="is_company">True</field>
+            <field name="email">financeiro@clinicahorizonte.demo.example.com</field>
+            <field name="phone">+55 11 3555-3003</field>
+            <field name="city">São Paulo</field>
+            <field name="zip">04015-001</field>
+            <field name="category_id" eval="[(6, 0, [ref('property_core.res_partner_category_property_tenant')])]"/>
+        </record>
+        <record id="demo_partner_helena_duarte" model="res.partner">
+            <field name="name">Dra. Helena Duarte</field>
+            <field name="is_company">False</field>
+            <field name="email">helena.duarte.demo@example.com</field>
+            <field name="phone">+55 31 96666-4004</field>
+            <field name="city">Belo Horizonte</field>
+            <field name="zip">30130-151</field>
+            <field name="category_id" eval="[(6, 0, [ref('property_core.res_partner_category_property_tenant')])]"/>
+        </record>
+        <record id="demo_partner_ana_mendes" model="res.partner">
+            <field name="name">Ana Clara Mendes</field>
+            <field name="is_company">False</field>
+            <field name="email">ana.mendes.demo@example.com</field>
+            <field name="phone">+55 11 95555-5005</field>
+            <field name="city">Barueri</field>
+            <field name="zip">06454-000</field>
+        </record>
+
+        <!-- Proprietários dos imóveis: pessoa física e pessoa jurídica -->
+        <record id="demo_owner_carlos_almeida" model="res.partner">
+            <field name="name">Carlos Eduardo Almeida (DEMO-IMOB)</field>
+            <field name="is_company">False</field>
+            <field name="company_type">person</field>
+            <field name="email">carlos.almeida.demo@example.com</field>
+            <field name="phone">+55 11 94444-6101</field>
+            <field name="city">São Paulo</field>
+            <field name="zip">04538-132</field>
+            <field name="category_id" eval="[(6, 0, [ref('property_core.res_partner_category_property_owner')])]"/>
+        </record>
+        <record id="demo_owner_grupo_tambore" model="res.partner">
+            <field name="name">Grupo Reserva do Tamboré Participações Ltda. (DEMO-IMOB)</field>
+            <field name="is_company">True</field>
+            <field name="company_type">company</field>
+            <field name="email">administrativo@reservatambore.demo.example.com</field>
+            <field name="phone">+55 11 4333-6202</field>
+            <field name="city">Santana de Parnaíba</field>
+            <field name="zip">06543-001</field>
+            <field name="category_id" eval="[(6, 0, [ref('property_core.res_partner_category_property_owner')])]"/>
+        </record>
+        <record id="demo_owner_familia_ribeiro" model="res.partner">
+            <field name="name">Família Ribeiro Patrimonial Ltda. (DEMO-IMOB)</field>
+            <field name="is_company">True</field>
+            <field name="company_type">company</field>
+            <field name="email">contato@ribeiropatrimonial.demo.example.com</field>
+            <field name="phone">+55 31 3777-6303</field>
+            <field name="city">Belo Horizonte</field>
+            <field name="zip">30140-071</field>
+            <field name="category_id" eval="[(6, 0, [ref('property_core.res_partner_category_property_owner')])]"/>
         </record>
 
     </data>

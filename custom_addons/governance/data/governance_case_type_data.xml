@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
 
         <record id="case_type_juridico" model="governance.case.type">
+            <field name="case_family">analysis</field>
             <field name="default_priority">1</field>
             <field name="allowed_stage_ids" eval="[(6, 0, [ref('governance.stage_planned'), ref('governance.stage_sent'), ref('governance.stage_waiting'), ref('governance.stage_partial'), ref('governance.stage_no_response'), ref('governance.stage_done'), ref('governance.stage_closed')])]"/>
             <field name="initial_stage_id" ref="governance.stage_planned"/>
@@ -16,6 +17,7 @@
         </record>
 
         <record id="case_type_financeiro" model="governance.case.type">
+            <field name="case_family">financial</field>
             <field name="default_priority">1</field>
             <field name="allowed_stage_ids" eval="[(6, 0, [ref('governance.stage_planned'), ref('governance.stage_sent'), ref('governance.stage_waiting'), ref('governance.stage_partial'), ref('governance.stage_no_response'), ref('governance.stage_done'), ref('governance.stage_closed')])]"/>
             <field name="initial_stage_id" ref="governance.stage_planned"/>
@@ -29,6 +31,7 @@
         </record>
 
         <record id="case_type_documental" model="governance.case.type">
+            <field name="case_family">analysis</field>
             <field name="default_priority">1</field>
             <field name="allowed_stage_ids" eval="[(6, 0, [ref('governance.stage_planned'), ref('governance.stage_sent'), ref('governance.stage_waiting'), ref('governance.stage_partial'), ref('governance.stage_no_response'), ref('governance.stage_done'), ref('governance.stage_closed')])]"/>
             <field name="initial_stage_id" ref="governance.stage_planned"/>
@@ -42,6 +45,7 @@
         </record>
 
         <record id="case_type_compliance" model="governance.case.type">
+            <field name="case_family">analysis</field>
             <field name="default_priority">1</field>
             <field name="allowed_stage_ids" eval="[(6, 0, [ref('governance.stage_planned'), ref('governance.stage_sent'), ref('governance.stage_waiting'), ref('governance.stage_partial'), ref('governance.stage_no_response'), ref('governance.stage_done'), ref('governance.stage_closed')])]"/>
             <field name="initial_stage_id" ref="governance.stage_planned"/>
@@ -55,6 +59,7 @@
         </record>
 
         <record id="case_type_operacional" model="governance.case.type">
+            <field name="case_family">operations</field>
             <field name="default_priority">1</field>
             <field name="allowed_stage_ids" eval="[(6, 0, [ref('governance.stage_planned'), ref('governance.stage_sent'), ref('governance.stage_waiting'), ref('governance.stage_partial'), ref('governance.stage_no_response'), ref('governance.stage_done'), ref('governance.stage_closed')])]"/>
             <field name="initial_stage_id" ref="governance.stage_planned"/>
@@ -68,6 +73,7 @@
         </record>
 
         <record id="case_type_reclamacao" model="governance.case.type">
+            <field name="case_family">relationship</field>
             <field name="default_priority">1</field>
             <field name="allowed_stage_ids" eval="[(6, 0, [ref('governance.stage_planned'), ref('governance.stage_sent'), ref('governance.stage_waiting'), ref('governance.stage_partial'), ref('governance.stage_no_response'), ref('governance.stage_done'), ref('governance.stage_closed')])]"/>
             <field name="initial_stage_id" ref="governance.stage_planned"/>

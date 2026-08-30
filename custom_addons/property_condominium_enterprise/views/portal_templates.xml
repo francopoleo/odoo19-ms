@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_condominium" inherit_id="portal.portal_my_home" priority="70">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="show_condo_links">
+                <div class="alert alert-light border mb-3" role="status">
+                    <div><strong>Condomínio:</strong> <t t-esc="complex_name or '-'"/></div>
+                    <div><strong>Unidade:</strong> <t t-esc="unit_name or 'Vínculo sem unidade específica'"/></div>
+                </div>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/property_condominium_enterprise/static/img/portal_chamados.svg'"/>
+                    <t t-set="title">Condomínio</t>
+                    <t t-set="text">Boletos, chamados e serviços comuns</t>
+                    <t t-set="url" t-value="'/my/condominium'"/>
+                    <t t-set="placeholder_count" t-value="'condo_charge_count'"/>
+                    <t t-set="count" t-value="condo_charge_count"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/property_condominium_enterprise/static/img/portal_chamados.svg'"/>
+                    <t t-set="title">Chamados do Condomínio</t>
+                    <t t-set="text">Acompanhe solicitações e atendimento</t>
+                    <t t-set="url" t-value="'/my/condominium/tickets'"/>
+                    <t t-set="placeholder_count" t-value="'condo_ticket_count'"/>
+                    <t t-set="count" t-value="condo_ticket_count"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/common_base/static/description/icon.png'"/>
+                    <t t-set="title">Abrir Chamado</t>
+                    <t t-set="text">Crie uma solicitação para o condomínio</t>
+                    <t t-set="url" t-value="'/my/condominium/tickets/new'"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_condominium_links" inherit_id="portal.portal_my_home" priority="75">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="show_condo_links">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/document_core/static/description/icon.png'"/>
+                    <t t-set="title">Meus Boletos</t>
+                    <t t-set="text">Acesse seus boletos e cobranças do condomínio</t>
+                    <t t-set="url" t-value="'/my/condominium/boletos'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/common_base/static/description/icon.png'"/>
+                    <t t-set="title">Meus Chamados</t>
+                    <t t-set="text">Veja seus chamados e acompanhe o atendimento</t>
+                    <t t-set="url" t-value="'/my/condominium/meus-chamados'"/>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_condominium" name="Boletos do Condomínio">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <h1 class="mb-4">Boletos de Condomínio</h1>
+                <t t-if="not has_condo_access">
+                    <div class="alert alert-info" role="alert">
+                        Você ainda não possui vínculo ativo com um condomínio neste portal. Se você é locatário, proprietário ou administrador, peça ao gestor para cadastrar seu relacionamento.
+                    </div>
+                </t>
+                <div class="alert alert-light border mb-4" role="status" t-if="complex_name or unit_name">
+                    <div><strong>Condomínio:</strong> <t t-esc="complex_name or '-'"/></div>
+                    <div><strong>Unidade:</strong> <t t-esc="unit_name or 'Vínculo sem unidade específica'"/></div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total em Aberto</h5>
+                                <p class="card-text"><t t-out="open_total"/></p>
+                                <p class="text-muted mb-0">Inclui cobranças em aberto e vencidas.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Vencido</h5>
+                                <p class="card-text"><t t-out="overdue_total"/></p>
+                                <p class="text-muted mb-0">Valor acumulado com atraso.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Resumo de Inadimplência</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Faixa</th><th>Qtd.</th><th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="aging.items()" t-as="bucket">
+                                        <td><t t-out="bucket[1]['label']"/></td>
+                                        <td><t t-out="bucket[1]['count']"/></td>
+                                        <td><t t-out="bucket[1]['amount']"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Referência</th><th>Unidade</th><th>Vencimento</th><th>Valor</th><th>Situação</th><th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="charges" t-as="charge">
+                                <td><t t-out="charge.period or charge.name"/></td>
+                                <td><t t-out="charge.name"/></td>
+                                <td><t t-out="charge.due_date"/></td>
+                                <td><t t-out="charge.amount_total"/></td>
+                                <td>
+                                    <t t-if="charge.state == 'draft'">Rascunho</t>
+                                    <t t-elif="charge.state == 'open'">Aberta</t>
+                                    <t t-elif="charge.state == 'paid'">Paga</t>
+                                    <t t-elif="charge.state == 'overdue'">Vencida</t>
+                                    <t t-elif="charge.state == 'cancelled'">Cancelada</t>
+                                </td>
+                                <td>
+                                    <a t-if="charge.invoice_id" t-att-href="'/my/condominium/charge/%s/boleto' % charge.id" class="btn btn-sm btn-outline-primary">
+                                        Ver Boleto
+                                    </a>
+                                    <a t-if="charge.invoice_id" t-att-href="'/my/condominium/charge/%s/boleto/pdf' % charge.id" class="btn btn-sm btn-outline-secondary ms-1">
+                                        Baixar PDF
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_condominium_tickets" name="Chamados do Condomínio">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <h1 class="mb-4">Chamados do Condomínio</h1>
+                <t t-if="not has_condo_access">
+                    <div class="alert alert-info" role="alert">
+                        Você ainda não possui vínculo ativo com um condomínio neste portal. Se você é locatário, proprietário ou administrador, peça ao gestor para cadastrar seu relacionamento.
+                    </div>
+                </t>
+                <div class="alert alert-light border mb-4" role="status" t-if="complex_name or unit_name">
+                    <div><strong>Condomínio:</strong> <t t-esc="complex_name or '-'"/></div>
+                    <div><strong>Unidade:</strong> <t t-esc="unit_name or 'Vínculo sem unidade específica'"/></div>
+                </div>
+                <div class="mb-3">
+                    <a class="btn btn-primary" href="/my/condominium/tickets/new">Abrir Chamado</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Assunto</th><th>Categoria</th><th>Prioridade</th><th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="tickets" t-as="ticket">
+                                <td><t t-out="ticket.name"/></td>
+                                <td>
+                                    <t t-if="ticket.category == 'maintenance'">Manutenção</t>
+                                    <t t-elif="ticket.category == 'service'">Serviço Comum</t>
+                                    <t t-elif="ticket.category == 'billing'">Cobrança</t>
+                                    <t t-else="">Outros</t>
+                                </td>
+                                <td>
+                                    <t t-if="ticket.priority == '0'">Baixa</t>
+                                    <t t-elif="ticket.priority == '1'">Normal</t>
+                                    <t t-elif="ticket.priority == '2'">Alta</t>
+                                    <t t-elif="ticket.priority == '3'">Crítica</t>
+                                </td>
+                                <td>
+                                    <t t-if="ticket.state == 'new'">Novo</t>
+                                    <t t-elif="ticket.state == 'in_progress'">Em Andamento</t>
+                                    <t t-elif="ticket.state == 'waiting'">Aguardando</t>
+                                    <t t-elif="ticket.state == 'done'">Concluído</t>
+                                    <t t-elif="ticket.state == 'cancelled'">Cancelado</t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_condominium_ticket_new" name="Novo Chamado do Condomínio">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <h1 class="mb-4">Abrir Chamado</h1>
+                <t t-if="error">
+                    <div class="alert alert-danger" role="alert"><t t-out="error"/></div>
+                </t>
+                <t t-if="not has_condo_access">
+                    <div class="alert alert-info" role="alert">
+                        Você ainda não possui vínculo ativo com um condomínio neste portal.
+                    </div>
+                </t>
+                <div class="alert alert-light border mb-4" role="status" t-if="complex_name or unit_name">
+                    <div><strong>Condomínio:</strong> <t t-esc="complex_name or '-'"/></div>
+                    <div><strong>Unidade:</strong> <t t-esc="unit_name or 'Vínculo sem unidade específica'"/></div>
+                </div>
+                <form action="/my/condominium/tickets/new" method="post" class="card p-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="name">Assunto</label>
+                        <input type="text" class="form-control" name="name" id="name" required="required"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="category">Categoria</label>
+                        <select class="form-select" name="category" id="category">
+                            <option value="service">Serviço Comum</option>
+                            <option value="maintenance">Manutenção</option>
+                            <option value="billing">Cobrança</option>
+                            <option value="other">Outros</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="priority">Prioridade</label>
+                        <select class="form-select" name="priority" id="priority">
+                            <option value="1">Normal</option>
+                            <option value="0">Baixa</option>
+                            <option value="2">Alta</option>
+                            <option value="3">Crítica</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="description">Descrição</label>
+                        <textarea class="form-control" name="description" id="description" rows="5"></textarea>
+                    </div>
+                    <input type="hidden" name="complex_id" t-att-value="complex_id or ''"/>
+                    <input type="hidden" name="unit_id" value=""/>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Enviar Chamado</button>
+                        <a href="/my/condominium/tickets" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+</odoo>

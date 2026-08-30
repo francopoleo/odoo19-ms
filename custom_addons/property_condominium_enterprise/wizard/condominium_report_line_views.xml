@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_condominium_report_line_list" model="ir.ui.view">
+        <field name="name">property.condominium.report.line.list</field>
+        <field name="model">property.condominium.report.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="complex_id"/>
+                <field name="line_type"/>
+                <field name="name"/>
+                <field name="charge_count"/>
+                <field name="amount_total"/>
+            </list>
+        </field>
+    </record>
+</odoo>

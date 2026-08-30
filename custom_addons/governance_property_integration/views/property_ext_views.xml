@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_asset_form_governance_ext" model="ir.ui.view">
+        <field name="name">property.asset.form.governance.ext</field>
+        <field name="model">property.asset</field>
+        <field name="inherit_id" ref="property_core.view_property_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_governance_cases" type="object"
+                        class="oe_stat_button" icon="fa-gavel"
+                        invisible="governance_case_count == 0">
+                    <div class="o_stat_info">
+                        <field name="governance_case_count" class="o_stat_value"/>
+                        <span class="o_stat_text">Casos</span>
+                    </div>
+                </button>
+                <button name="action_create_governance_case" type="object"
+                        class="oe_stat_button" icon="fa-plus-circle">
+                    <span>Novo Caso</span>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

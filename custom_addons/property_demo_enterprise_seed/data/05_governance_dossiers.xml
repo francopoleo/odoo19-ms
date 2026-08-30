@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Casos fixos também possuem um dossiê explícito para demonstrar o processo completo. -->
+        <record id="demo_dossier_case_audit_q2_2024" model="dossier.dossier">
+            <field name="name">Dossiê de Auditoria Interna do segundo trimestre de 2024</field>
+            <field name="description">Documentos, evidências, pendências e decisões da auditoria interna do segundo trimestre de 2024.</field>
+            <field name="process_id" ref="document_dossier.process_governance_audit"/>
+            <field name="state">active</field>
+        </record>
+        <record id="demo_dossier_case_legal_review_2024" model="dossier.dossier">
+            <field name="name">Dossiê de Revisão Jurídica dos Contratos Padrão</field>
+            <field name="description">Base documental para revisão das cláusulas, riscos e aprovações dos contratos padrão de locação.</field>
+            <field name="process_id" ref="document_dossier.process_governance_review"/>
+            <field name="state">active</field>
+        </record>
+        <record id="demo_dossier_case_compliance_2024" model="dossier.dossier">
+            <field name="name">Dossiê de Conformidade e Proteção de Dados de 2024</field>
+            <field name="description">Evidências e decisões da avaliação de conformidade com a legislação de proteção de dados.</field>
+            <field name="process_id" ref="document_dossier.process_governance_compliance"/>
+            <field name="state">active</field>
+        </record>
+        <record id="demo_dossier_case_audit_q1_2024" model="dossier.dossier">
+            <field name="name">Dossiê da Auditoria Interna do primeiro trimestre de 2024</field>
+            <field name="description">Arquivo histórico da auditoria concluída, incluindo conclusões e controles validados.</field>
+            <field name="process_id" ref="document_dossier.process_governance_audit"/>
+            <field name="state">closed</field>
+        </record>
+    </data>
+</odoo>

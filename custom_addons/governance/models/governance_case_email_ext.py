@@ -222,7 +222,14 @@ class GovernanceCase(models.Model):
                     self.env["res.partner"].sudo().resolve_contact(email=email_from)
                 )
 
-            Communication.create({
+            obligation = self.env["governance.case.obligation"].sudo().search([
+                ("case_id", "=", case.id),
+                ("state", "in", ("sent", "waiting", "due_soon", "overdue")),
+                "|", ("partner_id", "=", partner.id if partner else 0),
+                ("name", "ilike", subject),
+            ], order="due_date asc, id asc", limit=1)
+
+            communication = Communication.create({
                 "case_id": case.id,
                 "name": subject,
                 "communication_type": "email",
@@ -238,7 +245,10 @@ class GovernanceCase(models.Model):
                 "email_from": email_from,
                 "email_to": msg_dict.get("to") or msg_dict.get("email_to") or False,
                 "email_cc": msg_dict.get("cc") or False,
+                "obligation_id": obligation.id if obligation else False,
             })
+            if obligation:
+                obligation.write({"source_communication_id": communication.id})
             if direction == "in" and partner and (not channel or channel.auto_add_sender_as_participant):
                 exists = Participant.search([("case_id", "=", case.id), ("partner_id", "=", partner.id)], limit=1)
                 if not exists:

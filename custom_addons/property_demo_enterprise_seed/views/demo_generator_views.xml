@@ -7,7 +7,7 @@
             <form string="Gerador de Massa de Testes">
                 <sheet>
                     <div class="alert alert-warning" role="alert">
-                        <b>Atenção:</b> este gerador cria dados sintéticos com prefixo <b>DEMO-IMOB</b>. Use apenas em base de teste, homologação ou demonstração.
+                        <b>Atenção:</b> este gerador cria dados sintéticos identificados pelo sufixo <b>(DEMO-IMOB)</b>. Use apenas em base de teste, homologação ou demonstração.
                     </div>
                     <group>
                         <group string="Volume">

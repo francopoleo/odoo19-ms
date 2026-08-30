@@ -37,12 +37,20 @@ class DocumentDocumentPropertyExt(models.Model):
         if document.access_level == "public":
             return True
 
-        if not document.asset_id:
+        # A regra de portal restringe a leitura direta de property.asset ao
+        # proprietário. Para decidir se um documento pode ser exibido, a
+        # relação precisa ser inspecionada com sudo; isso não concede acesso
+        # ao imóvel nem altera o conjunto final de documentos autorizados.
+        asset = document.asset_id.sudo()
+        if not asset:
             return False
 
-        active_contracts = self.env["property.contract"].search(
+        if asset.owner_id == partner:
+            return True
+
+        active_contracts = self.env["property.contract"].sudo().search(
             [
-                ("asset_id", "=", document.asset_id.id),
+                ("asset_id", "=", asset.id),
                 ("partner_id", "=", partner.id),
                 ("status", "in", ("draft", "active", "expired", "renewing")),
             ]
@@ -50,11 +58,13 @@ class DocumentDocumentPropertyExt(models.Model):
         if active_contracts:
             return True
 
-        broker_assignments = self.env["property.broker_assignment"].search(
+        broker_assignments = self.env["property.broker.assignment"].sudo().search(
             [
-                ("asset_id", "=", document.asset_id.id),
-                ("broker_id.partner_id", "=", partner.id),
-                ("status", "in", ("active", "pending")),
+                ("asset_id", "=", asset.id),
+                # broker_id já aponta diretamente para res.partner; não existe
+                # um campo partner_id intermediário nesse modelo.
+                ("broker_id", "=", partner.id),
+                ("status", "in", ("active", "converted")),
             ]
         )
         if broker_assignments:

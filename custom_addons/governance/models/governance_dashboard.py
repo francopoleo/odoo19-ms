@@ -32,6 +32,13 @@ class GovernanceDashboard(models.TransientModel):
     pending_today_count = fields.Integer(readonly=True)
     pending_next7_count = fields.Integer(readonly=True)
 
+    # ── Governança Enterprise ───────────────────────────────────
+    obligation_open_total = fields.Integer(readonly=True)
+    obligation_overdue_total = fields.Integer(readonly=True)
+    decision_pending_total = fields.Integer(readonly=True)
+    critical_risk_total = fields.Integer(readonly=True)
+    deficient_control_total = fields.Integer(readonly=True)
+
     # ── Minha Operação ────────────────────────────────────────────
     case_my_count = fields.Integer(readonly=True)
     case_my_urgent_count = fields.Integer(readonly=True)
@@ -53,6 +60,10 @@ class GovernanceDashboard(models.TransientModel):
         Case = self.env["governance.case"]
         Pending = self.env["governance.case.pending"]
         Comm = self.env["governance.case.communication"]
+        Obligation = self.env["governance.case.obligation"]
+        Decision = self.env["governance.case.decision"]
+        Risk = self.env["governance.case.risk"]
+        Control = self.env["governance.control"]
         uid = self.env.user.id
 
         active = [("status", "not in", ["closed"])]
@@ -80,6 +91,11 @@ class GovernanceDashboard(models.TransientModel):
             "pending_overdue_count": Pending.search_count([("state", "=", "open"), ("is_overdue", "=", True)]),
             "pending_today_count": Pending.search_count([("state", "=", "open"), ("deadline_bucket", "=", "today")]),
             "pending_next7_count": Pending.search_count([("state", "=", "open"), ("deadline_bucket", "=", "next_7")]),
+            "obligation_open_total": Obligation.search_count([("state", "not in", ("fulfilled", "not_fulfilled", "cancelled"))]),
+            "obligation_overdue_total": Obligation.search_count([("is_overdue", "=", True)]),
+            "decision_pending_total": Decision.search_count([("state", "=", "pending")]),
+            "critical_risk_total": Risk.search_count([("risk_level", ">=", 6), ("state", "not in", ("closed", "mitigated"))]),
+            "deficient_control_total": Control.search_count([("state", "=", "deficient")]),
             # Minha operação
             "case_my_count": Case.search_count(active + [("responsible_id", "=", uid)]),
             "case_my_urgent_count": Case.search_count(active + [("responsible_id", "=", uid), ("work_queue_status", "=", "urgent")]),
@@ -221,6 +237,21 @@ class GovernanceDashboard(models.TransientModel):
             [("state", "=", "open"), ("deadline_bucket", "=", "next_7")],
             _("Pendências Próx. 7 Dias"),
         )
+
+    def action_view_obligations(self):
+        return {"type": "ir.actions.act_window", "name": _("Obrigações em Aberto"), "res_model": "governance.case.obligation", "view_mode": "list,form", "domain": [("state", "not in", ("fulfilled", "not_fulfilled", "cancelled"))]}
+
+    def action_view_obligations_overdue(self):
+        return {"type": "ir.actions.act_window", "name": _("Obrigações Atrasadas"), "res_model": "governance.case.obligation", "view_mode": "list,form", "domain": [("is_overdue", "=", True)]}
+
+    def action_view_pending_decisions(self):
+        return {"type": "ir.actions.act_window", "name": _("Decisões Pendentes"), "res_model": "governance.case.decision", "view_mode": "list,form", "domain": [("state", "=", "pending")]}
+
+    def action_view_critical_risks(self):
+        return {"type": "ir.actions.act_window", "name": _("Riscos Críticos"), "res_model": "governance.case.risk", "view_mode": "list,form", "domain": [("risk_level", ">=", 6), ("state", "not in", ("closed", "mitigated"))]}
+
+    def action_view_deficient_controls(self):
+        return {"type": "ir.actions.act_window", "name": _("Controles com Deficiência"), "res_model": "governance.control", "view_mode": "list,form", "domain": [("state", "=", "deficient")]}
 
     # ── Minha Operação ────────────────────────────────────────────
     def action_view_my_cases(self):
